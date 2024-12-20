@@ -1,28 +1,12 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.java.util"
-        },
-        {
-          "include-filter": "org.apache.harmony.tests.java.util"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_java_util"
     }
   ],
   "presubmit-large": [
     {
-      "name": "CtsLibcoreOjTestCases",
-      "options": [
-        {
-          "include-filter": "test.java.util"
-        },
-        {
-          "include-filter": "org.openjdk.tests.java.util"
-        }
-      ]
+      "name": "CtsLibcoreOjTestCases_util"
     }
   ]
 }

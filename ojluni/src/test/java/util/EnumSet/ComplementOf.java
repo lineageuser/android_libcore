@@ -21,23 +21,19 @@
  * questions.
  */
 
+package test.java.util.EnumSet;
+
 /*
  * @test
  * @bug     4946096
  * @summary ComplementOf static factory is broken in Regular and Jumbo enum set
  * @author  Josh Bloch
  */
-package test.java.util.EnumSet;
 
 import java.util.*;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class ComplementOf {
-
-    @Test
-    public void testComplementOf() {
+    public static void main(String[] args) throws Exception {
         test(Test0.class);
         test(MonthTest10.class);
         test(Test127.class);
@@ -47,7 +43,9 @@ public class ComplementOf {
     static <T extends Enum<T>> void test(Class<T> enumClass) {
         EnumSet<T> set = EnumSet.allOf(enumClass);
         EnumSet<T> setComplement = EnumSet.complementOf(set);
-        Assert.assertEquals(setComplement.size(), 0);
+        if (setComplement.size() != 0)
+            throw new RuntimeException(setComplement.size() + " != 0");
+        setComplement.toString();
     }
 
     public enum Test0 { }

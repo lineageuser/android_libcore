@@ -34,24 +34,38 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicIntegerArrayTest extends JSR166TestCase {
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicIntegerArrayTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicIntegerArrayTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicIntegerArrayTest.class);
+    // }
 
     /**
      * constructor creates array of given size with all elements zero
      */
+    @Test
     public void testConstructor() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++)
@@ -61,6 +75,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * constructor with null array throws NPE
      */
+    @Test
     public void testConstructor2NPE() {
         try {
             int[] a = null;
@@ -72,6 +87,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * constructor with array is of same size and has all elements
      */
+    @Test
     public void testConstructor2() {
         int[] a = { 17, 3, -42, 99, -7 };
         AtomicIntegerArray aa = new AtomicIntegerArray(a);
@@ -83,6 +99,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * get and set for out of bound indices throw IndexOutOfBoundsException
      */
+    @Test
     public void testIndexing() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int index : new int[] { -1, SIZE }) {
@@ -120,6 +137,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * get returns the last value set at index
      */
+    @Test
     public void testGetSet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -135,6 +153,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * get returns the last value lazySet at index by same thread
      */
+    @Test
     public void testGetLazySet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -150,6 +169,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * compareAndSet succeeds in changing value if equal to expected else fails
      */
+    @Test
     public void testCompareAndSet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -168,6 +188,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         final AtomicIntegerArray a = new AtomicIntegerArray(1);
         a.set(0, 1);
@@ -188,6 +209,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing value when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -203,6 +225,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * getAndSet returns previous value and sets to given value at given index
      */
+    @Test
     public void testGetAndSet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -216,6 +239,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * getAndAdd returns previous value and adds given value
      */
+    @Test
     public void testGetAndAdd() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -230,6 +254,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * getAndDecrement returns previous value and decrements
      */
+    @Test
     public void testGetAndDecrement() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -243,6 +268,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * getAndIncrement returns previous value and increments
      */
+    @Test
     public void testGetAndIncrement() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -260,6 +286,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * addAndGet adds given value to current, and returns current value
      */
+    @Test
     public void testAddAndGet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -274,6 +301,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * decrementAndGet decrements and returns current value
      */
+    @Test
     public void testDecrementAndGet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -288,6 +316,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * incrementAndGet increments and returns current value
      */
+    @Test
     public void testIncrementAndGet() {
         AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -328,6 +357,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
      * Multiple threads using same array of counters successfully
      * update a number of times equal to total count
      */
+    @Test
     public void testCountingInMultipleThreads() throws InterruptedException {
         final AtomicIntegerArray aa = new AtomicIntegerArray(SIZE);
         int countdown = 10000;
@@ -345,6 +375,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * a deserialized serialized array holds same values
      */
+    @Test
     public void testSerialization() throws Exception {
         AtomicIntegerArray x = new AtomicIntegerArray(SIZE);
         for (int i = 0; i < SIZE; i++)
@@ -360,6 +391,7 @@ public class AtomicIntegerArrayTest extends JSR166TestCase {
     /**
      * toString returns current value.
      */
+    @Test
     public void testToString() {
         int[] a = { 17, 3, -42, 99, -7 };
         AtomicIntegerArray aa = new AtomicIntegerArray(a);

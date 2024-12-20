@@ -33,6 +33,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Test that Socket.close called on another thread interrupts a thread that's blocked doing
@@ -173,31 +174,45 @@ public class ConcurrentCloseTest extends junit.framework.TestCase {
 
     public void test_write() throws Exception {
         final SilentServer ss = new SilentServer(128); // Minimal receive buffer size.
-        Socket s = new Socket();
 
-        // Set the send buffer size really small, to ensure we block.
-        int sendBufferSize = 1024;
-        s.setSendBufferSize(sendBufferSize);
-        sendBufferSize = s.getSendBufferSize(); // How big is the buffer really, Linux?
+        // The test needs to send enough data to cause the write to block for long enough for
+        // the socket close to occur. Start with a large enough factor and, if that doesn't
+        // seem to be sufficient to cause the block, double it and try again. A factor of 2
+        // used to be OK, then that needed to be increased to 4 and now this is also not
+        // enough in some cases. (b/356850236)
+        int bufferFactor = 4;
 
-        // Linux still seems to accept more than it should.
-        // How much seems to differ from device to device. This used to be (sendBufferSize * 2)
-        // but that still failed on a bullhead (Nexus 5X).
-        sendBufferSize *= 4;
+        while (true) {
+            Socket s = new Socket();
 
-        s.connect(ss.getLocalSocketAddress());
-        new Killer(s).start();
-        try {
-            System.err.println("write...");
-            // Write too much so the buffer is full and we block,
-            // waiting for the server to read (which it never will).
-            // If the asynchronous close fails, we'll see a test timeout here.
-            byte[] buf = new byte[sendBufferSize];
-            s.getOutputStream().write(buf);
-            fail();
-        } catch (SocketException expected) {
-            // We throw "Connection reset by peer", which I don't _think_ is a problem.
-            // assertEquals("Socket closed", expected.getMessage());
+            // Set the send buffer size really small, to ensure we block.
+            int sendBufferSize = 1024;
+            s.setSendBufferSize(sendBufferSize);
+            sendBufferSize = s.getSendBufferSize(); // How big is the buffer really, Linux?
+
+            sendBufferSize *= bufferFactor;
+
+            s.connect(ss.getLocalSocketAddress());
+            Killer killer = new Killer(s);
+            killer.start();
+            try {
+                System.err.println("write...");
+                // Write too much so the buffer is full and we block,
+                // waiting for the server to read (which it never will).
+                // If the asynchronous close fails, we'll see a test timeout here.
+                byte[] buf = new byte[sendBufferSize];
+                s.getOutputStream().write(buf);
+                if (killer.wasDefinitelyKilled()) {
+                    fail("Socket close happened before write completed successfully");
+                } else {
+                    // Increase the bytes sent to try and cause write() to block for enough time.
+                    bufferFactor *= 2;
+                }
+            } catch (SocketException expected) {
+                // We throw "Connection reset by peer", which I don't _think_ is a problem.
+                // assertEquals("Socket closed", expected.getMessage());
+                break;
+            }
         }
         ss.close();
     }
@@ -242,6 +257,7 @@ public class ConcurrentCloseTest extends junit.framework.TestCase {
     // This thread calls the "close" method on the supplied T after 2s.
     static class Killer<T extends Closeable> extends Thread {
         private final T s;
+        private final AtomicLong killedTs = new AtomicLong(0);
 
         public Killer(T s) {
             this.s = s;
@@ -253,9 +269,17 @@ public class ConcurrentCloseTest extends junit.framework.TestCase {
                 Thread.sleep(2000);
                 System.err.println("close...");
                 s.close();
+                killedTs.set(System.nanoTime());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+        }
+
+        public boolean wasDefinitelyKilled() {
+            final long minThresholdNs = 500 * 1000 * 1000;
+            final long now = System.nanoTime();
+            final long killed = killedTs.get();
+            return (killed > 0 && now - killed > minThresholdNs);
         }
     }
 }

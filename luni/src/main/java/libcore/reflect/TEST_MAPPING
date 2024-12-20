@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.libcore.reflect"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_reflect"
     }
   ]
 }

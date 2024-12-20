@@ -16,6 +16,7 @@
 
 
 package dalvik.system;
+import java.io.FileDescriptor;
 
 @SuppressWarnings({"unchecked", "deprecation", "all"})
 public final class VMDebug {
@@ -90,6 +91,25 @@ public static native void setUserId(int userId);
 
 @android.annotation.FlaggedApi(com.android.libcore.Flags.FLAG_APPINFO)
 public static native void setWaitingForDebugger(boolean waiting);
+
+@android.annotation.FlaggedApi(com.android.art.flags.Flags.FLAG_ALWAYS_ENABLE_PROFILE_CODE)
+public static class TraceDestination {
+
+  @android.annotation.FlaggedApi(com.android.art.flags.Flags.FLAG_ALWAYS_ENABLE_PROFILE_CODE)
+  public static @NonNull TraceDestination fromFileName(@NonNull String traceFileName);
+
+  @android.annotation.FlaggedApi(com.android.art.flags.Flags.FLAG_ALWAYS_ENABLE_PROFILE_CODE)
+  public static @NonNull TraceDestination fromFileDescriptor(@NonNull FileDescriptor fd);
+}
+
+@android.annotation.FlaggedApi(com.android.art.flags.Flags.FLAG_ALWAYS_ENABLE_PROFILE_CODE)
+public static void startLowOverheadTrace();
+
+@android.annotation.FlaggedApi(com.android.art.flags.Flags.FLAG_ALWAYS_ENABLE_PROFILE_CODE)
+public static void stopLowOverheadTrace();
+
+@android.annotation.FlaggedApi(com.android.art.flags.Flags.FLAG_ALWAYS_ENABLE_PROFILE_CODE)
+public static void dumpLowOverheadTrace(@NonNull VMDebug.TraceDestination traceFileName);
 
 public static final int KIND_ALL_COUNTS = -1; // 0xffffffff
 

@@ -31,13 +31,8 @@ package test.java.util.EnumSet;
 
 import java.util.*;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class Range {
-
-    @Test
-    public void testRange() {
+    public static void main(String[] args) {
         test(Test33.class, Test33.T6, Test33.T2);
         test(Test127.class, Test127.T6, Test127.T2);
     }
@@ -45,7 +40,6 @@ public class Range {
     static <T extends Enum<T>> void test(Class<T> enumClass, T e0,T e1) {
         try {
             EnumSet<T> range = EnumSet.range(e0, e1);
-            Assert.fail();
         } catch(IllegalArgumentException e) {
             return;
         }

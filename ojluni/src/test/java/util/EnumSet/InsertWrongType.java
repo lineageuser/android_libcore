@@ -21,23 +21,19 @@
  * questions.
  */
 
+package test.java.util.EnumSet;
+
 /*
  * @test
  * @bug     5050285
  * @summary Inserting enum of wrong type does horrible things to EnumSet/Map
  * @author  Josh Bloch
  */
-package test.java.util.EnumSet;
 
 import java.util.*;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class InsertWrongType {
-
-    @Test
-    public void testInsertWrongType() {
+    public static void main(String[] args) throws Exception {
         // Ordinal in range
         addIllTypedElt(Test32.class,  Test33.T1);  // Regular
         addIllTypedElt(Test127.class, Test128.T1); // Jumbo
@@ -92,16 +88,20 @@ public class InsertWrongType {
         EnumSet set = EnumSet.noneOf(enumClass);
         try {
             set.add(elt);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("Incorrectly typed add succeeded");
     }
 
     static void addAllIllTypedElt(Class enumClass, Enum elt) {
         EnumSet set = EnumSet.noneOf(enumClass);
         try {
             set.addAll(Collections.singleton(elt));
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("Incorrectly typed addAll succeeded");
     }
 
     static void addAllEmptyMistypedEnumSet(Class destClass, Class srcClass) {
@@ -116,51 +116,65 @@ public class InsertWrongType {
         list.add(e2);
         try {
             EnumSet.copyOf(list);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("heterogeneous copyOf succeeded");
     }
 
     static void heterogeneousOf2(Enum e1, Enum e2) {
         try {
             EnumSet.of(e1, e2);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("heterogeneous of (2 args) succeeded");
     }
 
     static void heterogeneousOf3(Enum e1, Enum e2) {
         try {
             EnumSet.of(e1, e1, e2);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("heterogeneous of (3 args) succeeded");
     }
 
     static void heterogeneousOf4(Enum e1, Enum e2) {
         try {
             EnumSet.of(e1, e1, e1, e2);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("heterogeneous of (4 args) succeeded");
     }
 
     static void heterogeneousOf5(Enum e1, Enum e2) {
         try {
             EnumSet.of(e1, e1, e1, e1, e2);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("heterogeneous of (5 args) succeeded");
     }
 
     static void heterogeneousOfVar(Enum e1, Enum e2) {
         try {
             EnumSet.of(e1, e1, e1, e1, e1, e2);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("heterogeneous of (Var args) succeeded");
     }
 
     static void putIllTypedKey(Class enumClass, Enum elt) {
         EnumMap map = new EnumMap(enumClass);
         try {
             map.put(elt, "foofy");
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("Incorrectly typed put succeeded");
     }
 
     static void putAllIllTypedKey(Class enumClass, Enum elt) {
@@ -169,8 +183,10 @@ public class InsertWrongType {
         src.put(elt, "goofy");
         try {
             dest.putAll(src);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("Incorrectly typed putAll succeeded");
     }
 
     static void putAllIllTypedKeyEnumMap(Class enumClass, Enum elt) {
@@ -179,8 +195,10 @@ public class InsertWrongType {
         src.put(elt, "goofy");
         try {
             dest.putAll(src);
-            Assert.fail();
-        } catch(ClassCastException e) {}
+        } catch(ClassCastException e) {
+            return;
+        }
+        throw new RuntimeException("Incorrectly typed enum put All succeeded");
     }
 
     static void putAllEmptyMistypedEnumMap(Class destClass, Class srcClass) {

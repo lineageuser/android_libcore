@@ -34,11 +34,23 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     volatile Integer x = null;
     protected volatile Integer protectedField;
@@ -46,13 +58,15 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     Object z;
     Integer w;
     volatile int i;
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicReferenceFieldUpdaterTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicReferenceFieldUpdaterTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicReferenceFieldUpdaterTest.class);
+    // }
+
 
     // for testing subclass access
     static class AtomicReferenceFieldUpdaterTestSubclass extends AtomicReferenceFieldUpdaterTest {
@@ -113,6 +127,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * Construction with non-existent field throws RuntimeException
      */
+    @Test
     public void testConstructor() {
         try {
             updaterFor("y");
@@ -125,6 +140,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * construction with field not of given type throws ClassCastException
      */
+    @Test
     public void testConstructor2() {
         try {
             updaterFor("z");
@@ -135,6 +151,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * Constructor with non-volatile field throws IllegalArgumentException
      */
+    @Test
     public void testConstructor3() {
         try {
             updaterFor("w");
@@ -145,6 +162,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * Constructor with non-reference field throws ClassCastException
      */
+    @Test
     public void testConstructor4() {
         try {
             updaterFor("i");
@@ -155,6 +173,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * construction using private field from subclass throws RuntimeException
      */
+    @Test
     public void testPrivateFieldInSubclass() {
         AtomicReferenceFieldUpdaterTestSubclass s =
             new AtomicReferenceFieldUpdaterTestSubclass();
@@ -165,6 +184,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
      * construction from unrelated class; package access is allowed,
      * private access is not
      */
+    @Test
     public void testUnrelatedClassAccess() {
         new UnrelatedClass().checkPackageAccess(this);
         new UnrelatedClass().checkPrivateAccess(this);
@@ -173,6 +193,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * get returns the last value set or assigned
      */
+    @Test
     public void testGetSet() {
         AtomicReferenceFieldUpdater<AtomicReferenceFieldUpdaterTest, Integer> a;
         a = updaterFor("x");
@@ -187,6 +208,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * get returns the last value lazySet by same thread
      */
+    @Test
     public void testGetLazySet() {
         AtomicReferenceFieldUpdater<AtomicReferenceFieldUpdaterTest, Integer> a;
         a = updaterFor("x");
@@ -201,6 +223,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * compareAndSet succeeds in changing value if equal to expected else fails
      */
+    @Test
     public void testCompareAndSet() {
         AtomicReferenceFieldUpdater<AtomicReferenceFieldUpdaterTest, Integer> a;
         a = updaterFor("x");
@@ -218,6 +241,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         x = one;
         final AtomicReferenceFieldUpdater<AtomicReferenceFieldUpdaterTest, Integer> a;
@@ -240,6 +264,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing value when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         AtomicReferenceFieldUpdater<AtomicReferenceFieldUpdaterTest, Integer> a;
         a = updaterFor("x");
@@ -254,6 +279,7 @@ public class AtomicReferenceFieldUpdaterTest extends JSR166TestCase {
     /**
      * getAndSet returns previous value and sets to given value
      */
+    @Test
     public void testGetAndSet() {
         AtomicReferenceFieldUpdater<AtomicReferenceFieldUpdaterTest, Integer> a;
         a = updaterFor("x");

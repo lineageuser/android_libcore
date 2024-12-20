@@ -35,6 +35,14 @@ package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import android.platform.test.annotations.LargeTest;
 
@@ -62,16 +70,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ScheduledExecutorSubclassTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ScheduledExecutorSubclassTest");
     }
-    public static Test suite() {
-        return new TestSuite(ScheduledExecutorSubclassTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ScheduledExecutorSubclassTest.class);
+    // }
 
     static class CustomTask<V> implements RunnableScheduledFuture<V> {
         private final RunnableScheduledFuture<V> task;
@@ -130,6 +143,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute successfully executes a runnable
      */
+    @Test
     public void testExecute() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -144,6 +158,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * delayed schedule of callable successfully executes after delay
      */
+    @Test
     public void testSchedule1() throws Exception {
         final CountDownLatch done = new CountDownLatch(1);
         final CustomExecutor p = new CustomExecutor(1);
@@ -164,6 +179,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * delayed schedule of runnable successfully executes after delay
      */
+    @Test
     public void testSchedule3() throws Exception {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -184,6 +200,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * scheduleAtFixedRate executes runnable after given initial delay
      */
+    @Test
     public void testSchedule4() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -206,6 +223,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * scheduleWithFixedDelay executes runnable after given initial delay
      */
+    @Test
     public void testSchedule5() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -235,6 +253,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * Eventually, it must hold that:
      *   cycles - 1 <= elapsedMillis/delay < cycles
      */
+    @Test
     public void testFixedRateSequence() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -264,6 +283,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * Eventually, it must hold that each task starts at least delay and at
      * most 2 * delay after the termination of the previous task.
      */
+    @Test
     public void testFixedDelaySequence() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -308,6 +328,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute(null) throws NPE
      */
+    @Test
     public void testExecuteNull() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -321,6 +342,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * schedule(null) throws NPE
      */
+    @Test
     public void testScheduleNull() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -335,6 +357,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute throws RejectedExecutionException if shutdown
      */
+    @Test
     public void testSchedule1_RejectedExecutionException() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -351,6 +374,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * schedule throws RejectedExecutionException if shutdown
      */
+    @Test
     public void testSchedule2_RejectedExecutionException() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -367,6 +391,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * schedule callable throws RejectedExecutionException if shutdown
      */
+    @Test
     public void testSchedule3_RejectedExecutionException() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -383,6 +408,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * scheduleAtFixedRate throws RejectedExecutionException if shutdown
      */
+    @Test
     public void testScheduleAtFixedRate1_RejectedExecutionException() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -399,6 +425,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * scheduleWithFixedDelay throws RejectedExecutionException if shutdown
      */
+    @Test
     public void testScheduleWithFixedDelay1_RejectedExecutionException() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -416,6 +443,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * getActiveCount increases but doesn't overestimate, when a
      * thread becomes active
      */
+    @Test
     public void testGetActiveCount() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p = new CustomExecutor(2);
@@ -437,6 +465,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * getCompletedTaskCount increases, but doesn't overestimate,
      * when tasks complete
      */
+    @Test
     public void testGetCompletedTaskCount() throws InterruptedException {
         final ThreadPoolExecutor p = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -467,6 +496,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * getCorePoolSize returns size given in constructor if not otherwise set
      */
+    @Test
     public void testGetCorePoolSize() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -478,6 +508,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * getLargestPoolSize increases, but doesn't overestimate, when
      * multiple threads active
      */
+    @Test
     public void testGetLargestPoolSize() throws InterruptedException {
         final int THREADS = 3;
         final CountDownLatch done = new CountDownLatch(1);
@@ -502,6 +533,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * getPoolSize increases, but doesn't overestimate, when threads
      * become active
      */
+    @Test
     public void testGetPoolSize() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p = new CustomExecutor(1);
@@ -523,6 +555,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * getTaskCount increases, but doesn't overestimate, when tasks
      * submitted
      */
+    @Test
     public void testGetTaskCount() throws InterruptedException {
         final int TASKS = 3;
         final CountDownLatch done = new CountDownLatch(1);
@@ -558,6 +591,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * getThreadFactory returns factory in constructor if not set
      */
+    @Test
     public void testGetThreadFactory() {
         final ThreadFactory threadFactory = new SimpleThreadFactory();
         final CustomExecutor p = new CustomExecutor(1, threadFactory);
@@ -569,6 +603,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * setThreadFactory sets the thread factory returned by getThreadFactory
      */
+    @Test
     public void testSetThreadFactory() {
         final ThreadFactory threadFactory = new SimpleThreadFactory();
         final CustomExecutor p = new CustomExecutor(1);
@@ -581,6 +616,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * setThreadFactory(null) throws NPE
      */
+    @Test
     public void testSetThreadFactoryNull() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -594,6 +630,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * isShutdown is false before shutdown, true after
      */
+    @Test
     public void testIsShutdown() {
         final CustomExecutor p = new CustomExecutor(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -606,6 +643,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * isTerminated is false before termination, true after
      */
+    @Test
     public void testIsTerminated() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p = new CustomExecutor(1);
@@ -630,6 +668,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * isTerminating is not true when running or when terminated
      */
+    @Test
     public void testIsTerminating() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p = new CustomExecutor(1);
@@ -655,6 +694,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * getQueue returns the work queue, which contains queued tasks
      */
+    @Test
     public void testGetQueue() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ScheduledThreadPoolExecutor p = new CustomExecutor(1);
@@ -679,6 +719,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * remove(task) removes queued task, and fails to remove active task
      */
+    @Test
     public void testRemove() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ScheduledThreadPoolExecutor p = new CustomExecutor(1);
@@ -710,6 +751,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * purge removes cancelled tasks from the queue
      */
+    @Test
     public void testPurge() throws InterruptedException {
         final ScheduledFuture[] tasks = new ScheduledFuture[5];
         final Runnable releaser = new Runnable() { public void run() {
@@ -740,6 +782,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * shutdownNow returns a list containing tasks that were not run,
      * and those tasks are drained from the queue
      */
+    @Test
     public void testShutdownNow() throws InterruptedException {
         final int poolSize = 2;
         final int count = 5;
@@ -777,6 +820,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * shutdownNow returns a list containing tasks that were not run,
      * and those tasks are drained from the queue
      */
+    @Test
     public void testShutdownNow_delayedTasks() throws InterruptedException {
         final CustomExecutor p = new CustomExecutor(1);
         List<ScheduledFuture> tasks = new ArrayList<>();
@@ -816,6 +860,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
      * - setContinueExistingPeriodicTasksAfterShutdownPolicy
      */
     @LargeTest
+    @Test
     public void testShutdown_cancellation() throws Exception {
         Boolean[] allBooleans = { null, Boolean.FALSE, Boolean.TRUE };
         for (Boolean policy : allBooleans)
@@ -907,6 +952,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * completed submit of callable returns result
      */
+    @Test
     public void testSubmitCallable() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -919,6 +965,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * completed submit of runnable returns successfully
      */
+    @Test
     public void testSubmitRunnable() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -931,6 +978,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * completed submit of (runnable, result) returns result
      */
+    @Test
     public void testSubmitRunnable2() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -943,6 +991,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(null) throws NPE
      */
+    @Test
     public void testInvokeAny1() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -956,6 +1005,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(empty collection) throws IAE
      */
+    @Test
     public void testInvokeAny2() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -969,6 +1019,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws NPE if c has null elements
      */
+    @Test
     public void testInvokeAny3() throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         final ExecutorService e = new CustomExecutor(2);
@@ -987,6 +1038,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws ExecutionException if no task completes
      */
+    @Test
     public void testInvokeAny4() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1004,6 +1056,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(c) returns result of some task
      */
+    @Test
     public void testInvokeAny5() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1018,6 +1071,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(null) throws NPE
      */
+    @Test
     public void testInvokeAll1() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1031,6 +1085,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testInvokeAll2() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1042,6 +1097,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(c) throws NPE if c has null elements
      */
+    @Test
     public void testInvokeAll3() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1058,6 +1114,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * get of invokeAll(c) throws exception on failed task
      */
+    @Test
     public void testInvokeAll4() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1077,6 +1134,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(c) returns results of all completed tasks
      */
+    @Test
     public void testInvokeAll5() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1093,6 +1151,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(null) throws NPE
      */
+    @Test
     public void testTimedInvokeAny1() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1106,6 +1165,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(,,null) throws NPE
      */
+    @Test
     public void testTimedInvokeAnyNullTimeUnit() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1121,6 +1181,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(empty collection) throws IAE
      */
+    @Test
     public void testTimedInvokeAny2() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1134,6 +1195,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws NPE if c has null elements
      */
+    @Test
     public void testTimedInvokeAny3() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         final ExecutorService e = new CustomExecutor(2);
@@ -1152,6 +1214,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws ExecutionException if no task completes
      */
+    @Test
     public void testTimedInvokeAny4() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1171,6 +1234,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) returns result of some task
      */
+    @Test
     public void testTimedInvokeAny5() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1187,6 +1251,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(null) throws NPE
      */
+    @Test
     public void testTimedInvokeAll1() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1200,6 +1265,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(,,null) throws NPE
      */
+    @Test
     public void testTimedInvokeAllNullTimeUnit() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1215,6 +1281,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testTimedInvokeAll2() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1226,6 +1293,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) throws NPE if c has null elements
      */
+    @Test
     public void testTimedInvokeAll3() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1242,6 +1310,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * get of element of invokeAll(c) throws exception on failed task
      */
+    @Test
     public void testTimedInvokeAll4() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1262,6 +1331,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) returns results of all completed tasks
      */
+    @Test
     public void testTimedInvokeAll5() throws Exception {
         final ExecutorService e = new CustomExecutor(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -1279,6 +1349,7 @@ public class ScheduledExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) cancels tasks not completed by timeout
      */
+    @Test
     public void testTimedInvokeAll6() throws Exception {
         for (long timeout = timeoutMillis();;) {
             final CountDownLatch done = new CountDownLatch(1);

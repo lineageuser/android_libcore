@@ -35,23 +35,37 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class CountDownLatchTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.CountDownLatchTest");
     }
-    public static Test suite() {
-        return new TestSuite(CountDownLatchTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(CountDownLatchTest.class);
+    // }
 
     /**
      * negative constructor argument throws IAE
      */
+    @Test
     public void testConstructor() {
         try {
             new CountDownLatch(-1);
@@ -62,6 +76,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * getCount returns initial count and decreases after countDown
      */
+    @Test
     public void testGetCount() {
         final CountDownLatch l = new CountDownLatch(2);
         assertEquals(2, l.getCount());
@@ -72,6 +87,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * countDown decrements count when positive and has no effect when zero
      */
+    @Test
     public void testCountDown() {
         final CountDownLatch l = new CountDownLatch(1);
         assertEquals(1, l.getCount());
@@ -84,6 +100,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * await returns after countDown to zero, but not before
      */
+    @Test
     public void testAwait() {
         final CountDownLatch l = new CountDownLatch(2);
         final CountDownLatch pleaseCountDown = new CountDownLatch(1);
@@ -109,6 +126,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * timed await returns after countDown to zero
      */
+    @Test
     public void testTimedAwait() {
         final CountDownLatch l = new CountDownLatch(2);
         final CountDownLatch pleaseCountDown = new CountDownLatch(1);
@@ -134,6 +152,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * await throws IE if interrupted before counted down
      */
+    @Test
     public void testAwait_Interruptible() {
         final CountDownLatch l = new CountDownLatch(1);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -165,6 +184,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * timed await throws IE if interrupted before counted down
      */
+    @Test
     public void testTimedAwait_Interruptible() {
         final CountDownLatch l = new CountDownLatch(1);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -196,6 +216,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * timed await times out if not counted down before timeout
      */
+    @Test
     public void testAwaitTimeout() throws InterruptedException {
         final CountDownLatch l = new CountDownLatch(1);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -212,6 +233,7 @@ public class CountDownLatchTest extends JSR166TestCase {
     /**
      * toString indicates current count
      */
+    @Test
     public void testToString() {
         CountDownLatch s = new CountDownLatch(2);
         assertTrue(s.toString().contains("Count = 2"));

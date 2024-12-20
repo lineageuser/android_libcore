@@ -21,23 +21,19 @@
  * questions.
  */
 
+package test.java.util.EnumSet;
+
 /*
  * @test
  * @bug     4946090
  * @summary AllOf static factory is broken in Regular and Jumbo enum set
  * @author  Josh Bloch
  */
-package test.java.util.EnumSet;
 
 import java.util.*;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class AllOf {
-
-    @Test
-    public void testAllOf() throws Exception {
+    public static void main(String[] args) throws Exception {
         test(Test0.class, 0);
         test(Test33.class, 33);
         test(Test127.class, 127);
@@ -45,9 +41,11 @@ public class AllOf {
     }
 
     static <T extends Enum<T>> void test(Class<T> enumClass,
-            int expected) {
+                                                int expected) {
         EnumSet<T> set = EnumSet.allOf(enumClass);
-        Assert.assertEquals(set.size(), expected);
+        if (set.size() != expected)
+            throw new RuntimeException(set.size() +" != " + expected);
+        set.toString();
     }
 
     public enum Test0 {}

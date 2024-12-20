@@ -1,5 +1,1 @@
-# Owners of Libcore networking tests.
-prb@google.com
-sorinbasca@google.com
-narayan@google.com
-ngeoffray@google.com
+include OWNERS_net

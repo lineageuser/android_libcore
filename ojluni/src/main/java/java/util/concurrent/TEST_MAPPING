@@ -7,14 +7,6 @@
           "include-filter": "jsr166"
         }
       ]
-    },
-    {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.java.util.concurrent"
-        }
-      ]
     }
   ]
 }

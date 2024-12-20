@@ -31,7 +31,7 @@ java_test {
     system_modules: "core-all-system-modules",
     libs: [
         "caliper-api-target",
-        "android.test.base",
+        "android.test.base.stubs",
     ],
     errorprone: {
         javacflags: [

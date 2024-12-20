@@ -34,22 +34,37 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicBooleanTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicBooleanTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicBooleanTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicBooleanTest.class);
+    // }
 
     /**
      * constructor initializes to given value
      */
+    @Test
     public void testConstructor() {
         assertTrue(new AtomicBoolean(true).get());
         assertFalse(new AtomicBoolean(false).get());
@@ -58,6 +73,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * default constructed initializes to false
      */
+    @Test
     public void testConstructor2() {
         AtomicBoolean ai = new AtomicBoolean();
         assertFalse(ai.get());
@@ -66,6 +82,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * get returns the last value set
      */
+    @Test
     public void testGetSet() {
         AtomicBoolean ai = new AtomicBoolean(true);
         assertTrue(ai.get());
@@ -78,6 +95,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * get returns the last value lazySet in same thread
      */
+    @Test
     public void testGetLazySet() {
         AtomicBoolean ai = new AtomicBoolean(true);
         assertTrue(ai.get());
@@ -90,6 +108,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * compareAndSet succeeds in changing value if equal to expected else fails
      */
+    @Test
     public void testCompareAndSet() {
         AtomicBoolean ai = new AtomicBoolean(true);
         assertTrue(ai.compareAndSet(true, false));
@@ -106,6 +125,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         final AtomicBoolean ai = new AtomicBoolean(true);
         Thread t = new Thread(new CheckedRunnable() {
@@ -123,6 +143,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing value when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         AtomicBoolean ai = new AtomicBoolean(true);
         do {} while (!ai.weakCompareAndSet(true, false));
@@ -136,6 +157,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * getAndSet returns previous value and sets to given value
      */
+    @Test
     public void testGetAndSet() {
         AtomicBoolean ai = new AtomicBoolean();
         boolean[] booleans = { false, true };
@@ -150,6 +172,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * a deserialized serialized atomic holds same value
      */
+    @Test
     public void testSerialization() throws Exception {
         AtomicBoolean x = new AtomicBoolean();
         AtomicBoolean y = serialClone(x);
@@ -163,6 +186,7 @@ public class AtomicBooleanTest extends JSR166TestCase {
     /**
      * toString returns current value.
      */
+    @Test
     public void testToString() {
         AtomicBoolean ai = new AtomicBoolean();
         assertEquals(Boolean.toString(false), ai.toString());

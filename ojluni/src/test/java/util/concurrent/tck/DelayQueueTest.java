@@ -35,6 +35,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,10 +57,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class DelayQueueTest extends JSR166TestCase {
 
+    // Android-changed: Use JUnit4.
+    @RunWith(JUnit4.class)
     public static class Generic extends BlockingQueueTest {
         protected BlockingQueue emptyCollection() {
             return new DelayQueue();
@@ -63,21 +77,22 @@ public class DelayQueueTest extends JSR166TestCase {
     }
 
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.DelayQueueTest");
     }
 
-    public static Test suite() {
-        class Implementation implements CollectionImplementation {
-            public Class<?> klazz() { return DelayQueue.class; }
-            public Collection emptyCollection() { return new DelayQueue(); }
-            public Object makeElement(int i) { return new PDelay(i); }
-            public boolean isConcurrent() { return true; }
-            public boolean permitsNulls() { return false; }
-        }
-        return newTestSuite(DelayQueueTest.class,
-                            new Generic().testSuite(),
-                            CollectionTest.testSuite(new Implementation()));
-    }
+    // public static Test suite() {
+    //     class Implementation implements CollectionImplementation {
+    //         public Class<?> klazz() { return DelayQueue.class; }
+    //         public Collection emptyCollection() { return new DelayQueue(); }
+    //         public Object makeElement(int i) { return new PDelay(i); }
+    //         public boolean isConcurrent() { return true; }
+    //         public boolean permitsNulls() { return false; }
+    //     }
+    //     return newTestSuite(DelayQueueTest.class,
+    //                         new Generic().testSuite(),
+    //                         CollectionTest.testSuite(new Implementation()));
+    // }
 
     /**
      * A fake Delayed implementation for testing.
@@ -160,6 +175,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * A new queue has unbounded capacity
      */
+    @Test
     public void testConstructor1() {
         assertEquals(Integer.MAX_VALUE, new DelayQueue().remainingCapacity());
     }
@@ -167,6 +183,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * Initializing from null Collection throws NPE
      */
+    @Test
     public void testConstructor3() {
         try {
             new DelayQueue(null);
@@ -177,6 +194,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * Initializing from Collection of null elements throws NPE
      */
+    @Test
     public void testConstructor4() {
         try {
             new DelayQueue(Arrays.asList(new PDelay[SIZE]));
@@ -187,6 +205,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * Initializing from Collection with some null elements throws NPE
      */
+    @Test
     public void testConstructor5() {
         PDelay[] a = new PDelay[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
@@ -200,6 +219,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * Queue contains all elements of collection used to initialize
      */
+    @Test
     public void testConstructor6() {
         PDelay[] ints = new PDelay[SIZE];
         for (int i = 0; i < SIZE; ++i)
@@ -212,6 +232,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         DelayQueue q = new DelayQueue();
         assertTrue(q.isEmpty());
@@ -227,6 +248,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * remainingCapacity() always returns Integer.MAX_VALUE
      */
+    @Test
     public void testRemainingCapacity() {
         BlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -244,6 +266,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * offer non-null succeeds
      */
+    @Test
     public void testOffer() {
         DelayQueue q = new DelayQueue();
         assertTrue(q.offer(new PDelay(0)));
@@ -253,6 +276,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * add succeeds
      */
+    @Test
     public void testAdd() {
         DelayQueue q = new DelayQueue();
         for (int i = 0; i < SIZE; ++i) {
@@ -264,6 +288,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * addAll(this) throws IAE
      */
+    @Test
     public void testAddAllSelf() {
         DelayQueue q = populatedQueue(SIZE);
         try {
@@ -276,6 +301,7 @@ public class DelayQueueTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         DelayQueue q = new DelayQueue();
         PDelay[] a = new PDelay[SIZE];
@@ -290,6 +316,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * Queue contains all elements of successful addAll
      */
+    @Test
     public void testAddAll5() {
         PDelay[] empty = new PDelay[0];
         PDelay[] ints = new PDelay[SIZE];
@@ -305,6 +332,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * all elements successfully put are contained
      */
+    @Test
     public void testPut() {
         DelayQueue q = new DelayQueue();
         for (int i = 0; i < SIZE; ++i) {
@@ -318,6 +346,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * put doesn't block waiting for take
      */
+    @Test
     public void testPutWithTake() throws InterruptedException {
         final DelayQueue q = new DelayQueue();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -335,6 +364,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * timed offer does not time out
      */
+    @Test
     public void testTimedOffer() throws InterruptedException {
         final DelayQueue q = new DelayQueue();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -351,6 +381,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * take retrieves elements in priority order
      */
+    @Test
     public void testTake() throws InterruptedException {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -361,6 +392,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * Take removes existing elements until empty, then blocks interruptibly
      */
+    @Test
     public void testBlockingTake() throws InterruptedException {
         final DelayQueue q = populatedQueue(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -394,6 +426,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * poll succeeds unless empty
      */
+    @Test
     public void testPoll() {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -405,6 +438,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * timed poll with zero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPoll0() throws InterruptedException {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -416,6 +450,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * timed poll with nonzero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPoll() throws InterruptedException {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -433,6 +468,7 @@ public class DelayQueueTest extends JSR166TestCase {
      * Interrupted timed poll throws InterruptedException instead of
      * returning timeout status
      */
+    @Test
     public void testInterruptedTimedPoll() throws InterruptedException {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         final DelayQueue q = populatedQueue(SIZE);
@@ -470,6 +506,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * peek returns next element, or null if empty
      */
+    @Test
     public void testPeek() {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -486,6 +523,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * element returns next element, or throws NSEE if empty
      */
+    @Test
     public void testElement() {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -501,6 +539,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * remove removes next element, or throws NSEE if empty
      */
+    @Test
     public void testRemove() {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -515,6 +554,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         DelayQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -527,6 +567,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testClear() {
         DelayQueue q = populatedQueue(SIZE);
         q.clear();
@@ -544,6 +585,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         DelayQueue q = populatedQueue(SIZE);
         DelayQueue p = new DelayQueue();
@@ -558,6 +600,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testRetainAll() {
         DelayQueue q = populatedQueue(SIZE);
         DelayQueue p = populatedQueue(SIZE);
@@ -577,6 +620,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             DelayQueue q = populatedQueue(SIZE);
@@ -593,6 +637,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * toArray contains all elements
      */
+    @Test
     public void testToArray() throws InterruptedException {
         DelayQueue q = populatedQueue(SIZE);
         Object[] o = q.toArray();
@@ -604,6 +649,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements
      */
+    @Test
     public void testToArray2() {
         DelayQueue<PDelay> q = populatedQueue(SIZE);
         PDelay[] ints = new PDelay[SIZE];
@@ -617,6 +663,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * toArray(incompatible array type) throws ArrayStoreException
      */
+    @Test
     public void testToArray1_BadArg() {
         DelayQueue q = populatedQueue(SIZE);
         try {
@@ -628,6 +675,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * iterator iterates through all elements
      */
+    @Test
     public void testIterator() {
         DelayQueue q = populatedQueue(SIZE);
         int i = 0;
@@ -643,6 +691,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * iterator of empty collection has no elements
      */
+    @Test
     public void testEmptyIterator() {
         assertIteratorExhausted(new DelayQueue().iterator());
     }
@@ -650,6 +699,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * iterator.remove removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final DelayQueue q = new DelayQueue();
         q.add(new PDelay(2));
@@ -667,6 +717,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * toString contains toStrings of elements
      */
+    @Test
     public void testToString() {
         DelayQueue q = populatedQueue(SIZE);
         String s = q.toString();
@@ -677,6 +728,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * timed poll transfers elements across Executor tasks
      */
+    @Test
     public void testPollInExecutor() {
         final DelayQueue q = new DelayQueue();
         final CheckedBarrier threadsStarted = new CheckedBarrier(2);
@@ -701,6 +753,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * Delayed actions do not occur until their delay elapses
      */
+    @Test
     public void testDelay() throws InterruptedException {
         DelayQueue<NanoDelay> q = new DelayQueue<>();
         for (int i = 0; i < SIZE; ++i)
@@ -721,6 +774,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * peek of a non-empty queue returns non-null even if not expired
      */
+    @Test
     public void testPeekDelayed() {
         DelayQueue q = new DelayQueue();
         q.add(new NanoDelay(Long.MAX_VALUE));
@@ -730,6 +784,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * poll of a non-empty queue returns null if no expired elements.
      */
+    @Test
     public void testPollDelayed() {
         DelayQueue q = new DelayQueue();
         q.add(new NanoDelay(Long.MAX_VALUE));
@@ -739,6 +794,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * timed poll of a non-empty queue returns null if no expired elements.
      */
+    @Test
     public void testTimedPollDelayed() throws InterruptedException {
         DelayQueue q = new DelayQueue();
         q.add(new NanoDelay(LONG_DELAY_MS * 1000000L));
@@ -748,6 +804,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * drainTo(c) empties queue into another collection c
      */
+    @Test
     public void testDrainTo() {
         DelayQueue q = new DelayQueue();
         PDelay[] elems = new PDelay[SIZE];
@@ -776,6 +833,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * drainTo empties queue
      */
+    @Test
     public void testDrainToWithActivePut() throws InterruptedException {
         final DelayQueue q = populatedQueue(SIZE);
         Thread t = new Thread(new CheckedRunnable() {
@@ -794,6 +852,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * drainTo(c, n) empties first min(n, size) elements of queue into c
      */
+    @Test
     public void testDrainToN() {
         for (int i = 0; i < SIZE + 2; ++i) {
             DelayQueue q = populatedQueue(SIZE);
@@ -808,6 +867,7 @@ public class DelayQueueTest extends JSR166TestCase {
     /**
      * remove(null), contains(null) always return false
      */
+    @Test
     public void testNeverContainsNull() {
         Collection<?> q = populatedQueue(SIZE);
         assertFalse(q.contains(null));

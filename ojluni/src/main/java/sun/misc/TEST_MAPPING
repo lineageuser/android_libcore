@@ -1,15 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "org.apache.harmony.tests.org.apache.harmony.kernel.dalvik"
-        },
-        {
-          "include-filter": "libcore.sun.misc"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_misc"
     }
   ]
 }

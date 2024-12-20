@@ -37,14 +37,10 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class EntrySetIteratorRemoveInvalidatesEntry {
     static enum TestEnum { e00, e01, e02 }
 
-    @Test
-    public void testInvalidatesEntry() throws Exception {
+    public static void main(String[] args) throws Exception {
         final EnumMap<TestEnum, String> enumMap = new EnumMap<>(TestEnum.class);
 
         for (TestEnum e : TestEnum.values()) {
@@ -52,14 +48,14 @@ public class EntrySetIteratorRemoveInvalidatesEntry {
         }
 
         Iterator<Map.Entry<TestEnum, String>> entrySetIterator =
-                enumMap.entrySet().iterator();
+            enumMap.entrySet().iterator();
         Map.Entry<TestEnum, String> entry = entrySetIterator.next();
 
         entrySetIterator.remove();
 
         try {
             entry.getKey();
-            Assert.fail();
+            throw new RuntimeException("Test FAILED: Entry not invalidated by removal.");
         } catch (Exception e) { }
     }
 }

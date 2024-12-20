@@ -36,6 +36,14 @@
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,17 +51,21 @@ import java.util.HashSet;
 import java.util.concurrent.locks.AbstractQueuedLongSynchronizer;
 import java.util.concurrent.locks.AbstractQueuedLongSynchronizer.ConditionObject;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AbstractQueuedLongSynchronizerTest");
     }
-    public static Test suite() {
-        return new TestSuite(AbstractQueuedLongSynchronizerTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AbstractQueuedLongSynchronizerTest.class);
+    // }
 
     /**
      * A simple mutex class, adapted from the class javadoc.  Exclusive
@@ -162,7 +174,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
         long startTime = System.nanoTime();
         while (!sync.isQueued(t)) {
             if (millisElapsedSince(startTime) > LONG_DELAY_MS)
-                throw new AssertionFailedError("timed out");
+                fail("timed out");
             Thread.yield();
         }
         assertTrue(t.isAlive());
@@ -301,6 +313,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * isHeldExclusively is false upon construction
      */
+    @Test
     public void testIsHeldExclusively() {
         Mutex sync = new Mutex();
         assertFalse(sync.isHeldExclusively());
@@ -309,6 +322,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * acquiring released sync succeeds
      */
+    @Test
     public void testAcquire() {
         Mutex sync = new Mutex();
         sync.acquire();
@@ -320,6 +334,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryAcquire on a released sync succeeds
      */
+    @Test
     public void testTryAcquire() {
         Mutex sync = new Mutex();
         assertTrue(sync.tryAcquire());
@@ -331,6 +346,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * hasQueuedThreads reports whether there are waiting threads
      */
+    @Test
     public void testHasQueuedThreads() {
         final Mutex sync = new Mutex();
         assertFalse(sync.hasQueuedThreads());
@@ -352,6 +368,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * isQueued(null) throws NullPointerException
      */
+    @Test
     public void testIsQueuedNPE() {
         final Mutex sync = new Mutex();
         try {
@@ -363,6 +380,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * isQueued reports whether a thread is queued
      */
+    @Test
     public void testIsQueued() {
         final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -391,6 +409,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getFirstQueuedThread returns first waiting thread or null if none
      */
+    @Test
     public void testGetFirstQueuedThread() {
         final Mutex sync = new Mutex();
         assertNull(sync.getFirstQueuedThread());
@@ -412,6 +431,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * hasContended reports false if no thread has ever blocked, else true
      */
+    @Test
     public void testHasContended() {
         final Mutex sync = new Mutex();
         assertFalse(sync.hasContended());
@@ -434,6 +454,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getQueuedThreads returns all waiting threads
      */
+    @Test
     public void testGetQueuedThreads() {
         final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -462,6 +483,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getExclusiveQueuedThreads returns all exclusive waiting threads
      */
+    @Test
     public void testGetExclusiveQueuedThreads() {
         final Mutex sync = new Mutex();
         Thread t1 = new Thread(new InterruptedSyncRunnable(sync));
@@ -490,6 +512,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getSharedQueuedThreads does not include exclusively waiting threads
      */
+    @Test
     public void testGetSharedQueuedThreads_Exclusive() {
         final Mutex sync = new Mutex();
         assertTrue(sync.getSharedQueuedThreads().isEmpty());
@@ -512,6 +535,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getSharedQueuedThreads returns all shared waiting threads
      */
+    @Test
     public void testGetSharedQueuedThreads_Shared() {
         final BooleanLatch l = new BooleanLatch();
         assertHasSharedQueuedThreads(l, NO_THREADS);
@@ -538,6 +562,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryAcquireNanos is interruptible
      */
+    @Test
     public void testTryAcquireNanos_Interruptible() {
         final Mutex sync = new Mutex();
         sync.acquire();
@@ -554,6 +579,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryAcquire on exclusively held sync fails
      */
+    @Test
     public void testTryAcquireWhenSynced() {
         final Mutex sync = new Mutex();
         sync.acquire();
@@ -569,6 +595,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryAcquireNanos on an exclusively held sync times out
      */
+    @Test
     public void testAcquireNanos_Timeout() {
         final Mutex sync = new Mutex();
         sync.acquire();
@@ -587,6 +614,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getState is true when acquired and false when not
      */
+    @Test
     public void testGetState() {
         final Mutex sync = new Mutex();
         sync.acquire();
@@ -614,6 +642,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * acquireInterruptibly succeeds when released, else is interruptible
      */
+    @Test
     public void testAcquireInterruptibly() throws InterruptedException {
         final Mutex sync = new Mutex();
         final BooleanLatch threadStarted = new BooleanLatch();
@@ -634,6 +663,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * owns is true for a condition created by sync else false
      */
+    @Test
     public void testOwns() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -645,6 +675,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * Calling await without holding sync throws IllegalMonitorStateException
      */
+    @Test
     public void testAwait_IMSE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -662,6 +693,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * Calling signal without holding sync throws IllegalMonitorStateException
      */
+    @Test
     public void testSignal_IMSE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -675,6 +707,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * Calling signalAll without holding sync throws IllegalMonitorStateException
      */
+    @Test
     public void testSignalAll_IMSE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -687,10 +720,13 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * await/awaitNanos/awaitUntil without a signal times out
      */
+    @Test
     public void testAwaitTimed_Timeout() { testAwait_Timeout(AwaitMethod.awaitTimed); }
+    @Test
     public void testAwaitNanos_Timeout() { testAwait_Timeout(AwaitMethod.awaitNanos); }
+    @Test
     public void testAwaitUntil_Timeout() { testAwait_Timeout(AwaitMethod.awaitUntil); }
-    public void testAwait_Timeout(AwaitMethod awaitMethod) {
+    private void testAwait_Timeout(AwaitMethod awaitMethod) {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
         sync.acquire();
@@ -701,11 +737,15 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * await/awaitNanos/awaitUntil returns when signalled
      */
+    @Test
     public void testSignal_await()      { testSignal(AwaitMethod.await); }
+    @Test
     public void testSignal_awaitTimed() { testSignal(AwaitMethod.awaitTimed); }
+    @Test
     public void testSignal_awaitNanos() { testSignal(AwaitMethod.awaitNanos); }
+    @Test
     public void testSignal_awaitUntil() { testSignal(AwaitMethod.awaitUntil); }
-    public void testSignal(final AwaitMethod awaitMethod) {
+    private void testSignal(final AwaitMethod awaitMethod) {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
         final BooleanLatch acquired = new BooleanLatch();
@@ -731,6 +771,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * hasWaiters(null) throws NullPointerException
      */
+    @Test
     public void testHasWaitersNPE() {
         final Mutex sync = new Mutex();
         try {
@@ -742,6 +783,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitQueueLength(null) throws NullPointerException
      */
+    @Test
     public void testGetWaitQueueLengthNPE() {
         final Mutex sync = new Mutex();
         try {
@@ -753,6 +795,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitingThreads throws NPE if null
      */
+    @Test
     public void testGetWaitingThreadsNPE() {
         final Mutex sync = new Mutex();
         try {
@@ -764,6 +807,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * hasWaiters throws IllegalArgumentException if not owned
      */
+    @Test
     public void testHasWaitersIAE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -778,6 +822,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * hasWaiters throws IllegalMonitorStateException if not synced
      */
+    @Test
     public void testHasWaitersIMSE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -791,6 +836,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitQueueLength throws IllegalArgumentException if not owned
      */
+    @Test
     public void testGetWaitQueueLengthIAE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -805,6 +851,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitQueueLength throws IllegalMonitorStateException if not synced
      */
+    @Test
     public void testGetWaitQueueLengthIMSE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -818,6 +865,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitingThreads throws IllegalArgumentException if not owned
      */
+    @Test
     public void testGetWaitingThreadsIAE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -832,6 +880,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitingThreads throws IllegalMonitorStateException if not synced
      */
+    @Test
     public void testGetWaitingThreadsIMSE() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -845,6 +894,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * hasWaiters returns true when a thread is waiting, else false
      */
+    @Test
     public void testHasWaiters() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -877,6 +927,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitQueueLength returns number of waiting threads
      */
+    @Test
     public void testGetWaitQueueLength() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -925,6 +976,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * getWaitingThreads returns only and all waiting threads
      */
+    @Test
     public void testGetWaitingThreads() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -996,6 +1048,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * awaitUninterruptibly is uninterruptible
      */
+    @Test
     public void testAwaitUninterruptibly() {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -1030,11 +1083,15 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * await/awaitNanos/awaitUntil is interruptible
      */
+    @Test
     public void testInterruptible_await()      { testInterruptible(AwaitMethod.await); }
+    @Test
     public void testInterruptible_awaitTimed() { testInterruptible(AwaitMethod.awaitTimed); }
+    @Test
     public void testInterruptible_awaitNanos() { testInterruptible(AwaitMethod.awaitNanos); }
+    @Test
     public void testInterruptible_awaitUntil() { testInterruptible(AwaitMethod.awaitUntil); }
-    public void testInterruptible(final AwaitMethod awaitMethod) {
+    private void testInterruptible(final AwaitMethod awaitMethod) {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
         final BooleanLatch pleaseInterrupt = new BooleanLatch();
@@ -1053,11 +1110,15 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * signalAll wakes up all threads
      */
+    @Test
     public void testSignalAll_await()      { testSignalAll(AwaitMethod.await); }
+    @Test
     public void testSignalAll_awaitTimed() { testSignalAll(AwaitMethod.awaitTimed); }
+    @Test
     public void testSignalAll_awaitNanos() { testSignalAll(AwaitMethod.awaitNanos); }
+    @Test
     public void testSignalAll_awaitUntil() { testSignalAll(AwaitMethod.awaitUntil); }
-    public void testSignalAll(final AwaitMethod awaitMethod) {
+    private void testSignalAll(final AwaitMethod awaitMethod) {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
         final BooleanLatch acquired1 = new BooleanLatch();
@@ -1094,6 +1155,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * toString indicates current state
      */
+    @Test
     public void testToString() {
         Mutex sync = new Mutex();
         assertTrue(sync.toString().contains("State = " + Mutex.UNLOCKED));
@@ -1104,6 +1166,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * A serialized AQS deserializes with current state, but no queued threads
      */
+    @Test
     public void testSerialization() {
         Mutex sync = new Mutex();
         assertFalse(serialClone(sync).isHeldExclusively());
@@ -1128,6 +1191,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryReleaseShared setting state changes getState
      */
+    @Test
     public void testGetStateWithReleaseShared() {
         final BooleanLatch l = new BooleanLatch();
         assertFalse(l.isSignalled());
@@ -1138,6 +1202,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * releaseShared has no effect when already signalled
      */
+    @Test
     public void testReleaseShared() {
         final BooleanLatch l = new BooleanLatch();
         assertFalse(l.isSignalled());
@@ -1150,6 +1215,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * acquireSharedInterruptibly returns after release, but not before
      */
+    @Test
     public void testAcquireSharedInterruptibly() {
         final BooleanLatch l = new BooleanLatch();
 
@@ -1174,6 +1240,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryAcquireSharedNanos returns after release, but not before
      */
+    @Test
     public void testTryAcquireSharedNanos() {
         final BooleanLatch l = new BooleanLatch();
 
@@ -1198,6 +1265,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * acquireSharedInterruptibly is interruptible
      */
+    @Test
     public void testAcquireSharedInterruptibly_Interruptible() {
         final BooleanLatch l = new BooleanLatch();
         Thread t = newStartedThread(new CheckedInterruptedRunnable() {
@@ -1216,6 +1284,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryAcquireSharedNanos is interruptible
      */
+    @Test
     public void testTryAcquireSharedNanos_Interruptible() {
         final BooleanLatch l = new BooleanLatch();
         Thread t = newStartedThread(new CheckedInterruptedRunnable() {
@@ -1235,6 +1304,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * tryAcquireSharedNanos times out if not released before timeout
      */
+    @Test
     public void testTryAcquireSharedNanos_Timeout() {
         final BooleanLatch l = new BooleanLatch();
         final BooleanLatch observedQueued = new BooleanLatch();
@@ -1262,6 +1332,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * awaitNanos/timed await with 0 wait times out immediately
      */
+    @Test
     public void testAwait_Zero() throws InterruptedException {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();
@@ -1274,6 +1345,7 @@ public class AbstractQueuedLongSynchronizerTest extends JSR166TestCase {
     /**
      * awaitNanos/timed await with maximum negative wait times does not underflow
      */
+    @Test
     public void testAwait_NegativeInfinity() throws InterruptedException {
         final Mutex sync = new Mutex();
         final ConditionObject c = sync.newCondition();

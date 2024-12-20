@@ -34,6 +34,14 @@
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
@@ -44,9 +52,12 @@ import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.TimeoutException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ForkJoinTask8Test extends JSR166TestCase {
 
     /*
@@ -63,13 +74,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     static final short COMPLETE_STATE = 0;
     static final short EXCEPTION_STATE = 1;
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ForkJoinTask8Test");
     }
 
-    public static Test suite() {
-        return new TestSuite(ForkJoinTask8Test.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ForkJoinTask8Test.class);
+    // }
 
     // Runs with "mainPool" use > 1 thread. singletonPool tests use 1
     static final int mainPoolSize =
@@ -402,13 +415,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * isCompletedAbnormally and isCancelled return false for normally
      * completed tasks; getRawResult returns null.
      */
+    @Test
     public void testInvoke() {
         testInvoke(mainPool());
     }
+    @Test
     public void testInvoke_Singleton() {
         testInvoke(singletonPool());
     }
-    public void testInvoke(ForkJoinPool pool) {
+    private void testInvoke(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -423,13 +438,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * isCompletedAbnormally and isCancelled return false for normally
      * completed tasks
      */
+    @Test
     public void testQuietlyInvoke() {
         testQuietlyInvoke(mainPool());
     }
+    @Test
     public void testQuietlyInvoke_Singleton() {
         testQuietlyInvoke(singletonPool());
     }
-    public void testQuietlyInvoke(ForkJoinPool pool) {
+    private void testQuietlyInvoke(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -442,13 +459,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * join of a forked task returns when task completes
      */
+    @Test
     public void testForkJoin() {
         testForkJoin(mainPool());
     }
+    @Test
     public void testForkJoin_Singleton() {
         testForkJoin(singletonPool());
     }
-    public void testForkJoin(ForkJoinPool pool) {
+    private void testForkJoin(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -462,13 +481,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * get of a forked task returns when task completes
      */
+    @Test
     public void testForkGet() {
         testForkGet(mainPool());
     }
+    @Test
     public void testForkGet_Singleton() {
         testForkGet(singletonPool());
     }
-    public void testForkGet(ForkJoinPool pool) {
+    private void testForkGet(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
                 AsyncFib f = new AsyncFib(8);
@@ -482,13 +503,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * timed get of a forked task returns when task completes
      */
+    @Test
     public void testForkTimedGet() {
         testForkTimedGet(mainPool());
     }
+    @Test
     public void testForkTimedGet_Singleton() {
         testForkTimedGet(singletonPool());
     }
-    public void testForkTimedGet(ForkJoinPool pool) {
+    private void testForkTimedGet(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
                 AsyncFib f = new AsyncFib(8);
@@ -502,13 +525,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * timed get with null time unit throws NullPointerException
      */
+    @Test
     public void testForkTimedGetNullTimeUnit() {
         testForkTimedGetNullTimeUnit(mainPool());
     }
+    @Test
     public void testForkTimedGetNullTimeUnit_Singleton() {
         testForkTimedGet(singletonPool());
     }
-    public void testForkTimedGetNullTimeUnit(ForkJoinPool pool) {
+    private void testForkTimedGetNullTimeUnit(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
                 AsyncFib f = new AsyncFib(8);
@@ -524,13 +549,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task completes
      */
+    @Test
     public void testForkQuietlyJoin() {
         testForkQuietlyJoin(mainPool());
     }
+    @Test
     public void testForkQuietlyJoin_Singleton() {
         testForkQuietlyJoin(singletonPool());
     }
-    public void testForkQuietlyJoin(ForkJoinPool pool) {
+    private void testForkQuietlyJoin(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -545,13 +572,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * helpQuiesce returns when tasks are complete.
      * getQueuedTaskCount returns 0 when quiescent
      */
+    @Test
     public void testForkHelpQuiesce() {
         testForkHelpQuiesce(mainPool());
     }
+    @Test
     public void testForkHelpQuiesce_Singleton() {
         testForkHelpQuiesce(singletonPool());
     }
-    public void testForkHelpQuiesce(ForkJoinPool pool) {
+    private void testForkHelpQuiesce(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -566,13 +595,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invoke task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalInvoke() {
         testAbnormalInvoke(mainPool());
     }
+    @Test
     public void testAbnormalInvoke_Singleton() {
         testAbnormalInvoke(singletonPool());
     }
-    public void testAbnormalInvoke(ForkJoinPool pool) {
+    private void testAbnormalInvoke(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 FailingAsyncFib f = new FailingAsyncFib(8);
@@ -589,13 +620,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * quietlyInvoke task returns when task completes abnormally
      */
+    @Test
     public void testAbnormalQuietlyInvoke() {
         testAbnormalQuietlyInvoke(mainPool());
     }
+    @Test
     public void testAbnormalQuietlyInvoke_Singleton() {
         testAbnormalQuietlyInvoke(singletonPool());
     }
-    public void testAbnormalQuietlyInvoke(ForkJoinPool pool) {
+    private void testAbnormalQuietlyInvoke(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 FailingAsyncFib f = new FailingAsyncFib(8);
@@ -609,13 +642,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * join of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkJoin() {
         testAbnormalForkJoin(mainPool());
     }
+    @Test
     public void testAbnormalForkJoin_Singleton() {
         testAbnormalForkJoin(singletonPool());
     }
-    public void testAbnormalForkJoin(ForkJoinPool pool) {
+    private void testAbnormalForkJoin(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 FailingAsyncFib f = new FailingAsyncFib(8);
@@ -633,13 +668,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * get of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkGet() {
         testAbnormalForkGet(mainPool());
     }
+    @Test
     public void testAbnormalForkGet_Singleton() {
         testAbnormalForkJoin(singletonPool());
     }
-    public void testAbnormalForkGet(ForkJoinPool pool) {
+    private void testAbnormalForkGet(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
                 FailingAsyncFib f = new FailingAsyncFib(8);
@@ -659,13 +696,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * timed get of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkTimedGet() {
         testAbnormalForkTimedGet(mainPool());
     }
+    @Test
     public void testAbnormalForkTimedGet_Singleton() {
         testAbnormalForkTimedGet(singletonPool());
     }
-    public void testAbnormalForkTimedGet(ForkJoinPool pool) {
+    private void testAbnormalForkTimedGet(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
                 FailingAsyncFib f = new FailingAsyncFib(8);
@@ -685,13 +724,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task completes abnormally
      */
+    @Test
     public void testAbnormalForkQuietlyJoin() {
         testAbnormalForkQuietlyJoin(mainPool());
     }
+    @Test
     public void testAbnormalForkQuietlyJoin_Singleton() {
         testAbnormalForkQuietlyJoin(singletonPool());
     }
-    public void testAbnormalForkQuietlyJoin(ForkJoinPool pool) {
+    private void testAbnormalForkQuietlyJoin(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 FailingAsyncFib f = new FailingAsyncFib(8);
@@ -706,13 +747,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * getPool of executing task returns its pool
      */
+    @Test
     public void testGetPool() {
         testGetPool(mainPool());
     }
+    @Test
     public void testGetPool_Singleton() {
         testGetPool(singletonPool());
     }
-    public void testGetPool(ForkJoinPool pool) {
+    private void testGetPool(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 assertSame(pool, getPool());
@@ -723,6 +766,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * getPool of non-FJ task returns null
      */
+    @Test
     public void testGetPool2() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -734,13 +778,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * inForkJoinPool of executing task returns true
      */
+    @Test
     public void testInForkJoinPool() {
         testInForkJoinPool(mainPool());
     }
+    @Test
     public void testInForkJoinPool_Singleton() {
         testInForkJoinPool(singletonPool());
     }
-    public void testInForkJoinPool(ForkJoinPool pool) {
+    private void testInForkJoinPool(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 assertTrue(inForkJoinPool());
@@ -751,6 +797,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * inForkJoinPool of non-FJ task returns false
      */
+    @Test
     public void testInForkJoinPool2() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -762,6 +809,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * setRawResult(null) succeeds
      */
+    @Test
     public void testSetRawResult() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -774,13 +822,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invoke task throws exception after invoking completeExceptionally
      */
+    @Test
     public void testCompleteExceptionally() {
         testCompleteExceptionally(mainPool());
     }
+    @Test
     public void testCompleteExceptionally_Singleton() {
         testCompleteExceptionally(singletonPool());
     }
-    public void testCompleteExceptionally(ForkJoinPool pool) {
+    private void testCompleteExceptionally(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -798,13 +848,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(tasks) with 1 argument invokes task
      */
+    @Test
     public void testInvokeAll1() {
         testInvokeAll1(mainPool());
     }
+    @Test
     public void testInvokeAll1_Singleton() {
         testInvokeAll1(singletonPool());
     }
-    public void testInvokeAll1(ForkJoinPool pool) {
+    private void testInvokeAll1(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -817,13 +869,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(t1, t2) invokes all task arguments
      */
+    @Test
     public void testInvokeAll2() {
         testInvokeAll2(mainPool());
     }
+    @Test
     public void testInvokeAll2_Singleton() {
         testInvokeAll2(singletonPool());
     }
-    public void testInvokeAll2(ForkJoinPool pool) {
+    private void testInvokeAll2(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib[] tasks = {
@@ -840,13 +894,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(tasks) with > 2 argument invokes tasks
      */
+    @Test
     public void testInvokeAll3() {
         testInvokeAll3(mainPool());
     }
+    @Test
     public void testInvokeAll3_Singleton() {
         testInvokeAll3(singletonPool());
     }
-    public void testInvokeAll3(ForkJoinPool pool) {
+    private void testInvokeAll3(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib[] tasks = {
@@ -864,13 +920,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(collection) invokes all tasks in the collection
      */
+    @Test
     public void testInvokeAllCollection() {
         testInvokeAllCollection(mainPool());
     }
+    @Test
     public void testInvokeAllCollection_Singleton() {
         testInvokeAllCollection(singletonPool());
     }
-    public void testInvokeAllCollection(ForkJoinPool pool) {
+    private void testInvokeAllCollection(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib[] tasks = {
@@ -888,13 +946,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(tasks) with any null task throws NullPointerException
      */
+    @Test
     public void testInvokeAllNullTask() {
         testInvokeAllNullTask(mainPool());
     }
+    @Test
     public void testInvokeAllNullTask_Singleton() {
         testInvokeAllNullTask(singletonPool());
     }
-    public void testInvokeAllNullTask(ForkJoinPool pool) {
+    private void testInvokeAllNullTask(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib nul = null;
@@ -913,13 +973,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(tasks) with 1 argument throws exception if task does
      */
+    @Test
     public void testAbnormalInvokeAll1() {
         testAbnormalInvokeAll1(mainPool());
     }
+    @Test
     public void testAbnormalInvokeAll1_Singleton() {
         testAbnormalInvokeAll1(singletonPool());
     }
-    public void testAbnormalInvokeAll1(ForkJoinPool pool) {
+    private void testAbnormalInvokeAll1(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 FailingAsyncFib g = new FailingAsyncFib(9);
@@ -936,13 +998,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(t1, t2) throw exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAll2() {
         testAbnormalInvokeAll2(mainPool());
     }
+    @Test
     public void testAbnormalInvokeAll2_Singleton() {
         testAbnormalInvokeAll2(singletonPool());
     }
-    public void testAbnormalInvokeAll2(ForkJoinPool pool) {
+    private void testAbnormalInvokeAll2(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -962,13 +1026,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(tasks) with > 2 argument throws exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAll3() {
         testAbnormalInvokeAll3(mainPool());
     }
+    @Test
     public void testAbnormalInvokeAll3_Singleton() {
         testAbnormalInvokeAll3(singletonPool());
     }
-    public void testAbnormalInvokeAll3(ForkJoinPool pool) {
+    private void testAbnormalInvokeAll3(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 AsyncFib f = new AsyncFib(8);
@@ -989,13 +1055,15 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * invokeAll(collection) throws exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAllCollection() {
         testAbnormalInvokeAllCollection(mainPool());
     }
+    @Test
     public void testAbnormalInvokeAllCollection_Singleton() {
         testAbnormalInvokeAllCollection(singletonPool());
     }
-    public void testAbnormalInvokeAllCollection(ForkJoinPool pool) {
+    private void testAbnormalInvokeAllCollection(ForkJoinPool pool) {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
                 FailingAsyncFib f = new FailingAsyncFib(8);
@@ -1017,6 +1085,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * tryUnfork returns true for most recent unexecuted task,
      * and suppresses execution
      */
+    @Test
     public void testTryUnfork() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1036,6 +1105,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * getSurplusQueuedTaskCount returns > 0 when
      * there are more tasks than threads
      */
+    @Test
     public void testGetSurplusQueuedTaskCount() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1058,6 +1128,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * peekNextLocalTask returns most recent unexecuted task.
      */
+    @Test
     public void testPeekNextLocalTask() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1078,6 +1149,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * pollNextLocalTask returns most recent unexecuted task without
      * executing it
      */
+    @Test
     public void testPollNextLocalTask() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1096,6 +1168,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * pollTask returns an unexecuted task without executing it
      */
+    @Test
     public void testPollTask() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1114,6 +1187,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * peekNextLocalTask returns least recent unexecuted task in async mode
      */
+    @Test
     public void testPeekNextLocalTaskAsync() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1134,6 +1208,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * pollNextLocalTask returns least recent unexecuted task without
      * executing it, in async mode
      */
+    @Test
     public void testPollNextLocalTaskAsync() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1153,6 +1228,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * pollTask returns an unexecuted task without executing it, in
      * async mode
      */
+    @Test
     public void testPollTaskAsync() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1174,6 +1250,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
      * established by setRawResult(V) (or null by default) is returned
      * from invoke.
      */
+    @Test
     public void testQuietlyComplete() {
         RecursiveAction a = new CheckedRecursiveAction() {
                 protected void realCompute() {
@@ -1194,6 +1271,7 @@ public class ForkJoinTask8Test extends JSR166TestCase {
     /**
      * pollSubmission returns unexecuted submitted task, if present
      */
+    @Test
     public void testPollSubmission() {
         final CountDownLatch done = new CountDownLatch(1);
         final ForkJoinTask a = ForkJoinTask.adapt(awaiter(done));

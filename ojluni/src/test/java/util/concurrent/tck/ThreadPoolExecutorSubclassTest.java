@@ -36,6 +36,14 @@
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,16 +69,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ThreadPoolExecutorSubclassTest");
     }
-    public static Test suite() {
-        return new TestSuite(ThreadPoolExecutorSubclassTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ThreadPoolExecutorSubclassTest.class);
+    // }
 
     static class CustomTask<V> implements RunnableFuture<V> {
         final Callable<V> callable;
@@ -256,6 +269,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute successfully executes a runnable
      */
+    @Test
     public void testExecute() throws InterruptedException {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -274,6 +288,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * getActiveCount increases but doesn't overestimate, when a
      * thread becomes active
      */
+    @Test
     public void testGetActiveCount() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p =
@@ -297,6 +312,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * prestartCoreThread starts a thread if under corePoolSize, else doesn't
      */
+    @Test
     public void testPrestartCoreThread() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 6,
@@ -323,6 +339,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * prestartAllCoreThreads starts all corePoolSize threads
      */
+    @Test
     public void testPrestartAllCoreThreads() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 6,
@@ -346,6 +363,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * getCompletedTaskCount increases, but doesn't overestimate,
      * when tasks complete
      */
+    @Test
     public void testGetCompletedTaskCount() throws InterruptedException {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 2,
@@ -379,6 +397,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * getCorePoolSize returns size given in constructor if not otherwise set
      */
+    @Test
     public void testGetCorePoolSize() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -392,6 +411,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * getKeepAliveTime returns value given in constructor if not otherwise set
      */
+    @Test
     public void testGetKeepAliveTime() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 2,
@@ -405,6 +425,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * getThreadFactory returns factory in constructor if not set
      */
+    @Test
     public void testGetThreadFactory() {
         final ThreadFactory threadFactory = new SimpleThreadFactory();
         final ThreadPoolExecutor p =
@@ -421,6 +442,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * setThreadFactory sets the thread factory returned by getThreadFactory
      */
+    @Test
     public void testSetThreadFactory() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 2,
@@ -436,6 +458,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * setThreadFactory(null) throws NPE
      */
+    @Test
     public void testSetThreadFactoryNull() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 2,
@@ -452,6 +475,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * getRejectedExecutionHandler returns handler in constructor if not set
      */
+    @Test
     public void testGetRejectedExecutionHandler() {
         final RejectedExecutionHandler handler = new NoOpREHandler();
         final ThreadPoolExecutor p =
@@ -468,6 +492,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * setRejectedExecutionHandler sets the handler returned by
      * getRejectedExecutionHandler
      */
+    @Test
     public void testSetRejectedExecutionHandler() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 2,
@@ -483,6 +508,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * setRejectedExecutionHandler(null) throws NPE
      */
+    @Test
     public void testSetRejectedExecutionHandlerNull() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 2,
@@ -500,6 +526,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * getLargestPoolSize increases, but doesn't overestimate, when
      * multiple threads active
      */
+    @Test
     public void testGetLargestPoolSize() throws InterruptedException {
         final int THREADS = 3;
         final CountDownLatch done = new CountDownLatch(1);
@@ -527,6 +554,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * getMaximumPoolSize returns value given in constructor if not
      * otherwise set
      */
+    @Test
     public void testGetMaximumPoolSize() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 3,
@@ -545,6 +573,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * getPoolSize increases, but doesn't overestimate, when threads
      * become active
      */
+    @Test
     public void testGetPoolSize() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p =
@@ -568,6 +597,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * getTaskCount increases, but doesn't overestimate, when tasks submitted
      */
+    @Test
     public void testGetTaskCount() throws InterruptedException {
         final int TASKS = 3;
         final CountDownLatch done = new CountDownLatch(1);
@@ -606,6 +636,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * isShutdown is false before shutdown, true after
      */
+    @Test
     public void testIsShutdown() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -621,6 +652,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * isTerminated is false before termination, true after
      */
+    @Test
     public void testIsTerminated() throws InterruptedException {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -649,6 +681,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * isTerminating is not true when running or when terminated
      */
+    @Test
     public void testIsTerminating() throws InterruptedException {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -677,6 +710,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * getQueue returns the work queue, which contains queued tasks
      */
+    @Test
     public void testGetQueue() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         final BlockingQueue<Runnable> q = new ArrayBlockingQueue<>(10);
@@ -709,6 +743,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * remove(task) removes queued task, and fails to remove active task
      */
+    @Test
     public void testRemove() throws InterruptedException {
         final CountDownLatch done = new CountDownLatch(1);
         BlockingQueue<Runnable> q = new ArrayBlockingQueue<>(10);
@@ -743,6 +778,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * purge removes cancelled tasks from the queue
      */
+    @Test
     public void testPurge() throws InterruptedException {
         final CountDownLatch threadStarted = new CountDownLatch(1);
         final CountDownLatch done = new CountDownLatch(1);
@@ -783,6 +819,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * shutdownNow returns a list containing tasks that were not run,
      * and those tasks are drained from the queue
      */
+    @Test
     public void testShutdownNow() throws InterruptedException {
         final int poolSize = 2;
         final int count = 5;
@@ -824,6 +861,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize argument is less than zero
      */
+    @Test
     public void testConstructor1() {
         try {
             new CustomTPE(-1, 1, 1L, SECONDS,
@@ -835,6 +873,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is less than zero
      */
+    @Test
     public void testConstructor2() {
         try {
             new CustomTPE(1, -1, 1L, SECONDS,
@@ -846,6 +885,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is equal to zero
      */
+    @Test
     public void testConstructor3() {
         try {
             new CustomTPE(1, 0, 1L, SECONDS,
@@ -857,6 +897,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if keepAliveTime is less than zero
      */
+    @Test
     public void testConstructor4() {
         try {
             new CustomTPE(1, 2, -1L, SECONDS,
@@ -868,6 +909,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize is greater than the maximumPoolSize
      */
+    @Test
     public void testConstructor5() {
         try {
             new CustomTPE(2, 1, 1L, SECONDS,
@@ -879,6 +921,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if workQueue is set to null
      */
+    @Test
     public void testConstructorNullPointerException() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS, null);
@@ -889,6 +932,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize argument is less than zero
      */
+    @Test
     public void testConstructor6() {
         try {
             new CustomTPE(-1, 1, 1L, SECONDS,
@@ -901,6 +945,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is less than zero
      */
+    @Test
     public void testConstructor7() {
         try {
             new CustomTPE(1,-1, 1L, SECONDS,
@@ -913,6 +958,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is equal to zero
      */
+    @Test
     public void testConstructor8() {
         try {
             new CustomTPE(1, 0, 1L, SECONDS,
@@ -925,6 +971,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if keepAliveTime is less than zero
      */
+    @Test
     public void testConstructor9() {
         try {
             new CustomTPE(1, 2, -1L, SECONDS,
@@ -937,6 +984,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize is greater than the maximumPoolSize
      */
+    @Test
     public void testConstructor10() {
         try {
             new CustomTPE(2, 1, 1L, SECONDS,
@@ -949,6 +997,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if workQueue is set to null
      */
+    @Test
     public void testConstructorNullPointerException2() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS, null, new SimpleThreadFactory());
@@ -959,6 +1008,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if threadFactory is set to null
      */
+    @Test
     public void testConstructorNullPointerException3() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS,
@@ -971,6 +1021,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize argument is less than zero
      */
+    @Test
     public void testConstructor11() {
         try {
             new CustomTPE(-1, 1, 1L, SECONDS,
@@ -983,6 +1034,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is less than zero
      */
+    @Test
     public void testConstructor12() {
         try {
             new CustomTPE(1, -1, 1L, SECONDS,
@@ -995,6 +1047,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is equal to zero
      */
+    @Test
     public void testConstructor13() {
         try {
             new CustomTPE(1, 0, 1L, SECONDS,
@@ -1007,6 +1060,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if keepAliveTime is less than zero
      */
+    @Test
     public void testConstructor14() {
         try {
             new CustomTPE(1, 2, -1L, SECONDS,
@@ -1019,6 +1073,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize is greater than the maximumPoolSize
      */
+    @Test
     public void testConstructor15() {
         try {
             new CustomTPE(2, 1, 1L, SECONDS,
@@ -1031,6 +1086,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if workQueue is set to null
      */
+    @Test
     public void testConstructorNullPointerException4() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS,
@@ -1043,6 +1099,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if handler is set to null
      */
+    @Test
     public void testConstructorNullPointerException5() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS,
@@ -1055,6 +1112,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize argument is less than zero
      */
+    @Test
     public void testConstructor16() {
         try {
             new CustomTPE(-1, 1, 1L, SECONDS,
@@ -1068,6 +1126,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is less than zero
      */
+    @Test
     public void testConstructor17() {
         try {
             new CustomTPE(1, -1, 1L, SECONDS,
@@ -1081,6 +1140,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if maximumPoolSize is equal to zero
      */
+    @Test
     public void testConstructor18() {
         try {
             new CustomTPE(1, 0, 1L, SECONDS,
@@ -1094,6 +1154,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if keepAliveTime is less than zero
      */
+    @Test
     public void testConstructor19() {
         try {
             new CustomTPE(1, 2, -1L, SECONDS,
@@ -1107,6 +1168,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if corePoolSize is greater than the maximumPoolSize
      */
+    @Test
     public void testConstructor20() {
         try {
             new CustomTPE(2, 1, 1L, SECONDS,
@@ -1120,6 +1182,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if workQueue is null
      */
+    @Test
     public void testConstructorNullPointerException6() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS,
@@ -1133,6 +1196,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if handler is null
      */
+    @Test
     public void testConstructorNullPointerException7() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS,
@@ -1146,6 +1210,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * Constructor throws if ThreadFactory is null
      */
+    @Test
     public void testConstructorNullPointerException8() {
         try {
             new CustomTPE(1, 2, 1L, SECONDS,
@@ -1159,6 +1224,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute throws RejectedExecutionException if saturated.
      */
+    @Test
     public void testSaturatedExecute() {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p =
@@ -1185,6 +1251,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * executor using CallerRunsPolicy runs task if saturated.
      */
+    @Test
     public void testSaturatedExecute2() {
         final CountDownLatch done = new CountDownLatch(1);
         final ThreadPoolExecutor p =
@@ -1212,6 +1279,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * executor using DiscardPolicy drops task if saturated.
      */
+    @Test
     public void testSaturatedExecute3() {
         final TrackedNoOpRunnable[] tasks = new TrackedNoOpRunnable[5];
         for (int i = 0; i < tasks.length; ++i)
@@ -1238,6 +1306,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * executor using DiscardOldestPolicy drops oldest task if saturated.
      */
+    @Test
     public void testSaturatedExecute4() {
         final CountDownLatch done = new CountDownLatch(1);
         LatchAwaiter r1 = awaiter(done);
@@ -1267,6 +1336,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute throws RejectedExecutionException if shutdown
      */
+    @Test
     public void testRejectedExecutionExceptionOnShutdown() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -1284,6 +1354,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute using CallerRunsPolicy drops task on shutdown
      */
+    @Test
     public void testCallerRunsOnShutdown() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -1301,6 +1372,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute using DiscardPolicy drops task on shutdown
      */
+    @Test
     public void testDiscardOnShutdown() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -1318,6 +1390,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute using DiscardOldestPolicy drops task on shutdown
      */
+    @Test
     public void testDiscardOldestOnShutdown() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 1,
@@ -1336,6 +1409,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * execute(null) throws NPE
      */
+    @Test
     public void testExecuteNull() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 2,
@@ -1352,6 +1426,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * setCorePoolSize of negative value throws IllegalArgumentException
      */
+    @Test
     public void testCorePoolSizeIllegalArgumentException() {
         final ThreadPoolExecutor p =
             new CustomTPE(1, 2,
@@ -1369,6 +1444,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * setMaximumPoolSize(int) throws IllegalArgumentException
      * if given a value less the core pool size
      */
+    @Test
     public void testMaximumPoolSizeIllegalArgumentException() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 3,
@@ -1386,6 +1462,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * setMaximumPoolSize throws IllegalArgumentException
      * if given a negative value
      */
+    @Test
     public void testMaximumPoolSizeIllegalArgumentException2() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 3,
@@ -1403,6 +1480,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * setKeepAliveTime throws IllegalArgumentException
      * when given a negative value
      */
+    @Test
     public void testKeepAliveTimeIllegalArgumentException() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 3,
@@ -1419,6 +1497,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * terminated() is called on termination
      */
+    @Test
     public void testTerminated() {
         CustomTPE p = new CustomTPE();
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -1431,6 +1510,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * beforeExecute and afterExecute are called when executing task
      */
+    @Test
     public void testBeforeAfter() throws InterruptedException {
         CustomTPE p = new CustomTPE();
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -1449,6 +1529,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * completed submit of callable returns result
      */
+    @Test
     public void testSubmitCallable() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1464,6 +1545,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * completed submit of runnable returns successfully
      */
+    @Test
     public void testSubmitRunnable() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1479,6 +1561,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * completed submit of (runnable, result) returns result
      */
+    @Test
     public void testSubmitRunnable2() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1494,6 +1577,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(null) throws NPE
      */
+    @Test
     public void testInvokeAny1() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1510,6 +1594,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(empty collection) throws IAE
      */
+    @Test
     public void testInvokeAny2() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1526,6 +1611,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws NPE if c has null elements
      */
+    @Test
     public void testInvokeAny3() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         final ExecutorService e =
@@ -1547,6 +1633,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws ExecutionException if no task completes
      */
+    @Test
     public void testInvokeAny4() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1567,6 +1654,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAny(c) returns result of some task
      */
+    @Test
     public void testInvokeAny5() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1584,6 +1672,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(null) throws NPE
      */
+    @Test
     public void testInvokeAll1() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1600,6 +1689,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testInvokeAll2() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1614,6 +1704,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(c) throws NPE if c has null elements
      */
+    @Test
     public void testInvokeAll3() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1633,6 +1724,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * get of element of invokeAll(c) throws exception on failed task
      */
+    @Test
     public void testInvokeAll4() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1655,6 +1747,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * invokeAll(c) returns results of all completed tasks
      */
+    @Test
     public void testInvokeAll5() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1674,6 +1767,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(null) throws NPE
      */
+    @Test
     public void testTimedInvokeAny1() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1690,6 +1784,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(,,null) throws NPE
      */
+    @Test
     public void testTimedInvokeAnyNullTimeUnit() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1708,6 +1803,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(empty collection) throws IAE
      */
+    @Test
     public void testTimedInvokeAny2() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1725,6 +1821,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws NPE if c has null elements
      */
+    @Test
     public void testTimedInvokeAny3() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         final ExecutorService e =
@@ -1746,6 +1843,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws ExecutionException if no task completes
      */
+    @Test
     public void testTimedInvokeAny4() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1768,6 +1866,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) returns result of some task
      */
+    @Test
     public void testTimedInvokeAny5() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1787,6 +1886,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(null) throws NPE
      */
+    @Test
     public void testTimedInvokeAll1() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1803,6 +1903,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(,,null) throws NPE
      */
+    @Test
     public void testTimedInvokeAllNullTimeUnit() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1821,6 +1922,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testTimedInvokeAll2() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1836,6 +1938,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) throws NPE if c has null elements
      */
+    @Test
     public void testTimedInvokeAll3() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1855,6 +1958,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * get of element of invokeAll(c) throws exception on failed task
      */
+    @Test
     public void testTimedInvokeAll4() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1878,6 +1982,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) returns results of all completed tasks
      */
+    @Test
     public void testTimedInvokeAll5() throws Exception {
         final ExecutorService e =
             new CustomTPE(2, 2,
@@ -1898,6 +2003,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) cancels tasks not completed by timeout
      */
+    @Test
     public void testTimedInvokeAll6() throws Exception {
         for (long timeout = timeoutMillis();;) {
             final CountDownLatch done = new CountDownLatch(1);
@@ -1940,6 +2046,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * Execution continues if there is at least one thread even if
      * thread factory fails to create more
      */
+    @Test
     public void testFailingThreadFactory() throws InterruptedException {
         final ExecutorService e =
             new CustomTPE(100, 100,
@@ -1961,6 +2068,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * allowsCoreThreadTimeOut is by default false.
      */
+    @Test
     public void testAllowsCoreThreadTimeOut() {
         final ThreadPoolExecutor p =
             new CustomTPE(2, 2,
@@ -1974,6 +2082,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * allowCoreThreadTimeOut(true) causes idle threads to time out
      */
+    @Test
     public void testAllowCoreThreadTimeOut_true() throws Exception {
         long keepAliveTime = timeoutMillis();
         final ThreadPoolExecutor p =
@@ -2002,6 +2111,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
     /**
      * allowCoreThreadTimeOut(false) causes idle threads not to time out
      */
+    @Test
     public void testAllowCoreThreadTimeOut_false() throws Exception {
         long keepAliveTime = timeoutMillis();
         final ThreadPoolExecutor p =
@@ -2025,6 +2135,7 @@ public class ThreadPoolExecutorSubclassTest extends JSR166TestCase {
      * get(cancelled task) throws CancellationException
      * (in part, a test of CustomTPE itself)
      */
+    @Test
     public void testGet_cancelled() throws Exception {
         final CountDownLatch done = new CountDownLatch(1);
         final ExecutorService e =

@@ -31,6 +31,7 @@ import libcore.junit.util.SwitchTargetSdkVersionRule.TargetSdkVersion;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
+@SuppressWarnings("InvalidTimeZoneID") // We test behaviour around these invalid IDs.
 public class TimeZoneTest extends TestCaseWithRules {
 
     @Rule
@@ -212,6 +213,11 @@ public class TimeZoneTest extends TestCaseWithRules {
         assertEquals("GMT+05:00", TimeZone.getTimeZone("GMT+0500").getID());
         assertEquals("GMT+05:00", TimeZone.getTimeZone("GMT+500").getID());
         assertEquals("GMT+05:00", TimeZone.getTimeZone("GMT+5").getID());
+        assertEquals("GMT+05:00", TimeZone.getTimeZone("GMT+05:00:00").getID());
+        assertEquals("GMT+05:00", TimeZone.getTimeZone("GMT+5:00:00").getID());
+        assertEquals("GMT+05:00:45", TimeZone.getTimeZone("GMT+05:00:45").getID());
+        assertEquals("GMT+05:31:45", TimeZone.getTimeZone("GMT+05:31:45").getID());
+        assertEquals("GMT+15:00:45", TimeZone.getTimeZone("GMT+15:00:45").getID());
         // These aren't.
         assertEquals("GMT", TimeZone.getTimeZone("GMT+5.5").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+5:5").getID());
@@ -222,7 +228,6 @@ public class TimeZoneTest extends TestCaseWithRules {
         assertEquals("GMT", TimeZone.getTimeZone("GMT+05:99").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+28:00").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+05:00.00").getID());
-        assertEquals("GMT", TimeZone.getTimeZone("GMT+05:00:00").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+5:").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+junk").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+5junk").getID());
@@ -231,6 +236,37 @@ public class TimeZoneTest extends TestCaseWithRules {
         assertEquals("GMT", TimeZone.getTimeZone("junkGMT+5:00").getID());
         assertEquals("GMT", TimeZone.getTimeZone("junk").getID());
         assertEquals("GMT", TimeZone.getTimeZone("gmt+5:00").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT+05:3030").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT+0530:30").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT+053030").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT+05:00:60").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT+05:00:90").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT+05:00:-10").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT05:00:-10").getID());
+        assertEquals("GMT", TimeZone.getTimeZone("GMT005:00:-10").getID());
+    }
+
+    public void testCustomZoneIds_offsets() {
+        Object[] data = {
+            "GMT+05:30:30",  5 * 60 * 60 + 30 * 60 + 30,
+            "GMT+525",       5 * 60 * 60 + 25 * 60,
+            "GMT-4",         -4 * 60 * 60,
+            "GMT-23",        -23 * 60 * 60,
+            "GMT-230",       -(2 * 60 * 60 + 30 * 60),
+            "GMT-23:59:59",  -(23 * 60 * 60 + 59 * 60 + 59),
+            "GMT+1234",      12 * 60 * 60 + 34 * 60,
+            "GMT+junk",      0,
+            "GMT+111111",    0,
+            "GMT+23:59:60",  0,
+        };
+
+        for (int i = 0; i < data.length; i = i + 2) {
+            TimeZone tz = TimeZone.getTimeZone((String) data[i]);
+            int offsetInSeconds = (int) data[i + 1];
+
+            String msg = "Unexpected offset at element " + (i / 2);
+            assertEquals(msg, offsetInSeconds * 1_000, tz.getRawOffset());
+        }
     }
 
     public void test_getDSTSavings() throws Exception {

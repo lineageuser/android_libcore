@@ -47,7 +47,14 @@ public class FieldTest extends junit.framework.TestCase {
         @AnnotationClass0
         @AnnotationSource0
         public int annotatedField;
-        class Inner{}
+        class Inner {
+            // BEGIN android-note
+            // When targeting Java 21 javac does not create the synthetic field that refers to
+            // TestClass since it doesn't need it. Force the creation of the synthetic field by
+            // using TestClass.annotatedField.
+            // END android-note
+            void inc() { annotatedField++; }
+        }
     }
 
 

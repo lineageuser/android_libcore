@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.java.awt.font"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_awt_font"
     },
     {
       "name": "CtsLibcoreOjTestCases_awt_font"

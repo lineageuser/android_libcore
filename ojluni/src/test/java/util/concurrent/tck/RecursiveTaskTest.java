@@ -33,6 +33,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.concurrent.CancellationException;
@@ -42,17 +50,22 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.TimeoutException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class RecursiveTaskTest extends JSR166TestCase {
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.RecursiveTaskTest");
     }
-    public static Test suite() {
-        return new TestSuite(RecursiveTaskTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(RecursiveTaskTest.class);
+    // }
 
     private static ForkJoinPool mainPool() {
         return new ForkJoinPool();
@@ -253,6 +266,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * completed tasks. getRawResult of a completed non-null task
      * returns value;
      */
+    @Test
     public void testInvoke() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -270,6 +284,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * isCompletedAbnormally and isCancelled return false for normally
      * completed tasks
      */
+    @Test
     public void testQuietlyInvoke() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -284,6 +299,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * join of a forked task returns when task completes
      */
+    @Test
     public void testForkJoin() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -300,6 +316,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * get of a forked task returns when task completes
      */
+    @Test
     public void testForkGet() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() throws Exception {
@@ -316,6 +333,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * timed get of a forked task returns when task completes
      */
+    @Test
     public void testForkTimedGet() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() throws Exception {
@@ -332,6 +350,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task completes
      */
+    @Test
     public void testForkQuietlyJoin() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -350,6 +369,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * helpQuiesce returns when tasks are complete.
      * getQueuedTaskCount returns 0 when quiescent
      */
+    @Test
     public void testForkHelpQuiesce() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -368,6 +388,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invoke task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalInvoke() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -386,6 +407,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * quietlyInvoke task returns when task completes abnormally
      */
+    @Test
     public void testAbnormalQuietlyInvoke() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -401,6 +423,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * join of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkJoin() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -420,6 +443,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * get of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkGet() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() throws Exception {
@@ -441,6 +465,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * timed get of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkTimedGet() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() throws Exception {
@@ -462,6 +487,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task completes abnormally
      */
+    @Test
     public void testAbnormalForkQuietlyJoin() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -478,6 +504,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invoke task throws exception when task cancelled
      */
+    @Test
     public void testCancelledInvoke() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -497,6 +524,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * join of a forked task throws exception when task cancelled
      */
+    @Test
     public void testCancelledForkJoin() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -517,6 +545,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * get of a forked task throws exception when task cancelled
      */
+    @Test
     public void testCancelledForkGet() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() throws Exception {
@@ -537,6 +566,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * timed get of a forked task throws exception when task cancelled
      */
+    @Test
     public void testCancelledForkTimedGet() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() throws Exception {
@@ -557,6 +587,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task cancelled
      */
+    @Test
     public void testCancelledForkQuietlyJoin() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -573,6 +604,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * getPool of executing task returns its pool
      */
+    @Test
     public void testGetPool() {
         final ForkJoinPool mainPool = mainPool();
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
@@ -586,6 +618,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * getPool of non-FJ task returns null
      */
+    @Test
     public void testGetPool2() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -598,6 +631,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * inForkJoinPool of executing task returns true
      */
+    @Test
     public void testInForkJoinPool() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -610,6 +644,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * inForkJoinPool of non-FJ task returns false
      */
+    @Test
     public void testInForkJoinPool2() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -622,6 +657,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * The value set by setRawResult is returned by getRawResult
      */
+    @Test
     public void testSetRawResult() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -636,6 +672,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * A reinitialized normally completed task may be re-invoked
      */
+    @Test
     public void testReinitialize() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -658,6 +695,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * A reinitialized abnormally completed task may be re-invoked
      */
+    @Test
     public void testReinitializeAbnormal() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -682,6 +720,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invoke task throws exception after invoking completeExceptionally
      */
+    @Test
     public void testCompleteExceptionally() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -701,6 +740,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invoke task suppresses execution invoking complete
      */
+    @Test
     public void testComplete() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -717,6 +757,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(t1, t2) invokes all task arguments
      */
+    @Test
     public void testInvokeAll2() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -733,6 +774,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with 1 argument invokes task
      */
+    @Test
     public void testInvokeAll1() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -747,6 +789,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with > 2 argument invokes tasks
      */
+    @Test
     public void testInvokeAll3() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -768,6 +811,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(collection) invokes all tasks in the collection
      */
+    @Test
     public void testInvokeAllCollection() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -793,6 +837,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with any null task throws NPE
      */
+    @Test
     public void testInvokeAllNPE() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -811,6 +856,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(t1, t2) throw exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAll2() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -830,6 +876,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with 1 argument throws exception if task does
      */
+    @Test
     public void testAbnormalInvokeAll1() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -848,6 +895,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with > 2 argument throws exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAll3() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -868,6 +916,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * invokeAll(collection) throws exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAllCollection() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -893,6 +942,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * tryUnfork returns true for most recent unexecuted task,
      * and suppresses execution
      */
+    @Test
     public void testTryUnfork() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -913,6 +963,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * getSurplusQueuedTaskCount returns > 0 when
      * there are more tasks than threads
      */
+    @Test
     public void testGetSurplusQueuedTaskCount() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -936,6 +987,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * peekNextLocalTask returns most recent unexecuted task.
      */
+    @Test
     public void testPeekNextLocalTask() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -956,6 +1008,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * pollNextLocalTask returns most recent unexecuted task
      * without executing it
      */
+    @Test
     public void testPollNextLocalTask() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -975,6 +1028,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * pollTask returns an unexecuted task without executing it
      */
+    @Test
     public void testPollTask() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -994,6 +1048,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
     /**
      * peekNextLocalTask returns least recent unexecuted task in async mode
      */
+    @Test
     public void testPeekNextLocalTaskAsync() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -1015,6 +1070,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * pollNextLocalTask returns least recent unexecuted task without
      * executing it, in async mode
      */
+    @Test
     public void testPollNextLocalTaskAsync() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {
@@ -1035,6 +1091,7 @@ public class RecursiveTaskTest extends JSR166TestCase {
      * pollTask returns an unexecuted task without executing it, in
      * async mode
      */
+    @Test
     public void testPollTaskAsync() {
         RecursiveTask<Integer> a = new CheckedRecursiveTask<Integer>() {
             public Integer realCompute() {

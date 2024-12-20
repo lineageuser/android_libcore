@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.sun.security.x509"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_security_x509"
     }
   ]
 }

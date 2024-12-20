@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.xml"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_javax_xml"
     }
   ]
 }

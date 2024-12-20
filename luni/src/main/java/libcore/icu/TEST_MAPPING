@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.libcore.icu"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_icu"
     }
   ]
 }

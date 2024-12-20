@@ -32,25 +32,40 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.atomic.LongAccumulator;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class LongAccumulatorTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.LongAccumulatorTest");
     }
-    public static Test suite() {
-        return new TestSuite(LongAccumulatorTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(LongAccumulatorTest.class);
+    // }
 
     /**
      * default constructed initializes to zero
      */
+    @Test
     public void testConstructor() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
         assertEquals(0, ai.get());
@@ -59,6 +74,7 @@ public class LongAccumulatorTest extends JSR166TestCase {
     /**
      * accumulate accumulates given value to current, and get returns current value
      */
+    @Test
     public void testAccumulateAndGet() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
         ai.accumulate(2);
@@ -72,6 +88,7 @@ public class LongAccumulatorTest extends JSR166TestCase {
     /**
      * reset() causes subsequent get() to return zero
      */
+    @Test
     public void testReset() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
         ai.accumulate(2);
@@ -83,6 +100,7 @@ public class LongAccumulatorTest extends JSR166TestCase {
     /**
      * getThenReset() returns current value; subsequent get() returns zero
      */
+    @Test
     public void testGetThenReset() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
         ai.accumulate(2);
@@ -94,6 +112,7 @@ public class LongAccumulatorTest extends JSR166TestCase {
     /**
      * toString returns current value.
      */
+    @Test
     public void testToString() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
         assertEquals("0", ai.toString());
@@ -104,6 +123,7 @@ public class LongAccumulatorTest extends JSR166TestCase {
     /**
      * intValue returns current value.
      */
+    @Test
     public void testIntValue() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
         assertEquals(0, ai.intValue());
@@ -114,6 +134,7 @@ public class LongAccumulatorTest extends JSR166TestCase {
     /**
      * longValue returns current value.
      */
+    @Test
     public void testLongValue() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
         assertEquals(0, ai.longValue());
@@ -124,26 +145,29 @@ public class LongAccumulatorTest extends JSR166TestCase {
     /**
      * floatValue returns current value.
      */
+    @Test
     public void testFloatValue() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
-        assertEquals(0.0f, ai.floatValue());
+        assertEquals(0.0f, ai.floatValue(), 0.0f);
         ai.accumulate(1);
-        assertEquals(1.0f, ai.floatValue());
+        assertEquals(1.0f, ai.floatValue(), 0.0f);
     }
 
     /**
      * doubleValue returns current value.
      */
+    @Test
     public void testDoubleValue() {
         LongAccumulator ai = new LongAccumulator(Long::max, 0L);
-        assertEquals(0.0, ai.doubleValue());
+        assertEquals(0.0, ai.doubleValue(), 0.0d);
         ai.accumulate(1);
-        assertEquals(1.0, ai.doubleValue());
+        assertEquals(1.0, ai.doubleValue(), 0.0d);
     }
 
     /**
      * accumulates by multiple threads produce correct result
      */
+    @Test
     public void testAccumulateAndGetMT() {
         final int incs = 1000000;
         final int nthreads = 4;

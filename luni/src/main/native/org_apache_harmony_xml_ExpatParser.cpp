@@ -75,7 +75,7 @@ public:
     void push(JNIEnv* env, jstring s) {
         if (size == capacity) {
             int newCapacity = capacity * 2;
-            jstring* newArray = new jstring[newCapacity];
+            jstring* newArray = new(std::nothrow) jstring[newCapacity];
             if (newArray == NULL) {
                 jniThrowOutOfMemoryError(env, NULL);
                 return;
@@ -259,7 +259,7 @@ static int hashString(const char* s) {
  */
 static InternedString* newInternedString(JNIEnv* env, const char* bytes, int hash) {
     // Allocate a new wrapper.
-    std::unique_ptr<InternedString> wrapper(new InternedString);
+    std::unique_ptr<InternedString> wrapper(new(std::nothrow) InternedString);
     if (wrapper.get() == NULL) {
         jniThrowOutOfMemoryError(env, NULL);
         return NULL;
@@ -267,7 +267,7 @@ static InternedString* newInternedString(JNIEnv* env, const char* bytes, int has
 
     // Create a copy of the UTF-8 bytes.
     // TODO: sometimes we already know the length. Reuse it if so.
-    char* copy = new char[strlen(bytes) + 1];
+    char* copy = new(std::nothrow) char[strlen(bytes) + 1];
     if (copy == NULL) {
         jniThrowOutOfMemoryError(env, NULL);
         return NULL;
@@ -308,7 +308,7 @@ static InternedString* newInternedString(JNIEnv* env, const char* bytes, int has
  * @returns a reference to the bucket
  */
 static InternedString** newInternedStringBucket(InternedString* entry) {
-    InternedString** bucket = new InternedString*[2];
+    InternedString** bucket = new(std::nothrow) InternedString*[2];
     if (bucket != NULL) {
         bucket[0] = entry;
         bucket[1] = NULL;
@@ -332,7 +332,7 @@ static InternedString** expandInternedStringBucket(
 
     // Allocate the new bucket with enough space for one more entry and
     // a null terminator.
-    InternedString** newBucket = new InternedString*[size + 2];
+    InternedString** newBucket = new(std::nothrow) InternedString*[size + 2];
     if (newBucket == NULL) return NULL;
 
     memcpy(newBucket, existingBucket, size * sizeof(InternedString*));
@@ -978,7 +978,7 @@ static void notationDecl(void* data, const char* name, const char* /*base*/, con
 static jlong ExpatParser_initialize(JNIEnv* env, jobject object, jstring javaEncoding,
         jboolean processNamespaces) {
     // Allocate parsing context.
-    std::unique_ptr<ParsingContext> context(new ParsingContext(object));
+    std::unique_ptr<ParsingContext> context(new(std::nothrow) ParsingContext(object));
     if (context.get() == NULL) {
         jniThrowOutOfMemoryError(env, NULL);
         return 0;
@@ -1270,7 +1270,7 @@ static jlong ExpatParser_cloneAttributes(JNIEnv* env, jobject, jlong address, ji
         totalSize += length + 1;
     }
 
-    char* buffer = new char[totalSize];
+    char* buffer = new(std::nothrow) char[totalSize];
     if (buffer == NULL) {
         jniThrowOutOfMemoryError(env, NULL);
         return 0;

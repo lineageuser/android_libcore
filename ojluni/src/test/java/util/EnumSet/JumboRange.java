@@ -31,13 +31,8 @@ package test.java.util.EnumSet;
 
 import java.util.*;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class JumboRange {
-
-    @Test
-    public void testJumboRange() {
+    public static void main(String[] args) {
         test(Test127.class, Test127.T2, Test127.T6);
         test(Test127.class, Test127.T126, Test127.T126);
         test(Test127.class, Test127.T0, Test127.T126);
@@ -45,7 +40,9 @@ public class JumboRange {
 
     static <T extends Enum<T>> void test(Class<T> enumClass, T e0,T e1) {
         EnumSet<T> range = EnumSet.range(e0, e1);
-        Assert.assertEquals(range.size(), e1.ordinal() - e0.ordinal() + 1);
+        if (range.size() != e1.ordinal() - e0.ordinal() + 1)
+            throw new RuntimeException(range.size() + " != " +
+                                       (e1.ordinal() - e0.ordinal() + 1));
     }
 
     public enum Test127 {

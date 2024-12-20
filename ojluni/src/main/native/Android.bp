@@ -25,12 +25,10 @@ filegroup {
         "//libcore",
     ],
     srcs: [
-        "ZipFile.c",
         "Inflater.c",
         "Deflater.c",
         "CRC32.c",
         "Adler32.c",
-        "zip_util.c",
         "jni_util.c",
         "jni_util_md.c",
         "io_util.c",

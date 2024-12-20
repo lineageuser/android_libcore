@@ -1,18 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "org.apache.harmony.sql.tests.java.sql"
-        },
-        {
-          "include-filter": "tests.java.sql"
-        },
-        {
-          "include-filter": "libcore.java.sql"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_java_sql"
     }
   ]
 }

@@ -16,15 +16,26 @@
 
 package libcore.dalvik.system;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import android.platform.test.annotations.RequiresFlagsEnabled;
+
 import java.lang.reflect.Array;
-import junit.framework.TestCase;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import dalvik.system.VMRuntime;
+
+import org.junit.Assume;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Test VMRuntime behavior.
  */
-public final class VMRuntimeTest extends TestCase {
+@RunWith(JUnit4.class)
+public final class VMRuntimeTest {
 
     private void doTestNewNonMovableArray(Class<?> componentType, int step, int maxLength) {
         // Can't create negative sized arrays.
@@ -49,6 +60,7 @@ public final class VMRuntimeTest extends TestCase {
         }
     }
 
+    @Test
     public void testNewNonMovableArray() {
         // Can't create arrays with no component type.
         try {
@@ -103,6 +115,7 @@ public final class VMRuntimeTest extends TestCase {
         }
     }
 
+    @Test
     public void testNewUnpaddedArray() {
         // Can't create arrays with no component type.
         try {
@@ -132,6 +145,72 @@ public final class VMRuntimeTest extends TestCase {
         doTestNewUnpaddedArray(Number.class, step, maxLengthForLoop);
         doTestNewUnpaddedArray(String.class, step, maxLengthForLoop);
         doTestNewUnpaddedArray(Runnable.class, step, maxLengthForLoop);
+    }
+
+    @Test
+    public void testIsVTrunkStableFlagEnabled() {
+        // The flag should be on all stages, including trunk_staging and next.
+        assertTrue(VMRuntime.isVTrunkStableFlagEnabled());
+    }
+
+    @Test
+    public void testIsArtTestFlagEnabled() {
+        boolean b = VMRuntime.isArtTestFlagEnabled();
+        // TODO(b/352723620): The flag value depends on the release
+        // configurations. Don't assert the value until the flag is turned on in
+        // all configurations.
+        Assume.assumeTrue(b);
+    }
+
+    @Test
+    public void testGetFullGcCount() {
+        long gcCount = VMRuntime.getFullGcCount();
+        // full GC count needs to be larger or equal to 0
+        assertTrue("Full GC count needs to be non-negative", gcCount >= 0);
+    }
+
+    @Test
+    @RequiresFlagsEnabled(com.android.libcore.Flags.FLAG_POST_CLEANUP_APIS)
+    public void testPostCleanup() {
+        AtomicInteger cleanupCounter = new AtomicInteger(0);
+
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                cleanupCounter.addAndGet(1);
+            }
+        };
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                cleanupCounter.addAndGet(2);
+            }
+        };
+
+        // test callbacks are called when explicitly trigger onPostCleanup()
+        VMRuntime.addPostCleanupCallback(r1);
+        VMRuntime.addPostCleanupCallback(r2);
+        VMRuntime.onPostCleanup();
+        assertTrue(cleanupCounter.get() == 3);
+
+        // test callbacks are called when GC is triggered and finalization is done
+        System.gc();
+        System.runFinalization();
+        try {
+            int nsleep = 5;
+            while (cleanupCounter.get() < 6 && (nsleep-- > 0)) {
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            assertTrue("Sleep in test interrupted", false);
+        }
+
+        // NOTE: post cleanup could happen more than 1 time, hence the counter could be >= 6
+        int counter = cleanupCounter.get();
+        assertTrue("cleanupCounter should be >=6, got " + counter + " instead", counter >= 6);
+
+        VMRuntime.removePostCleanupCallback(r1);
+        VMRuntime.removePostCleanupCallback(r2);
     }
 }
 

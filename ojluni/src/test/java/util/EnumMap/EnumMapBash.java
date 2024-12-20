@@ -33,14 +33,10 @@ package test.java.util.EnumMap;
 import java.util.*;
 import java.io.*;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class EnumMapBash {
     static Random rnd = new Random();
 
-    @Test
-    public void testMapBash() {
+    public static void main(String[] args) {
         bash(Silly31.class);
         bash(Silly32.class);
         bash(Silly33.class);
@@ -204,7 +200,7 @@ public class EnumMapBash {
             oos.writeObject(oldObj);
             oos.flush();
             ByteArrayInputStream bin = new ByteArrayInputStream(
-                    bos.toByteArray());
+                bos.toByteArray());
             ObjectInputStream ois = new ObjectInputStream(bin);
             return (T) ois.readObject();
         } catch(Exception e) {

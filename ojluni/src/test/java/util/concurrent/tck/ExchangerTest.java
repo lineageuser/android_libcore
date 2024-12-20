@@ -35,26 +35,39 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeoutException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ExchangerTest extends JSR166TestCase {
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ExchangerTest");
     }
-    public static Test suite() {
-        return new TestSuite(ExchangerTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ExchangerTest.class);
+    // }
 
     /**
      * exchange exchanges objects across two threads
      */
+    @Test
     public void testExchange() {
         final Exchanger e = new Exchanger();
         Thread t1 = newStartedThread(new CheckedRunnable() {
@@ -75,6 +88,7 @@ public class ExchangerTest extends JSR166TestCase {
     /**
      * timed exchange exchanges objects across two threads
      */
+    @Test
     public void testTimedExchange() {
         final Exchanger e = new Exchanger();
         Thread t1 = newStartedThread(new CheckedRunnable() {
@@ -95,6 +109,7 @@ public class ExchangerTest extends JSR166TestCase {
     /**
      * interrupt during wait for exchange throws IE
      */
+    @Test
     public void testExchange_InterruptedException() {
         final Exchanger e = new Exchanger();
         final CountDownLatch threadStarted = new CountDownLatch(1);
@@ -112,6 +127,7 @@ public class ExchangerTest extends JSR166TestCase {
     /**
      * interrupt during wait for timed exchange throws IE
      */
+    @Test
     public void testTimedExchange_InterruptedException() {
         final Exchanger e = new Exchanger();
         final CountDownLatch threadStarted = new CountDownLatch(1);
@@ -129,6 +145,7 @@ public class ExchangerTest extends JSR166TestCase {
     /**
      * timeout during wait for timed exchange throws TimeoutException
      */
+    @Test
     public void testExchange_TimeoutException() {
         final Exchanger e = new Exchanger();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -147,6 +164,7 @@ public class ExchangerTest extends JSR166TestCase {
     /**
      * If one exchanging thread is interrupted, another succeeds.
      */
+    @Test
     public void testReplacementAfterExchange() {
         final Exchanger e = new Exchanger();
         final CountDownLatch exchanged = new CountDownLatch(2);

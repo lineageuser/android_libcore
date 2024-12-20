@@ -41,6 +41,7 @@ import static java.util.stream.Collectors.joining;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
+@Test(groups = "unit")
 public class PredicateNotTest {
     // BEGIN Android-added
     // MethodHandle for invoking Predicate.not() to prevent d8 inserting it's backported
@@ -73,7 +74,6 @@ public class PredicateNotTest {
         }
     }
 
-    @Test
     public void test() {
         List<String> test = List.of(
            "A non-empty line",

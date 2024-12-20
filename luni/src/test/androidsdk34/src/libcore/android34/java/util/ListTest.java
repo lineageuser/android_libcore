@@ -18,13 +18,16 @@ package libcore.android34.java.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -227,5 +230,177 @@ public class ListTest {
         assertTrue(myList.removeLast());
         assertTrue(myList.removeLast());
         assertFalse(myList.removeFirst()); // False because the list is empty.
+    }
+
+    @Test
+    public void testPackageProtectedOverriddenMethods() throws ReflectiveOperationException {
+        PackageProtectedList p = new PackageProtectedList();
+        p.addFirst("a");
+        // addFirst() method adds twice.
+        assertEquals(2, p.size());
+        assertEquals("a", p.get(0));
+        assertEquals("a", p.get(1));
+        assertSame(p, p.getFirst());
+
+        List<Object> list = new PackageProtectedList();
+        // Uses reflection API to simulate invoke-interface addFirst from the ART / frameworks.
+        // However, I don't see any usage of List.addFirst in ART, and we can't directly call the
+        // method here because the subclass can only be compiled when compiling SDK 34 or below.
+        Method addFirst = List.class.getMethod("addFirst", Object.class);
+        addFirst.invoke(list, "a");
+        // addFirst() method adds twice.
+        assertEquals(2, p.size());
+    }
+
+    @Test
+    public void testPrivateMethods() throws ReflectiveOperationException {
+        ListWithPrivateMethods p = new ListWithPrivateMethods();
+        p.externalAddFirst("a");
+        // addFirst() method adds twice.
+        assertEquals(2, p.size());
+        assertEquals("a", p.get(0));
+        assertEquals("a", p.get(1));
+        assertSame(p, p.externalGetFirst());
+
+        List<Object> list = new ListWithPrivateMethods();
+        // Uses reflection API to simulate invoke-interface addFirst from the ART / frameworks.
+        // However, I don't see any usage of List.addFirst in ART, and we can't directly call the
+        // method here because the subclass can only be compiled when compiling SDK 34 or below.
+        Method addFirst = List.class.getMethod("addFirst", Object.class);
+        addFirst.invoke(list, "a");
+        // addFirst() method adds twice.
+        assertEquals(2, p.size());
+    }
+
+    public interface ClashList<E> {
+        default void addFirst(E e) {}
+    }
+
+    /** This class doesn't override addFirst(E) */
+    public static class ClashClass implements List<Object>, ClashList<Object> {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @Override
+        public Iterator<Object> iterator() {
+            return null;
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return null;
+        }
+
+        @Override
+        public boolean add(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(int index, Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public Object get(int index) {
+            return null;
+        }
+
+        @Override
+        public Object set(int index, Object element) {
+            return null;
+        }
+
+        @Override
+        public void add(int index, Object element) {
+
+        }
+
+        @Override
+        public Object remove(int index) {
+            return null;
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            return 0;
+        }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            return 0;
+        }
+
+        @Override
+        public ListIterator<Object> listIterator() {
+            return null;
+        }
+
+        @Override
+        public ListIterator<Object> listIterator(int index) {
+            return null;
+        }
+
+        @Override
+        public List<Object> subList(int fromIndex, int toIndex) {
+            return null;
+        }
+    }
+
+    /**
+     * Test for 13.5.7. Interface Method Declarations. It's a known risk of adding
+     * a new default method.
+     */
+    @Test(expected=IncompatibleClassChangeError.class)
+    public void testDefaultMethodClash() {
+        ClashClass l = new ClashClass();
+        l.addFirst("a");
     }
 }

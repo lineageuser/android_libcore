@@ -17,7 +17,6 @@ vichang@google.com
 
 # Emeritus libcore team members; don't send review emails to them
 # unless you are in the libcore team.
-nfuller@google.com #{LAST_RESORT_SUGGESTION}
 paulduffin@google.com #{LAST_RESORT_SUGGESTION}
 
 # Don't send these folks any review emails for this project.

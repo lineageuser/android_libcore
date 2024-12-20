@@ -16,9 +16,20 @@
 
 package libcore.java.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import junit.framework.TestCase;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.lang.reflect.Field;
 import java.util.ConcurrentModificationException;
@@ -26,10 +37,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class WeakHashMapTest extends TestCase {
+@RunWith(JUnit4.class)
+public class WeakHashMapTest {
 
     static Data[] data = new Data[100];
 
+    @Test
     public void test_replaceAll() {
         initializeData();
         WeakHashMap<Data, String> map = new WeakHashMap<>();
@@ -73,6 +86,7 @@ public class WeakHashMapTest extends TestCase {
         assertEquals(data.length, map.size());
     }
 
+    @Test
     public void testContainsNullValue() {
         var map = new WeakHashMap<String, String>();
 
@@ -87,6 +101,7 @@ public class WeakHashMapTest extends TestCase {
         assertTrue(map.containsValue(null));
     }
 
+    @Test
     public void testEntrySet_removeMapping() {
         var map = new WeakHashMap<String, String>();
         assertFalse(map.entrySet().remove(new Object()));
@@ -99,6 +114,7 @@ public class WeakHashMapTest extends TestCase {
         assertTrue(map.isEmpty());
     }
 
+    @Test
     public void testEntrySet_clear() {
         var map = new WeakHashMap<String, String>();
 
@@ -109,6 +125,7 @@ public class WeakHashMapTest extends TestCase {
         assertTrue(map.isEmpty());
     }
 
+    @Test
     public void testEntrySet_entrySetValue() {
         var map = new WeakHashMap<String, String>();
 
@@ -121,6 +138,7 @@ public class WeakHashMapTest extends TestCase {
         assertEquals("new value", map.get("key"));
     }
 
+    @Test
     public void testEntrySet_entryEquals() {
         var map = new WeakHashMap<String, String>();
 
@@ -132,6 +150,7 @@ public class WeakHashMapTest extends TestCase {
         assertNotEquals(entry, Map.entry("key", "another value"));
     }
 
+    @Test
     public void testKeySet_remove() {
         var map = new WeakHashMap<String, String>();
 
@@ -141,6 +160,7 @@ public class WeakHashMapTest extends TestCase {
         assertFalse(keys.remove(new Object()));
     }
 
+    @Test
     public void testKeySet_clear() {
         var map = new WeakHashMap<String, String>();
 
@@ -150,6 +170,7 @@ public class WeakHashMapTest extends TestCase {
         assertTrue(map.isEmpty());
     }
 
+    @Test
     public void testValues_clear() {
         var map = new WeakHashMap<String, String>();
 
@@ -159,6 +180,7 @@ public class WeakHashMapTest extends TestCase {
         assertTrue(map.isEmpty());
     }
 
+    @Test
     public void test_putAll() throws Throwable {
         var map = new WeakHashMap<String, String>();
 
@@ -173,6 +195,17 @@ public class WeakHashMapTest extends TestCase {
         map.putAll(anotherMap);
 
         assertEquals(anotherMap, map);
+    }
+
+    @Test
+    public void factoryMethod() {
+        assertNotNull(WeakHashMap.newWeakHashMap(0));
+        assertNotNull(WeakHashMap.newWeakHashMap(10));
+    }
+
+    @Test
+    public void factoryMethod_invalidArgs() {
+        assertThrows(IllegalArgumentException.class, () -> WeakHashMap.newWeakHashMap(-10));
     }
 
     private int threshold(WeakHashMap map) throws Exception {

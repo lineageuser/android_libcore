@@ -33,6 +33,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -46,16 +55,21 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Future;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ExecutorCompletionService9Test extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ExecutorCompletionService9Test");
     }
-    public static Test suite() {
-        return new TestSuite(ExecutorCompletionService9Test.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ExecutorCompletionService9Test.class);
+    // }
 
     void solveAll(Executor e,
                   Collection<Callable<Integer>> solvers)
@@ -107,6 +121,7 @@ public class ExecutorCompletionService9Test extends JSR166TestCase {
     /**
      * The first "solvers" sample code in the class javadoc works.
      */
+    @Test
     public void testSolveAll()
         throws InterruptedException, ExecutionException {
         results = null;
@@ -124,6 +139,7 @@ public class ExecutorCompletionService9Test extends JSR166TestCase {
     /**
      * The second "solvers" sample code in the class javadoc works.
      */
+    @Test
     public void testSolveAny()
         throws InterruptedException {
         results = null;

@@ -208,4 +208,18 @@ public class CloseGuardTest {
             super.finalize();
         }
     }
+
+    private static class TestReporter implements CloseGuard.Reporter {
+
+        @Override
+        public void report(String message, Throwable allocationSite) {}
+    }
+
+    @Test
+    public void testReporterReport() {
+        TestReporter reporter = new TestReporter();
+        reporter.report("message");
+        reporter.report("message", new RuntimeException());
+    }
+
 }

@@ -35,6 +35,14 @@
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,14 +78,14 @@ import junit.framework.Test;
  * Contains tests applicable to all jdk8+ Collection implementations.
  * An extension of CollectionTest.
  */
-// Android-changed: Mark this abstract to prevent scanned by the JUnit directly. http://b/181312360
+// Android-changed: Mark this class as abstract to prevent it being scanned and run by the JUnit
+// directly. http://b/181312360
 // public class Collection8Test extends JSR166TestCase {
 public abstract class Collection8Test extends JSR166TestCase {
     final CollectionImplementation impl;
 
     /** Tests are parameterized by a Collection implementation. */
     Collection8Test(CollectionImplementation impl, String methodName) {
-        super(methodName);
         this.impl = impl;
     }
 
@@ -93,9 +101,10 @@ public abstract class Collection8Test extends JSR166TestCase {
     public static Test testSuite(CollectionImplementation impl) {
         // Android-changed: Prevent scanned by the JUnit directly. http://b/181312360
         // return parameterizedTestSuite(Collection8Test.class,
-        return parameterizedTestSuite(AndroidCollection8Test.class,
-                                      CollectionImplementation.class,
-                                      impl);
+        // return parameterizedTestSuite(AndroidCollection8Test.class,
+        //                               CollectionImplementation.class,
+        //                               impl);
+        return null;
     }
 
     Object bomb() {

@@ -33,6 +33,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
@@ -43,20 +52,24 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Tests of atomic class methods accepting lambdas introduced in JDK8.
  */
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class Atomic8Test extends JSR166TestCase {
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.Atomic8Test");
     }
-    public static Test suite() {
-        return new TestSuite(Atomic8Test.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(Atomic8Test.class);
+    // }
 
     static long addLong17(long x) { return x + 17; }
     static int addInt17(int x) { return x + 17; }
@@ -90,6 +103,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLong getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testLongGetAndUpdate() {
         AtomicLong a = new AtomicLong(1L);
         assertEquals(1L, a.getAndUpdate(Atomic8Test::addLong17));
@@ -101,6 +115,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLong updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testLongUpdateAndGet() {
         AtomicLong a = new AtomicLong(1L);
         assertEquals(18L, a.updateAndGet(Atomic8Test::addLong17));
@@ -111,6 +126,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLong getAndAccumulate returns previous value and updates
      * with supplied function.
      */
+    @Test
     public void testLongGetAndAccumulate() {
         AtomicLong a = new AtomicLong(1L);
         assertEquals(1L, a.getAndAccumulate(2L, Long::sum));
@@ -122,6 +138,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLong accumulateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testLongAccumulateAndGet() {
         AtomicLong a = new AtomicLong(1L);
         assertEquals(7L, a.accumulateAndGet(6L, Long::sum));
@@ -133,6 +150,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicInteger getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testIntGetAndUpdate() {
         AtomicInteger a = new AtomicInteger(1);
         assertEquals(1, a.getAndUpdate(Atomic8Test::addInt17));
@@ -144,6 +162,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicInteger updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testIntUpdateAndGet() {
         AtomicInteger a = new AtomicInteger(1);
         assertEquals(18, a.updateAndGet(Atomic8Test::addInt17));
@@ -155,6 +174,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicInteger getAndAccumulate returns previous value and updates
      * with supplied function.
      */
+    @Test
     public void testIntGetAndAccumulate() {
         AtomicInteger a = new AtomicInteger(1);
         assertEquals(1, a.getAndAccumulate(2, Integer::sum));
@@ -166,6 +186,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicInteger accumulateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testIntAccumulateAndGet() {
         AtomicInteger a = new AtomicInteger(1);
         assertEquals(7, a.accumulateAndGet(6, Integer::sum));
@@ -177,6 +198,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReference getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testReferenceGetAndUpdate() {
         AtomicReference<Integer> a = new AtomicReference<>(one);
         assertEquals((Integer) 1, a.getAndUpdate(Atomic8Test::addInteger17));
@@ -188,6 +210,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReference updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testReferenceUpdateAndGet() {
         AtomicReference<Integer> a = new AtomicReference<>(one);
         assertEquals((Integer) 18, a.updateAndGet(Atomic8Test::addInteger17));
@@ -199,6 +222,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReference getAndAccumulate returns previous value and updates
      * with supplied function.
      */
+    @Test
     public void testReferenceGetAndAccumulate() {
         AtomicReference<Integer> a = new AtomicReference<>(one);
         assertEquals((Integer) 1, a.getAndAccumulate(2, Atomic8Test::sumInteger));
@@ -210,6 +234,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReference accumulateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testReferenceAccumulateAndGet() {
         AtomicReference<Integer> a = new AtomicReference<>(one);
         assertEquals((Integer) 7, a.accumulateAndGet(6, Atomic8Test::sumInteger));
@@ -221,6 +246,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongArray getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testLongArrayGetAndUpdate() {
         AtomicLongArray a = new AtomicLongArray(1);
         a.set(0, 1);
@@ -233,6 +259,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongArray updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testLongArrayUpdateAndGet() {
         AtomicLongArray a = new AtomicLongArray(1);
         a.set(0, 1);
@@ -245,6 +272,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongArray getAndAccumulate returns previous value and updates
      * with supplied function.
      */
+    @Test
     public void testLongArrayGetAndAccumulate() {
         AtomicLongArray a = new AtomicLongArray(1);
         a.set(0, 1);
@@ -257,6 +285,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongArray accumulateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testLongArrayAccumulateAndGet() {
         AtomicLongArray a = new AtomicLongArray(1);
         a.set(0, 1);
@@ -269,6 +298,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerArray getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testIntArrayGetAndUpdate() {
         AtomicIntegerArray a = new AtomicIntegerArray(1);
         a.set(0, 1);
@@ -281,6 +311,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerArray updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testIntArrayUpdateAndGet() {
         AtomicIntegerArray a = new AtomicIntegerArray(1);
         a.set(0, 1);
@@ -293,6 +324,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerArray getAndAccumulate returns previous value and updates
      * with supplied function.
      */
+    @Test
     public void testIntArrayGetAndAccumulate() {
         AtomicIntegerArray a = new AtomicIntegerArray(1);
         a.set(0, 1);
@@ -305,6 +337,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerArray accumulateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testIntArrayAccumulateAndGet() {
         AtomicIntegerArray a = new AtomicIntegerArray(1);
         a.set(0, 1);
@@ -316,6 +349,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceArray getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testReferenceArrayGetAndUpdate() {
         AtomicReferenceArray<Integer> a = new AtomicReferenceArray<>(1);
         a.set(0, one);
@@ -328,6 +362,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceArray updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testReferenceArrayUpdateAndGet() {
         AtomicReferenceArray<Integer> a = new AtomicReferenceArray<>(1);
         a.set(0, one);
@@ -339,6 +374,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceArray getAndAccumulate returns previous value and updates
      * with supplied function.
      */
+    @Test
     public void testReferenceArrayGetAndAccumulate() {
         AtomicReferenceArray<Integer> a = new AtomicReferenceArray<>(1);
         a.set(0, one);
@@ -351,6 +387,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceArray accumulateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testReferenceArrayAccumulateAndGet() {
         AtomicReferenceArray<Integer> a = new AtomicReferenceArray<>(1);
         a.set(0, one);
@@ -362,6 +399,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongFieldUpdater getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testLongFieldUpdaterGetAndUpdate() {
         AtomicLongFieldUpdater a = aLongFieldUpdater();
         a.set(this, 1);
@@ -375,6 +413,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongFieldUpdater updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testLongFieldUpdaterUpdateAndGet() {
         AtomicLongFieldUpdater a = aLongFieldUpdater();
         a.set(this, 1);
@@ -388,6 +427,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongFieldUpdater getAndAccumulate returns previous value
      * and updates with supplied function.
      */
+    @Test
     public void testLongFieldUpdaterGetAndAccumulate() {
         AtomicLongFieldUpdater a = aLongFieldUpdater();
         a.set(this, 1);
@@ -401,6 +441,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicLongFieldUpdater accumulateAndGet updates with supplied
      * function and returns result.
      */
+    @Test
     public void testLongFieldUpdaterAccumulateAndGet() {
         AtomicLongFieldUpdater a = aLongFieldUpdater();
         a.set(this, 1);
@@ -414,6 +455,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerFieldUpdater getAndUpdate returns previous value and updates
      * result of supplied function
      */
+    @Test
     public void testIntegerFieldUpdaterGetAndUpdate() {
         AtomicIntegerFieldUpdater a = anIntFieldUpdater();
         a.set(this, 1);
@@ -427,6 +469,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerFieldUpdater updateAndGet updates with supplied function and
      * returns result.
      */
+    @Test
     public void testIntegerFieldUpdaterUpdateAndGet() {
         AtomicIntegerFieldUpdater a = anIntFieldUpdater();
         a.set(this, 1);
@@ -440,6 +483,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerFieldUpdater getAndAccumulate returns previous value
      * and updates with supplied function.
      */
+    @Test
     public void testIntegerFieldUpdaterGetAndAccumulate() {
         AtomicIntegerFieldUpdater a = anIntFieldUpdater();
         a.set(this, 1);
@@ -453,6 +497,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicIntegerFieldUpdater accumulateAndGet updates with supplied
      * function and returns result.
      */
+    @Test
     public void testIntegerFieldUpdaterAccumulateAndGet() {
         AtomicIntegerFieldUpdater a = anIntFieldUpdater();
         a.set(this, 1);
@@ -466,6 +511,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceFieldUpdater getAndUpdate returns previous value
      * and updates result of supplied function
      */
+    @Test
     public void testReferenceFieldUpdaterGetAndUpdate() {
         AtomicReferenceFieldUpdater<Atomic8Test,Integer> a = anIntegerFieldUpdater();
         a.set(this, one);
@@ -479,6 +525,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceFieldUpdater updateAndGet updates with supplied
      * function and returns result.
      */
+    @Test
     public void testReferenceFieldUpdaterUpdateAndGet() {
         AtomicReferenceFieldUpdater<Atomic8Test,Integer> a = anIntegerFieldUpdater();
         a.set(this, one);
@@ -492,6 +539,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceFieldUpdater returns previous value and updates
      * with supplied function.
      */
+    @Test
     public void testReferenceFieldUpdaterGetAndAccumulate() {
         AtomicReferenceFieldUpdater<Atomic8Test,Integer> a = anIntegerFieldUpdater();
         a.set(this, one);
@@ -505,6 +553,7 @@ public class Atomic8Test extends JSR166TestCase {
      * AtomicReferenceFieldUpdater accumulateAndGet updates with
      * supplied function and returns result.
      */
+    @Test
     public void testReferenceFieldUpdaterAccumulateAndGet() {
         AtomicReferenceFieldUpdater<Atomic8Test,Integer> a = anIntegerFieldUpdater();
         a.set(this, one);
@@ -518,6 +567,7 @@ public class Atomic8Test extends JSR166TestCase {
      * All Atomic getAndUpdate methods throw NullPointerException on
      * null function argument
      */
+    @Test
     public void testGetAndUpdateNPE() {
         Runnable[] throwingActions = {
             () -> new AtomicLong().getAndUpdate(null),
@@ -536,6 +586,7 @@ public class Atomic8Test extends JSR166TestCase {
     /**
      * All Atomic updateAndGet methods throw NullPointerException on null function argument
      */
+    @Test
     public void testUpdateAndGetNPE() {
         Runnable[] throwingActions = {
             () -> new AtomicLong().updateAndGet(null),
@@ -555,6 +606,7 @@ public class Atomic8Test extends JSR166TestCase {
      * All Atomic getAndAccumulate methods throw NullPointerException
      * on null function argument
      */
+    @Test
     public void testGetAndAccumulateNPE() {
         Runnable[] throwingActions = {
             () -> new AtomicLong().getAndAccumulate(1L, null),
@@ -574,6 +626,7 @@ public class Atomic8Test extends JSR166TestCase {
      * All Atomic accumulateAndGet methods throw NullPointerException
      * on null function argument
      */
+    @Test
     public void testAccumulateAndGetNPE() {
         Runnable[] throwingActions = {
             () -> new AtomicLong().accumulateAndGet(1L, null),
@@ -594,6 +647,7 @@ public class Atomic8Test extends JSR166TestCase {
      * instances of the class passed to the newUpdater call will
      * result in a ClassCastException being thrown.
      */
+    @Test
     public void testFieldUpdaters_ClassCastException() {
         // Use raw types to allow passing wrong object type, provoking CCE
         final AtomicLongFieldUpdater longUpdater = aLongFieldUpdater();

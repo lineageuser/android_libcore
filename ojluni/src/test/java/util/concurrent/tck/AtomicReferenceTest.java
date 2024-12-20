@@ -34,22 +34,37 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicReference;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicReferenceTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicReferenceTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicReferenceTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicReferenceTest.class);
+    // }
 
     /**
      * constructor initializes to given value
      */
+    @Test
     public void testConstructor() {
         AtomicReference ai = new AtomicReference(one);
         assertSame(one, ai.get());
@@ -58,6 +73,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
     /**
      * default constructed initializes to null
      */
+    @Test
     public void testConstructor2() {
         AtomicReference ai = new AtomicReference();
         assertNull(ai.get());
@@ -66,6 +82,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
     /**
      * get returns the last value set
      */
+    @Test
     public void testGetSet() {
         AtomicReference ai = new AtomicReference(one);
         assertSame(one, ai.get());
@@ -78,6 +95,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
     /**
      * get returns the last value lazySet in same thread
      */
+    @Test
     public void testGetLazySet() {
         AtomicReference ai = new AtomicReference(one);
         assertSame(one, ai.get());
@@ -90,6 +108,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
     /**
      * compareAndSet succeeds in changing value if equal to expected else fails
      */
+    @Test
     public void testCompareAndSet() {
         AtomicReference ai = new AtomicReference(one);
         assertTrue(ai.compareAndSet(one, two));
@@ -105,6 +124,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         final AtomicReference ai = new AtomicReference(one);
         Thread t = new Thread(new CheckedRunnable() {
@@ -124,6 +144,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing value when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         AtomicReference ai = new AtomicReference(one);
         do {} while (!ai.weakCompareAndSet(one, two));
@@ -136,6 +157,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
     /**
      * getAndSet returns previous value and sets to given value
      */
+    @Test
     public void testGetAndSet() {
         AtomicReference ai = new AtomicReference(one);
         assertSame(one, ai.getAndSet(zero));
@@ -146,6 +168,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
     /**
      * a deserialized serialized atomic holds same value
      */
+    @Test
     public void testSerialization() throws Exception {
         AtomicReference x = new AtomicReference();
         AtomicReference y = serialClone(x);
@@ -161,6 +184,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
     /**
      * toString returns current value.
      */
+    @Test
     public void testToString() {
         AtomicReference<Integer> ai = new AtomicReference<>(one);
         assertEquals(one.toString(), ai.toString());

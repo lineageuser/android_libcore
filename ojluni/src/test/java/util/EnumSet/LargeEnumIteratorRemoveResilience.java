@@ -38,12 +38,9 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class LargeEnumIteratorRemoveResilience {
     // enum with more than 64 values
-    private enum LargeEnum {
+    private static enum LargeEnum {
         e00, e01, e02, e03, e04, e05, e06, e07,
         e08, e09, e0A, e0B, e0C, e0D, e0E, e0F,
         e10, e11, e12, e13, e14, e15, e16, e17,
@@ -56,8 +53,7 @@ public class LargeEnumIteratorRemoveResilience {
         e48, e49, e4A, e4B, e4C, e4D, e4E, e4F,
     }
 
-    @Test
-    public void testLargeEnumIterator() throws Exception {
+    public static void main(final String[] args) throws Exception {
         final Set<LargeEnum> set = EnumSet.noneOf(LargeEnum.class);
 
         set.add(LargeEnum.e2D);
@@ -90,8 +86,13 @@ public class LargeEnumIteratorRemoveResilience {
     }
 
     private static void checkSetAfterRemoval(final Set<LargeEnum> set,
-            final int origSize, final LargeEnum removedElement) {
-        Assert.assertEquals(set.size(), (origSize - 1));
-        Assert.assertFalse(set.contains(removedElement));
+            final int origSize, final LargeEnum removedElement)
+            throws Exception {
+        if (set.size() != (origSize - 1)) {
+            throw new Exception("Test FAILED: Unexpected set size after removal; expected '" + (origSize - 1) + "' but found '" + set.size() + "'");
+        }
+        if (set.contains(removedElement)) {
+            throw new Exception("Test FAILED: Element returned from iterator unexpectedly still in set after removal.");
+        }
     }
 }

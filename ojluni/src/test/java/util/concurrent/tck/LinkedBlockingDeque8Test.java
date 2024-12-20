@@ -33,24 +33,38 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.Spliterator;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class LinkedBlockingDeque8Test extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.LinkedBlockingDeque8Test");
     }
-
-    public static Test suite() {
-        return newTestSuite(LinkedBlockingDeque8Test.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(LinkedBlockingDeque8Test.class);
+    // }
 
     /**
      * Spliterator.getComparator always throws IllegalStateException
      */
+    @Test
     public void testSpliterator_getComparator() {
         assertThrows(IllegalStateException.class,
                      () -> new LinkedBlockingDeque().spliterator().getComparator());
@@ -59,6 +73,7 @@ public class LinkedBlockingDeque8Test extends JSR166TestCase {
     /**
      * Spliterator characteristics are as advertised
      */
+    @Test
     public void testSpliterator_characteristics() {
         LinkedBlockingDeque q = new LinkedBlockingDeque();
         Spliterator s = q.spliterator();

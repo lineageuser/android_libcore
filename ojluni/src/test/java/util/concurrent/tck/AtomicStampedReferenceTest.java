@@ -34,22 +34,37 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicStampedReference;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicStampedReferenceTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicStampedReferenceTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicStampedReferenceTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicStampedReferenceTest.class);
+    // }
 
     /**
      * constructor initializes to given reference and stamp
      */
+    @Test
     public void testConstructor() {
         AtomicStampedReference ai = new AtomicStampedReference(one, 0);
         assertSame(one, ai.getReference());
@@ -62,6 +77,7 @@ public class AtomicStampedReferenceTest extends JSR166TestCase {
     /**
      * get returns the last values of reference and stamp set
      */
+    @Test
     public void testGetSet() {
         int[] mark = new int[1];
         AtomicStampedReference ai = new AtomicStampedReference(one, 0);
@@ -84,6 +100,7 @@ public class AtomicStampedReferenceTest extends JSR166TestCase {
     /**
      * attemptStamp succeeds in single thread
      */
+    @Test
     public void testAttemptStamp() {
         int[] mark = new int[1];
         AtomicStampedReference ai = new AtomicStampedReference(one, 0);
@@ -98,6 +115,7 @@ public class AtomicStampedReferenceTest extends JSR166TestCase {
      * compareAndSet succeeds in changing values if equal to expected reference
      * and stamp else fails
      */
+    @Test
     public void testCompareAndSet() {
         int[] mark = new int[1];
         AtomicStampedReference ai = new AtomicStampedReference(one, 0);
@@ -122,6 +140,7 @@ public class AtomicStampedReferenceTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for reference value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         final AtomicStampedReference ai = new AtomicStampedReference(one, 0);
         Thread t = new Thread(new CheckedRunnable() {
@@ -142,6 +161,7 @@ public class AtomicStampedReferenceTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for stamp value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads2() throws Exception {
         final AtomicStampedReference ai = new AtomicStampedReference(one, 0);
         Thread t = new Thread(new CheckedRunnable() {
@@ -162,6 +182,7 @@ public class AtomicStampedReferenceTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing values when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         int[] mark = new int[1];
         AtomicStampedReference ai = new AtomicStampedReference(one, 0);

@@ -34,23 +34,37 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     volatile int x = 0;
     protected volatile int protectedField;
     private volatile int privateField;
     int w;
     float z;
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicIntegerFieldUpdaterTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicIntegerFieldUpdaterTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicIntegerFieldUpdaterTest.class);
+    // }
 
     // for testing subclass access
     static class AtomicIntegerFieldUpdaterTestSubclass extends AtomicIntegerFieldUpdaterTest {
@@ -111,6 +125,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * Construction with non-existent field throws RuntimeException
      */
+    @Test
     public void testConstructor() {
         try {
             updaterFor("y");
@@ -123,6 +138,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * construction with field not of given type throws IllegalArgumentException
      */
+    @Test
     public void testConstructor2() {
         try {
             updaterFor("z");
@@ -133,6 +149,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * construction with non-volatile field throws IllegalArgumentException
      */
+    @Test
     public void testConstructor3() {
         try {
             updaterFor("w");
@@ -143,6 +160,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * construction using private field from subclass throws RuntimeException
      */
+    @Test
     public void testPrivateFieldInSubclass() {
         AtomicIntegerFieldUpdaterTestSubclass s =
             new AtomicIntegerFieldUpdaterTestSubclass();
@@ -153,6 +171,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
      * construction from unrelated class; package access is allowed,
      * private access is not
      */
+    @Test
     public void testUnrelatedClassAccess() {
         new UnrelatedClass().checkPackageAccess(this);
         new UnrelatedClass().checkPrivateAccess(this);
@@ -161,6 +180,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * get returns the last value set or assigned
      */
+    @Test
     public void testGetSet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -175,6 +195,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * get returns the last value lazySet by same thread
      */
+    @Test
     public void testGetLazySet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -189,6 +210,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * compareAndSet succeeds in changing value if equal to expected else fails
      */
+    @Test
     public void testCompareAndSet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -206,6 +228,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
      * compareAndSet succeeds in changing protected field value if
      * equal to expected else fails
      */
+    @Test
     public void testCompareAndSetProtected() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("protectedField");
@@ -223,6 +246,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
      * compareAndSet succeeds in changing protected field value if
      * equal to expected else fails
      */
+    @Test
     public void testCompareAndSetProtectedInSubclass() {
         AtomicIntegerFieldUpdaterTestSubclass s =
             new AtomicIntegerFieldUpdaterTestSubclass();
@@ -233,6 +257,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         x = 1;
         final AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
@@ -255,6 +280,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing value when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -269,6 +295,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * getAndSet returns previous value and sets to given value
      */
+    @Test
     public void testGetAndSet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -281,6 +308,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * getAndAdd returns previous value and adds given value
      */
+    @Test
     public void testGetAndAdd() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -294,6 +322,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * getAndDecrement returns previous value and decrements
      */
+    @Test
     public void testGetAndDecrement() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -306,6 +335,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * getAndIncrement returns previous value and increments
      */
+    @Test
     public void testGetAndIncrement() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -322,6 +352,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * addAndGet adds given value to current, and returns current value
      */
+    @Test
     public void testAddAndGet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -335,6 +366,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * decrementAndGet decrements and returns current value
      */
+    @Test
     public void testDecrementAndGet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");
@@ -348,6 +380,7 @@ public class AtomicIntegerFieldUpdaterTest extends JSR166TestCase {
     /**
      * incrementAndGet increments and returns current value
      */
+    @Test
     public void testIncrementAndGet() {
         AtomicIntegerFieldUpdater<AtomicIntegerFieldUpdaterTest> a;
         a = updaterFor("x");

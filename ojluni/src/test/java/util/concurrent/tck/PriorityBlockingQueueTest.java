@@ -35,6 +35,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,39 +57,50 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import junit.framework.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class PriorityBlockingQueueTest extends JSR166TestCase {
 
+    // Android-changed: Use JUnit4.
+    @RunWith(JUnit4.class)
     public static class Generic extends BlockingQueueTest {
         protected BlockingQueue emptyCollection() {
             return new PriorityBlockingQueue();
         }
     }
 
+    // Android-changed: Use JUnit4.
+    @RunWith(JUnit4.class)
     public static class InitialCapacity extends BlockingQueueTest {
         protected BlockingQueue emptyCollection() {
             return new PriorityBlockingQueue(SIZE);
         }
     }
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.PriorityBlockingQueueTest");
     }
 
-    public static Test suite() {
-        class Implementation implements CollectionImplementation {
-            public Class<?> klazz() { return PriorityBlockingQueue.class; }
-            public Collection emptyCollection() { return new PriorityBlockingQueue(); }
-            public Object makeElement(int i) { return i; }
-            public boolean isConcurrent() { return true; }
-            public boolean permitsNulls() { return false; }
-        }
-        return newTestSuite(PriorityBlockingQueueTest.class,
-                            new Generic().testSuite(),
-                            new InitialCapacity().testSuite(),
-                            CollectionTest.testSuite(new Implementation()));
-    }
+    // Android-removed: No usage of suite().
+    // public static Test suite() {
+    //     class Implementation implements CollectionImplementation {
+    //         public Class<?> klazz() { return PriorityBlockingQueue.class; }
+    //         public Collection emptyCollection() { return new PriorityBlockingQueue(); }
+    //         public Object makeElement(int i) { return i; }
+    //         public boolean isConcurrent() { return true; }
+    //         public boolean permitsNulls() { return false; }
+    //     }
+    //     return newTestSuite(PriorityBlockingQueueTest.class,
+    //                         new Generic().testSuite(),
+    //                         new InitialCapacity().testSuite(),
+    //                         CollectionTest.testSuite(new Implementation()));
+    // }
 
     /** Sample Comparator */
     static class MyReverseComparator implements Comparator {
@@ -112,6 +131,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * A new queue has unbounded capacity
      */
+    @Test
     public void testConstructor1() {
         assertEquals(Integer.MAX_VALUE,
                      new PriorityBlockingQueue(SIZE).remainingCapacity());
@@ -120,6 +140,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Constructor throws IAE if capacity argument nonpositive
      */
+    @Test
     public void testConstructor2() {
         try {
             new PriorityBlockingQueue(0);
@@ -130,6 +151,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Initializing from null Collection throws NPE
      */
+    @Test
     public void testConstructor3() {
         try {
             new PriorityBlockingQueue(null);
@@ -140,6 +162,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Initializing from Collection of null elements throws NPE
      */
+    @Test
     public void testConstructor4() {
         Collection<Integer> elements = Arrays.asList(new Integer[SIZE]);
         try {
@@ -151,6 +174,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Initializing from Collection with some null elements throws NPE
      */
+    @Test
     public void testConstructor5() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
@@ -165,6 +189,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Queue contains all elements of collection used to initialize
      */
+    @Test
     public void testConstructor6() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
@@ -177,6 +202,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * The comparator used in constructor is used
      */
+    @Test
     public void testConstructor7() {
         MyReverseComparator cmp = new MyReverseComparator();
         PriorityBlockingQueue q = new PriorityBlockingQueue(SIZE, cmp);
@@ -192,6 +218,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         PriorityBlockingQueue q = new PriorityBlockingQueue(2);
         assertTrue(q.isEmpty());
@@ -207,6 +234,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * remainingCapacity() always returns Integer.MAX_VALUE
      */
+    @Test
     public void testRemainingCapacity() {
         BlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -224,6 +252,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Offer of comparable element succeeds
      */
+    @Test
     public void testOffer() {
         PriorityBlockingQueue q = new PriorityBlockingQueue(1);
         assertTrue(q.offer(zero));
@@ -233,6 +262,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Offer of non-Comparable throws CCE
      */
+    @Test
     public void testOfferNonComparable() {
         PriorityBlockingQueue q = new PriorityBlockingQueue(1);
         try {
@@ -248,6 +278,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * add of comparable succeeds
      */
+    @Test
     public void testAdd() {
         PriorityBlockingQueue q = new PriorityBlockingQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -259,6 +290,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * addAll(this) throws IAE
      */
+    @Test
     public void testAddAllSelf() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         try {
@@ -271,6 +303,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         PriorityBlockingQueue q = new PriorityBlockingQueue(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -285,6 +318,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Queue contains all elements of successful addAll
      */
+    @Test
     public void testAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -300,6 +334,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * all elements successfully put are contained
      */
+    @Test
     public void testPut() {
         PriorityBlockingQueue q = new PriorityBlockingQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -313,6 +348,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * put doesn't block waiting for take
      */
+    @Test
     public void testPutWithTake() throws InterruptedException {
         final PriorityBlockingQueue q = new PriorityBlockingQueue(2);
         final int size = 4;
@@ -330,6 +366,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * timed offer does not time out
      */
+    @Test
     public void testTimedOffer() throws InterruptedException {
         final PriorityBlockingQueue q = new PriorityBlockingQueue(2);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -346,6 +383,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * take retrieves elements in priority order
      */
+    @Test
     public void testTake() throws InterruptedException {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -356,6 +394,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * Take removes existing elements until empty, then blocks interruptibly
      */
+    @Test
     public void testBlockingTake() throws InterruptedException {
         final PriorityBlockingQueue q = populatedQueue(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -389,6 +428,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * poll succeeds unless empty
      */
+    @Test
     public void testPoll() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -400,6 +440,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * timed poll with zero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPoll0() throws InterruptedException {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -411,6 +452,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * timed poll with nonzero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPoll() throws InterruptedException {
         PriorityBlockingQueue<Integer> q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -428,6 +470,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
      * Interrupted timed poll throws InterruptedException instead of
      * returning timeout status
      */
+    @Test
     public void testInterruptedTimedPoll() throws InterruptedException {
         final BlockingQueue<Integer> q = populatedQueue(SIZE);
         final CountDownLatch aboutToWait = new CountDownLatch(1);
@@ -455,6 +498,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * peek returns next element, or null if empty
      */
+    @Test
     public void testPeek() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -469,6 +513,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * element returns next element, or throws NSEE if empty
      */
+    @Test
     public void testElement() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -484,6 +529,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * remove removes next element, or throws NSEE if empty
      */
+    @Test
     public void testRemove() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -498,6 +544,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -510,6 +557,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testClear() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         q.clear();
@@ -525,6 +573,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         PriorityBlockingQueue p = new PriorityBlockingQueue(SIZE);
@@ -539,6 +588,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testRetainAll() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         PriorityBlockingQueue p = populatedQueue(SIZE);
@@ -558,6 +608,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             PriorityBlockingQueue q = populatedQueue(SIZE);
@@ -574,6 +625,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * toArray contains all elements
      */
+    @Test
     public void testToArray() throws InterruptedException {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         Object[] o = q.toArray();
@@ -585,6 +637,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements
      */
+    @Test
     public void testToArray2() throws InterruptedException {
         PriorityBlockingQueue<Integer> q = populatedQueue(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -598,6 +651,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * toArray(incompatible array type) throws ArrayStoreException
      */
+    @Test
     public void testToArray1_BadArg() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         try {
@@ -609,6 +663,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * iterator iterates through all elements
      */
+    @Test
     public void testIterator() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         Iterator it = q.iterator();
@@ -622,6 +677,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * iterator of empty collection has no elements
      */
+    @Test
     public void testEmptyIterator() {
         assertIteratorExhausted(new PriorityBlockingQueue().iterator());
     }
@@ -629,6 +685,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * iterator.remove removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final PriorityBlockingQueue q = new PriorityBlockingQueue(3);
         q.add(new Integer(2));
@@ -648,6 +705,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * toString contains toStrings of elements
      */
+    @Test
     public void testToString() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         String s = q.toString();
@@ -659,6 +717,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * timed poll transfers elements across Executor tasks
      */
+    @Test
     public void testPollInExecutor() {
         final PriorityBlockingQueue q = new PriorityBlockingQueue(2);
         final CheckedBarrier threadsStarted = new CheckedBarrier(2);
@@ -683,6 +742,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * A deserialized serialized queue has same elements
      */
+    @Test
     public void testSerialization() throws Exception {
         Queue x = populatedQueue(SIZE);
         Queue y = serialClone(x);
@@ -699,6 +759,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo(c) empties queue into another collection c
      */
+    @Test
     public void testDrainTo() {
         PriorityBlockingQueue q = populatedQueue(SIZE);
         ArrayList l = new ArrayList();
@@ -723,6 +784,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo empties queue
      */
+    @Test
     public void testDrainToWithActivePut() throws InterruptedException {
         final PriorityBlockingQueue q = populatedQueue(SIZE);
         Thread t = new Thread(new CheckedRunnable() {
@@ -743,6 +805,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo(c, n) empties first min(n, size) elements of queue into c
      */
+    @Test
     public void testDrainToN() {
         PriorityBlockingQueue q = new PriorityBlockingQueue(SIZE * 2);
         for (int i = 0; i < SIZE + 2; ++i) {
@@ -762,6 +825,7 @@ public class PriorityBlockingQueueTest extends JSR166TestCase {
     /**
      * remove(null), contains(null) always return false
      */
+    @Test
     public void testNeverContainsNull() {
         Collection<?>[] qs = {
             new PriorityBlockingQueue<Object>(),

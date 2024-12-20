@@ -36,6 +36,14 @@ package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,16 +55,21 @@ import java.util.concurrent.locks.StampedLock;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class StampedLockTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.StampedLockTest");
     }
-    public static Test suite() {
-        return new TestSuite(StampedLockTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(StampedLockTest.class);
+    // }
 
     /**
      * Releases write lock, checking isWriteLocked before and after
@@ -154,6 +167,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * Constructed StampedLock is in unlocked state
      */
+    @Test
     public void testConstructor() {
         assertUnlocked(new StampedLock());
     }
@@ -161,6 +175,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * write-locking, then unlocking, an unlocked lock succeed
      */
+    @Test
     public void testWriteLock_lockUnlock() {
         StampedLock lock = new StampedLock();
 
@@ -183,6 +198,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * read-locking, then unlocking, an unlocked lock succeed
      */
+    @Test
     public void testReadLock_lockUnlock() {
         StampedLock lock = new StampedLock();
 
@@ -208,6 +224,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryUnlockWrite fails if not write locked
      */
+    @Test
     public void testTryUnlockWrite_failure() {
         StampedLock lock = new StampedLock();
         assertFalse(lock.tryUnlockWrite());
@@ -225,6 +242,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryUnlockRead fails if not read locked
      */
+    @Test
     public void testTryUnlockRead_failure() {
         StampedLock lock = new StampedLock();
         assertFalse(lock.tryUnlockRead());
@@ -242,6 +260,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * validate(0L) fails
      */
+    @Test
     public void testValidate0() {
         StampedLock lock = new StampedLock();
         assertFalse(lock.validate(0L));
@@ -250,6 +269,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * A stamp obtained from a successful lock operation validates while the lock is held
      */
+    @Test
     public void testValidate() throws InterruptedException {
         StampedLock lock = new StampedLock();
 
@@ -271,6 +291,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * A stamp obtained from an unsuccessful lock operation does not validate
      */
+    @Test
     public void testValidate2() throws InterruptedException {
         StampedLock lock = new StampedLock();
         long s = assertNonZero(lock.writeLock());
@@ -299,6 +320,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * interruptible operations throw InterruptedException when pre-interrupted
      */
+    @Test
     public void testInterruptibleOperationsThrowInterruptedExceptionWhenPreInterrupted() {
         final StampedLock lock = new StampedLock();
 
@@ -363,6 +385,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * interruptible operations throw InterruptedException when write locked and interrupted
      */
+    @Test
     public void testInterruptibleOperationsThrowInterruptedExceptionWriteLockedInterrupted() {
         final StampedLock lock = new StampedLock();
         long s = lock.writeLock();
@@ -385,6 +408,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * interruptible operations throw InterruptedException when read locked and interrupted
      */
+    @Test
     public void testInterruptibleOperationsThrowInterruptedExceptionReadLockedInterrupted() {
         final StampedLock lock = new StampedLock();
         long s = lock.readLock();
@@ -403,6 +427,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * Non-interruptible operations ignore and preserve interrupt status
      */
+    @Test
     public void testNonInterruptibleOperationsIgnoreInterrupts() {
         final StampedLock lock = new StampedLock();
         Thread.currentThread().interrupt();
@@ -433,6 +458,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryWriteLock on an unlocked lock succeeds
      */
+    @Test
     public void testTryWriteLock() {
         final StampedLock lock = new StampedLock();
         long s = lock.tryWriteLock();
@@ -445,6 +471,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryWriteLock fails if locked
      */
+    @Test
     public void testTryWriteLockWhenLocked() {
         final StampedLock lock = new StampedLock();
         long s = lock.writeLock();
@@ -461,6 +488,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryReadLock fails if write-locked
      */
+    @Test
     public void testTryReadLockWhenLocked() {
         final StampedLock lock = new StampedLock();
         long s = lock.writeLock();
@@ -477,6 +505,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * Multiple threads can hold a read lock when not write-locked
      */
+    @Test
     public void testMultipleReadLocks() {
         final StampedLock lock = new StampedLock();
         final long s = lock.readLock();
@@ -506,6 +535,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * writeLock() succeeds only after a reading thread unlocks
      */
+    @Test
     public void testWriteAfterReadLock() throws InterruptedException {
         final CountDownLatch aboutToLock = new CountDownLatch(1);
         final StampedLock lock = new StampedLock();
@@ -531,6 +561,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * writeLock() succeeds only after reading threads unlock
      */
+    @Test
     public void testWriteAfterMultipleReadLocks() {
         final StampedLock lock = new StampedLock();
         long s = lock.readLock();
@@ -558,6 +589,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * readLock() succeed only after a writing thread unlocks
      */
+    @Test
     public void testReadAfterWriteLock() {
         final StampedLock lock = new StampedLock();
         final CountDownLatch threadsStarted = new CountDownLatch(2);
@@ -587,6 +619,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryReadLock succeeds if read locked but not write locked
      */
+    @Test
     public void testTryLockWhenReadLocked() {
         final StampedLock lock = new StampedLock();
         long s = lock.readLock();
@@ -604,6 +637,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryWriteLock fails when read locked
      */
+    @Test
     public void testTryWriteLockWhenReadLocked() {
         final StampedLock lock = new StampedLock();
         long s = lock.readLock();
@@ -619,6 +653,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * timed lock operations time out if lock not available
      */
+    @Test
     public void testTimedLock_Timeout() throws Exception {
         ArrayList<Future<?>> futures = new ArrayList<>();
 
@@ -673,6 +708,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * writeLockInterruptibly succeeds if unlocked
      */
+    @Test
     public void testWriteLockInterruptibly() throws InterruptedException {
         final StampedLock lock = new StampedLock();
         long s = lock.writeLockInterruptibly();
@@ -683,6 +719,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * readLockInterruptibly succeeds if lock free
      */
+    @Test
     public void testReadLockInterruptibly() throws InterruptedException {
         final StampedLock lock = new StampedLock();
 
@@ -698,6 +735,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * A serialized lock deserializes as unlocked
      */
+    @Test
     public void testSerialization() {
         StampedLock lock = new StampedLock();
         lock.writeLock();
@@ -713,6 +751,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * toString indicates current lock state
      */
+    @Test
     public void testToString() {
         StampedLock lock = new StampedLock();
         assertTrue(lock.toString().contains("Unlocked"));
@@ -727,6 +766,7 @@ public class StampedLockTest extends JSR166TestCase {
      * tryOptimisticRead succeeds and validates if unlocked, fails if
      * exclusively locked
      */
+    @Test
     public void testValidateOptimistic() throws InterruptedException {
         StampedLock lock = new StampedLock();
 
@@ -751,6 +791,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryOptimisticRead stamp does not validate if a write lock intervenes
      */
+    @Test
     public void testValidateOptimisticWriteLocked() {
         final StampedLock lock = new StampedLock();
         final long p = assertValid(lock, lock.tryOptimisticRead());
@@ -765,6 +806,7 @@ public class StampedLockTest extends JSR166TestCase {
      * tryOptimisticRead stamp does not validate if a write lock
      * intervenes in another thread
      */
+    @Test
     public void testValidateOptimisticWriteLocked2()
             throws InterruptedException {
         final CountDownLatch locked = new CountDownLatch(1);
@@ -790,6 +832,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryConvertToOptimisticRead succeeds and validates if successfully locked
      */
+    @Test
     public void testTryConvertToOptimisticRead() throws InterruptedException {
         StampedLock lock = new StampedLock();
         long s, p, q;
@@ -825,6 +868,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryConvertToReadLock succeeds for valid stamps
      */
+    @Test
     public void testTryConvertToReadLock() throws InterruptedException {
         StampedLock lock = new StampedLock();
         long s, p;
@@ -871,6 +915,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * tryConvertToWriteLock succeeds if lock available; fails if multiply read locked
      */
+    @Test
     public void testTryConvertToWriteLock() throws InterruptedException {
         StampedLock lock = new StampedLock();
         long s, p;
@@ -918,6 +963,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * asWriteLock can be locked and unlocked
      */
+    @Test
     public void testAsWriteLock() throws Throwable {
         StampedLock sl = new StampedLock();
         Lock lock = sl.asWriteLock();
@@ -934,6 +980,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * asReadLock can be locked and unlocked
      */
+    @Test
     public void testAsReadLock() throws Throwable {
         StampedLock sl = new StampedLock();
         Lock lock = sl.asReadLock();
@@ -954,6 +1001,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * asReadWriteLock.writeLock can be locked and unlocked
      */
+    @Test
     public void testAsReadWriteLockWriteLock() throws Throwable {
         StampedLock sl = new StampedLock();
         Lock lock = sl.asReadWriteLock().writeLock();
@@ -970,6 +1018,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * asReadWriteLock.readLock can be locked and unlocked
      */
+    @Test
     public void testAsReadWriteLockReadLock() throws Throwable {
         StampedLock sl = new StampedLock();
         Lock lock = sl.asReadWriteLock().readLock();
@@ -990,6 +1039,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * Lock.newCondition throws UnsupportedOperationException
      */
+    @Test
     public void testLockViewsDoNotSupportConditions() {
         StampedLock sl = new StampedLock();
         assertThrows(UnsupportedOperationException.class,
@@ -1003,6 +1053,7 @@ public class StampedLockTest extends JSR166TestCase {
      * Passing optimistic read stamps to unlock operations result in
      * IllegalMonitorStateException
      */
+    @Test
     public void testCannotUnlockOptimisticReadStamps() {
         Runnable[] actions = {
             () -> {
@@ -1129,6 +1180,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * Invalid stamps result in IllegalMonitorStateException
      */
+    @Test
     public void testInvalidStampsThrowIllegalMonitorStateException() {
         final StampedLock sl = new StampedLock();
 
@@ -1184,6 +1236,7 @@ public class StampedLockTest extends JSR166TestCase {
     /**
      * Read locks can be very deeply nested
      */
+    @Test
     public void testDeeplyNestedReadLocks() {
         final StampedLock lock = new StampedLock();
         final int depth = 300;

@@ -37,6 +37,14 @@ package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,17 +60,21 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class FutureTaskTest extends JSR166TestCase {
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.FutureTaskTest");
     }
-    public static Test suite() {
-        return new TestSuite(FutureTaskTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(FutureTaskTest.class);
+    // }
 
     void checkIsDone(Future<?> f) {
         assertTrue(f.isDone());
@@ -258,6 +270,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * creating a future with a null callable throws NullPointerException
      */
+    @Test
     public void testConstructor() {
         try {
             new FutureTask(null);
@@ -268,6 +281,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * creating a future with null runnable throws NullPointerException
      */
+    @Test
     public void testConstructor2() {
         try {
             new FutureTask(null, Boolean.TRUE);
@@ -278,6 +292,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * isDone is true when a task completes
      */
+    @Test
     public void testIsDone() {
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
         assertFalse(task.isDone());
@@ -290,6 +305,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * runAndReset of a non-cancelled task succeeds
      */
+    @Test
     public void testRunAndReset() {
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
         for (int i = 0; i < 3; i++) {
@@ -305,6 +321,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * runAndReset after cancellation fails
      */
+    @Test
     public void testRunAndResetAfterCancel() {
         for (boolean mayInterruptIfRunning : new boolean[] { true, false }) {
             PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
@@ -324,6 +341,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * setting value causes get to return it
      */
+    @Test
     public void testSet() throws Exception {
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
         task.set(one);
@@ -340,6 +358,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * setException causes get to throw ExecutionException
      */
+    @Test
     public void testSetException_get() throws Exception {
         Exception nse = new NoSuchElementException();
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
@@ -371,6 +390,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * cancel(false) before run succeeds
      */
+    @Test
     public void testCancelBeforeRun() {
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
         assertTrue(task.cancel(false));
@@ -388,6 +408,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * cancel(true) before run succeeds
      */
+    @Test
     public void testCancelBeforeRun2() {
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
         assertTrue(task.cancel(true));
@@ -405,6 +426,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * cancel(false) of a completed task fails
      */
+    @Test
     public void testCancelAfterRun() {
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
         task.run();
@@ -420,6 +442,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * cancel(true) of a completed task fails
      */
+    @Test
     public void testCancelAfterRun2() {
         PublicFutureTask task = new PublicFutureTask(new NoOpCallable());
         task.run();
@@ -435,6 +458,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * cancel(true) interrupts a running task that subsequently succeeds
      */
+    @Test
     public void testCancelInterrupt() {
         final CountDownLatch pleaseCancel = new CountDownLatch(1);
         final PublicFutureTask task =
@@ -465,6 +489,7 @@ public class FutureTaskTest extends JSR166TestCase {
      * Thread.interrupt throws (simulating a restrictive security
      * manager)
      */
+    @Test
     public void testCancelInterrupt_ThrowsSecurityException() {
         final CountDownLatch pleaseCancel = new CountDownLatch(1);
         final CountDownLatch cancelled = new CountDownLatch(1);
@@ -509,6 +534,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * cancel(true) interrupts a running task that subsequently throws
      */
+    @Test
     public void testCancelInterrupt_taskFails() {
         final CountDownLatch pleaseCancel = new CountDownLatch(1);
         final PublicFutureTask task =
@@ -538,6 +564,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * cancel(false) does not interrupt a running task
      */
+    @Test
     public void testCancelNoInterrupt() {
         final CountDownLatch pleaseCancel = new CountDownLatch(1);
         final CountDownLatch cancelled = new CountDownLatch(1);
@@ -566,6 +593,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * run in one thread causes get in another thread to retrieve value
      */
+    @Test
     public void testGetRun() {
         final CountDownLatch pleaseRun = new CountDownLatch(2);
 
@@ -605,6 +633,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * set in one thread causes get in another thread to retrieve value
      */
+    @Test
     public void testGetSet() {
         final CountDownLatch pleaseSet = new CountDownLatch(2);
 
@@ -644,13 +673,15 @@ public class FutureTaskTest extends JSR166TestCase {
      * Cancelling a task causes timed get in another thread to throw
      * CancellationException
      */
+    @Test
     public void testTimedGet_Cancellation() {
         testTimedGet_Cancellation(false);
     }
+    @Test
     public void testTimedGet_Cancellation_interrupt() {
         testTimedGet_Cancellation(true);
     }
-    public void testTimedGet_Cancellation(final boolean mayInterruptIfRunning) {
+    private void testTimedGet_Cancellation(final boolean mayInterruptIfRunning) {
         final CountDownLatch pleaseCancel = new CountDownLatch(3);
         final CountDownLatch cancelled = new CountDownLatch(1);
         final Callable<Object> callable =
@@ -699,6 +730,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * A runtime exception in task causes get to throw ExecutionException
      */
+    @Test
     public void testGet_ExecutionException() throws InterruptedException {
         final ArithmeticException e = new ArithmeticException();
         final PublicFutureTask task = new PublicFutureTask(new Callable() {
@@ -723,6 +755,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * A runtime exception in task causes timed get to throw ExecutionException
      */
+    @Test
     public void testTimedGet_ExecutionException2() throws Exception {
         final ArithmeticException e = new ArithmeticException();
         final PublicFutureTask task = new PublicFutureTask(new Callable() {
@@ -744,6 +777,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * get is interruptible
      */
+    @Test
     public void testGet_interruptible() {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         final FutureTask task = new FutureTask(new NoOpCallable());
@@ -773,6 +807,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * timed get is interruptible
      */
+    @Test
     public void testTimedGet_interruptible() {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         final FutureTask task = new FutureTask(new NoOpCallable());
@@ -802,6 +837,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * A timed out timed get throws TimeoutException
      */
+    @Test
     public void testGet_TimeoutException() throws Exception {
         FutureTask task = new FutureTask(new NoOpCallable());
         long startTime = System.nanoTime();
@@ -816,6 +852,7 @@ public class FutureTaskTest extends JSR166TestCase {
     /**
      * timed get with null TimeUnit throws NullPointerException
      */
+    @Test
     public void testGet_NullTimeUnit() throws Exception {
         FutureTask task = new FutureTask(new NoOpCallable());
         long[] timeouts = { Long.MIN_VALUE, 0L, Long.MAX_VALUE };
@@ -841,6 +878,7 @@ public class FutureTaskTest extends JSR166TestCase {
      * timed get with most negative timeout works correctly (i.e. no
      * underflow bug)
      */
+    @Test
     public void testGet_NegativeInfinityTimeout() throws Exception {
         final ExecutorService pool = Executors.newFixedThreadPool(10);
         final Runnable nop = new Runnable() { public void run() {}};

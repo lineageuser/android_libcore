@@ -32,19 +32,33 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.AbstractMap;
 import java.util.Map;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class EntryTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.EntryTest");
     }
-    public static Test suite() {
-        return new TestSuite(EntryTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(EntryTest.class);
+    // }
 
     static final String k1 = "1";
     static final String v1 = "a";
@@ -54,6 +68,7 @@ public class EntryTest extends JSR166TestCase {
     /**
      * A new SimpleEntry(k, v) holds k, v.
      */
+    @Test
     public void testConstructor1() {
         Map.Entry e = new AbstractMap.SimpleEntry(k1, v1);
         assertEquals(k1, e.getKey());
@@ -63,6 +78,7 @@ public class EntryTest extends JSR166TestCase {
     /**
      * A new SimpleImmutableEntry(k, v) holds k, v.
      */
+    @Test
     public void testConstructor2() {
         Map.Entry s = new AbstractMap.SimpleImmutableEntry(k1, v1);
         assertEquals(k1, s.getKey());
@@ -72,6 +88,7 @@ public class EntryTest extends JSR166TestCase {
     /**
      * A new SimpleEntry(entry(k, v)) holds k, v.
      */
+    @Test
     public void testConstructor3() {
         Map.Entry e2 = new AbstractMap.SimpleEntry(k1, v1);
         Map.Entry e = new AbstractMap.SimpleEntry(e2);
@@ -82,6 +99,7 @@ public class EntryTest extends JSR166TestCase {
     /**
      * A new SimpleImmutableEntry(entry(k, v)) holds k, v.
      */
+    @Test
     public void testConstructor4() {
         Map.Entry s2 = new AbstractMap.SimpleImmutableEntry(k1, v1);
         Map.Entry s = new AbstractMap.SimpleImmutableEntry(s2);
@@ -93,6 +111,7 @@ public class EntryTest extends JSR166TestCase {
      * Entries with same key-value pairs are equal and have same
      * hashcodes
      */
+    @Test
     public void testEquals() {
         Map.Entry e2 = new AbstractMap.SimpleEntry(k1, v1);
         Map.Entry e = new AbstractMap.SimpleEntry(e2);
@@ -111,6 +130,7 @@ public class EntryTest extends JSR166TestCase {
     /**
      * Entries with different key-value pairs are not equal
      */
+    @Test
     public void testNotEquals() {
         Map.Entry e2 = new AbstractMap.SimpleEntry(k1, v1);
         Map.Entry e = new AbstractMap.SimpleEntry(k2, v1);
@@ -132,6 +152,7 @@ public class EntryTest extends JSR166TestCase {
     /**
      * getValue returns last setValue for SimpleEntry
      */
+    @Test
     public void testSetValue1() {
         Map.Entry e2 = new AbstractMap.SimpleEntry(k1, v1);
         Map.Entry e = new AbstractMap.SimpleEntry(e2);
@@ -145,6 +166,7 @@ public class EntryTest extends JSR166TestCase {
     /**
      * setValue for SimpleImmutableEntry throws UnsupportedOperationException
      */
+    @Test
     public void testSetValue2() {
         Map.Entry s2 = new AbstractMap.SimpleImmutableEntry(k1, v1);
         Map.Entry s = new AbstractMap.SimpleImmutableEntry(s2);

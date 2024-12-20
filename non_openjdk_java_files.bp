@@ -366,6 +366,7 @@ filegroup {
         "luni/src/main/java/libcore/icu/CollationKeyICU.java",
         "luni/src/main/java/libcore/internal/Java11LanguageFeatures.java",
         "luni/src/main/java/libcore/internal/Java17LanguageFeatures.java",
+        "luni/src/main/java/libcore/internal/Java21LanguageFeatures.java",
         "luni/src/main/java/libcore/internal/Java9LanguageFeatures.java",
         "luni/src/main/java/libcore/internal/StringPool.java",
         "luni/src/main/java/libcore/io/ClassPathURLStreamHandler.java",

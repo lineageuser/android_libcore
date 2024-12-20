@@ -38,14 +38,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class DistinctEntrySetElements {
     static enum TestEnum { e00, e01, e02 }
 
-    @Test
-    public void testDistinctElements() {
+    public static void main(String[] args) throws Exception {
         final EnumMap<TestEnum, String> enumMap = new EnumMap<>(TestEnum.class);
 
         for (TestEnum e : TestEnum.values()) {
@@ -55,7 +51,11 @@ public class DistinctEntrySetElements {
         Set<Map.Entry<TestEnum, String>> entrySet = enumMap.entrySet();
         HashSet<Map.Entry<TestEnum, String>> hashSet = new HashSet<>(entrySet);
 
-        Assert.assertTrue(hashSet.equals(entrySet));
-        Assert.assertEquals(hashSet.hashCode(), entrySet.hashCode());
+        if (false == hashSet.equals(entrySet)) {
+            throw new RuntimeException("Test FAILED: Sets are not equal.");
+        }
+        if (hashSet.hashCode() != entrySet.hashCode()) {
+            throw new RuntimeException("Test FAILED: Set's hashcodes are not equal.");
+        }
     }
 }

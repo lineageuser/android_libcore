@@ -40,6 +40,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -48,21 +56,27 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.LongStream;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class TimeUnit8Test extends JSR166TestCase {
-    public static void main(String[] args) {
-        main(suite(), args);
-    }
 
-    public static Test suite() {
-        return new TestSuite(TimeUnit8Test.class);
+    // Android-changed: Use JUnitCore.main.
+    public static void main(String[] args) {
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.TimeUnit8Test");
     }
+    // public static Test suite() {
+    //     return new TestSuite(TimeUnit8Test.class);
+    // }
 
     /**
      * tests for toChronoUnit.
      */
+    @Test
     public void testToChronoUnit() throws Exception {
         assertSame(ChronoUnit.NANOS,   NANOSECONDS.toChronoUnit());
         assertSame(ChronoUnit.MICROS,  MICROSECONDS.toChronoUnit());
@@ -80,6 +94,7 @@ public class TimeUnit8Test extends JSR166TestCase {
     /**
      * tests for TimeUnit.of(ChronoUnit).
      */
+    @Test
     public void testTimeUnitOf() throws Exception {
         assertSame(NANOSECONDS,  TimeUnit.of(ChronoUnit.NANOS));
         assertSame(MICROSECONDS, TimeUnit.of(ChronoUnit.MICROS));
@@ -108,6 +123,7 @@ public class TimeUnit8Test extends JSR166TestCase {
     /**
      * convert(Duration) roundtrips with Duration.ofXXXX and Duration.of(long, ChronoUnit)
      */
+    @Test
     public void testConvertDuration_roundtripDurationOf() {
         long n = ThreadLocalRandom.current().nextLong();
 
@@ -131,6 +147,7 @@ public class TimeUnit8Test extends JSR166TestCase {
     /**
      * convert(Duration.ofNanos(n)) agrees with convert(n, NANOSECONDS)
      */
+    @Test
     public void testConvertDuration_roundtripDurationOfNanos() {
         // Test values near unit transitions and near overflow.
         LongStream.concat(
@@ -148,6 +165,7 @@ public class TimeUnit8Test extends JSR166TestCase {
     /**
      * convert(Duration) doesn't misbehave near Long.MAX_VALUE and Long.MIN_VALUE.
      */
+    @Test
     public void testConvertDuration_nearOverflow() {
         ChronoUnit NANOS = ChronoUnit.NANOS;
         Duration maxDuration = Duration.ofSeconds(Long.MAX_VALUE, 999_999_999);

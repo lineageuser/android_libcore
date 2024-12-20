@@ -33,6 +33,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,25 +53,30 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ArrayDequeTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ArrayDequeTest");
     }
 
-    public static Test suite() {
-        class Implementation implements CollectionImplementation {
-            public Class<?> klazz() { return ArrayDeque.class; }
-            public Collection emptyCollection() { return populatedDeque(0); }
-            public Object makeElement(int i) { return i; }
-            public boolean isConcurrent() { return false; }
-            public boolean permitsNulls() { return false; }
-        }
-        return newTestSuite(ArrayDequeTest.class,
-                            CollectionTest.testSuite(new Implementation()));
-    }
+    // public static Test suite() {
+    //     class Implementation implements CollectionImplementation {
+    //         public Class<?> klazz() { return ArrayDeque.class; }
+    //         public Collection emptyCollection() { return populatedDeque(0); }
+    //         public Object makeElement(int i) { return i; }
+    //         public boolean isConcurrent() { return false; }
+    //         public boolean permitsNulls() { return false; }
+    //     }
+    //     return newTestSuite(ArrayDequeTest.class,
+    //                         CollectionTest.testSuite(new Implementation()));
+    // }
 
     /**
      * Returns a new deque of given size containing consecutive
@@ -113,6 +127,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * new deque is empty
      */
+    @Test
     public void testConstructor1() {
         assertEquals(0, new ArrayDeque().size());
     }
@@ -120,6 +135,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Initializing from null Collection throws NPE
      */
+    @Test
     public void testConstructor3() {
         try {
             new ArrayDeque((Collection)null);
@@ -130,6 +146,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Initializing from Collection of null elements throws NPE
      */
+    @Test
     public void testConstructor4() {
         try {
             new ArrayDeque(Arrays.asList(new Integer[SIZE]));
@@ -140,6 +157,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Initializing from Collection with some null elements throws NPE
      */
+    @Test
     public void testConstructor5() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
@@ -153,6 +171,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Deque contains all elements of collection used to initialize
      */
+    @Test
     public void testConstructor6() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
@@ -165,6 +184,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         ArrayDeque q = new ArrayDeque();
         assertTrue(q.isEmpty());
@@ -179,6 +199,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * size changes when elements added and removed
      */
+    @Test
     public void testSize() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -194,6 +215,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * push(null) throws NPE
      */
+    @Test
     public void testPushNull() {
         ArrayDeque q = new ArrayDeque(1);
         try {
@@ -205,6 +227,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * peekFirst() returns element inserted with push
      */
+    @Test
     public void testPush() {
         ArrayDeque q = populatedDeque(3);
         q.pollLast();
@@ -215,6 +238,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * pop() removes next element, or throws NSEE if empty
      */
+    @Test
     public void testPop() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -229,6 +253,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * offer(null) throws NPE
      */
+    @Test
     public void testOfferNull() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -240,6 +265,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * offerFirst(null) throws NPE
      */
+    @Test
     public void testOfferFirstNull() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -251,6 +277,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * offerLast(null) throws NPE
      */
+    @Test
     public void testOfferLastNull() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -262,6 +289,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * offer(x) succeeds
      */
+    @Test
     public void testOffer() {
         ArrayDeque q = new ArrayDeque();
         assertTrue(q.offer(zero));
@@ -273,6 +301,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * offerFirst(x) succeeds
      */
+    @Test
     public void testOfferFirst() {
         ArrayDeque q = new ArrayDeque();
         assertTrue(q.offerFirst(zero));
@@ -284,6 +313,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * offerLast(x) succeeds
      */
+    @Test
     public void testOfferLast() {
         ArrayDeque q = new ArrayDeque();
         assertTrue(q.offerLast(zero));
@@ -295,6 +325,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * add(null) throws NPE
      */
+    @Test
     public void testAddNull() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -306,6 +337,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * addFirst(null) throws NPE
      */
+    @Test
     public void testAddFirstNull() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -317,6 +349,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * addLast(null) throws NPE
      */
+    @Test
     public void testAddLastNull() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -328,6 +361,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * add(x) succeeds
      */
+    @Test
     public void testAdd() {
         ArrayDeque q = new ArrayDeque();
         assertTrue(q.add(zero));
@@ -339,6 +373,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * addFirst(x) succeeds
      */
+    @Test
     public void testAddFirst() {
         ArrayDeque q = new ArrayDeque();
         q.addFirst(zero);
@@ -350,6 +385,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * addLast(x) succeeds
      */
+    @Test
     public void testAddLast() {
         ArrayDeque q = new ArrayDeque();
         q.addLast(zero);
@@ -361,6 +397,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * addAll(null) throws NPE
      */
+    @Test
     public void testAddAll1() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -372,6 +409,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * addAll of a collection with null elements throws NPE
      */
+    @Test
     public void testAddAll2() {
         ArrayDeque q = new ArrayDeque();
         try {
@@ -384,6 +422,7 @@ public class ArrayDequeTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         ArrayDeque q = new ArrayDeque();
         Integer[] ints = new Integer[SIZE];
@@ -398,6 +437,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Deque contains all elements, in traversal order, of successful addAll
      */
+    @Test
     public void testAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -413,6 +453,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * pollFirst() succeeds unless empty
      */
+    @Test
     public void testPollFirst() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -424,6 +465,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * pollLast() succeeds unless empty
      */
+    @Test
     public void testPollLast() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -435,6 +477,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * poll() succeeds unless empty
      */
+    @Test
     public void testPoll() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -446,6 +489,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * remove() removes next element, or throws NSEE if empty
      */
+    @Test
     public void testRemove() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -460,6 +504,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * remove(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveElement() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -481,6 +526,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * peekFirst() returns next element, or null if empty
      */
+    @Test
     public void testPeekFirst() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -495,6 +541,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * peek() returns next element, or null if empty
      */
+    @Test
     public void testPeek() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -509,6 +556,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * peekLast() returns next element, or null if empty
      */
+    @Test
     public void testPeekLast() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -523,6 +571,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * element() returns first element, or throws NSEE if empty
      */
+    @Test
     public void testElement() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -538,6 +587,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * getFirst() returns first element, or throws NSEE if empty
      */
+    @Test
     public void testFirstElement() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -553,6 +603,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * getLast() returns last element, or throws NSEE if empty
      */
+    @Test
     public void testLastElement() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -569,6 +620,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * removeFirst() removes first element, or throws NSEE if empty
      */
+    @Test
     public void testRemoveFirst() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -584,6 +636,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * removeLast() removes last element, or throws NSEE if empty
      */
+    @Test
     public void testRemoveLast() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -599,6 +652,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * removeFirstOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveFirstOccurrence() {
         Deque<Integer> q = populatedDeque(SIZE);
         assertFalse(q.removeFirstOccurrence(null));
@@ -623,6 +677,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * removeLastOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveLastOccurrence() {
         Deque<Integer> q = populatedDeque(SIZE);
         assertFalse(q.removeLastOccurrence(null));
@@ -647,6 +702,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         ArrayDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -659,6 +715,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testClear() {
         ArrayDeque q = populatedDeque(SIZE);
         q.clear();
@@ -673,6 +730,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         ArrayDeque q = populatedDeque(SIZE);
         ArrayDeque p = new ArrayDeque();
@@ -687,6 +745,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testRetainAll() {
         ArrayDeque q = populatedDeque(SIZE);
         ArrayDeque p = populatedDeque(SIZE);
@@ -702,6 +761,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             ArrayDeque q = populatedDeque(SIZE);
@@ -748,6 +808,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * toArray() and toArray(a) contain all elements in FIFO order
      */
+    @Test
     public void testToArray() {
         final int size = ThreadLocalRandom.current().nextInt(10);
         ArrayDeque<Integer> q = new ArrayDeque<>(size);
@@ -771,6 +832,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * toArray(null) throws NullPointerException
      */
+    @Test
     public void testToArray_NullArg() {
         ArrayDeque l = new ArrayDeque();
         l.add(new Object());
@@ -783,6 +845,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * toArray(incompatible array type) throws ArrayStoreException
      */
+    @Test
     public void testToArray_incompatibleArrayType() {
         ArrayDeque l = new ArrayDeque();
         l.add(new Integer(5));
@@ -799,6 +862,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Iterator iterates through all elements
      */
+    @Test
     public void testIterator() {
         ArrayDeque q = populatedDeque(SIZE);
         Iterator it = q.iterator();
@@ -812,6 +876,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * iterator of empty collection has no elements
      */
+    @Test
     public void testEmptyIterator() {
         Deque c = new ArrayDeque();
         assertIteratorExhausted(c.iterator());
@@ -821,6 +886,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Iterator ordering is FIFO
      */
+    @Test
     public void testIteratorOrdering() {
         final ArrayDeque q = new ArrayDeque();
         q.add(one);
@@ -837,6 +903,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * iterator.remove() removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final ArrayDeque q = new ArrayDeque();
         final Random rng = new Random();
@@ -865,6 +932,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Descending iterator iterates through all elements
      */
+    @Test
     public void testDescendingIterator() {
         ArrayDeque q = populatedDeque(SIZE);
         int i = 0;
@@ -884,6 +952,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * Descending iterator ordering is reverse FIFO
      */
+    @Test
     public void testDescendingIteratorOrdering() {
         final ArrayDeque q = new ArrayDeque();
         for (int iters = 0; iters < 100; ++iters) {
@@ -905,6 +974,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * descendingIterator.remove() removes current element
      */
+    @Test
     public void testDescendingIteratorRemove() {
         final ArrayDeque q = new ArrayDeque();
         final Random rng = new Random();
@@ -933,6 +1003,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * toString() contains toStrings of elements
      */
+    @Test
     public void testToString() {
         ArrayDeque q = populatedDeque(SIZE);
         String s = q.toString();
@@ -944,6 +1015,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * A deserialized serialized deque has same elements in same order
      */
+    @Test
     public void testSerialization() throws Exception {
         Queue x = populatedDeque(SIZE);
         Queue y = serialClone(x);
@@ -963,6 +1035,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * A cloned deque has same elements in same order
      */
+    @Test
     public void testClone() throws Exception {
         ArrayDeque<Integer> x = populatedDeque(SIZE);
         ArrayDeque<Integer> y = x.clone();
@@ -981,6 +1054,7 @@ public class ArrayDequeTest extends JSR166TestCase {
     /**
      * remove(null), contains(null) always return false
      */
+    @Test
     public void testNeverContainsNull() {
         Deque<?>[] qs = {
             new ArrayDeque<Object>(),

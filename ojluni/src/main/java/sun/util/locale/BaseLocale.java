@@ -118,7 +118,7 @@ public final class BaseLocale {
 
     private static boolean useOldIsoCodes() {
         return !(VMRuntime.getSdkVersion() >= VersionCodes.VANILLA_ICE_CREAM &&
-                Compatibility.isChangeEnabled(USE_NEW_ISO_LOCALE_CODES));
+                VMRuntime.getRuntime().getTargetSdkVersion() >= VersionCodes.VANILLA_ICE_CREAM);
     }
     // END Android-added: flag to control Locale behaviour with legacy locales.
 

@@ -1,23 +1,21 @@
 #!/bin/bash
 
 SELF=$(basename "${0}")
-DEFAULT_TAG="jdk17u/jdk-17.0.6-ga"
+DEFAULT_TAG="jdk21u/jdk-21.0.2-ga"
 SUPPORTED_TAGS="jdk7u/jdk7u40-b60"
 SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk8u/jdk8u121-b13"
 SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk8u/jdk8u60-b31"
 SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk9/jdk-9+181"
-SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk11u/jdk-11+28"
-SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk11u/jdk-11.0.13-ga"
-SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk17u/jdk-17.0.2-ga"
-SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk17u/jdk-17.0.5-ga"
-SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk17u/jdk-17.0.6-ga"
+SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk11u/jdk-11.0.22-ga"
+SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk17u/jdk-17.0.10-ga"
+SUPPORTED_TAGS="${SUPPORTED_TAGS} jdk21u/jdk-21.0.2-ga"
 
 
 USAGE=$(cat << EndOfUsage
 Usage:
   ${SELF} [-b <bug_number>] [-t <upstream_tag>] <package_name> <package_name> ...
   For example:
-    ${SELF} -b 123456 -t jdk17u/jdk-17.0.6-ga java.util.concurrent java.util.concurrent.atomic
+    ${SELF} -b 123456 -t jdk21u/jdk-21.0.2-ga java.util.concurrent java.util.concurrent.atomic
     ${SELF} java.util.concurrent.atomic -c AtomicInteger,AtomicBoolean,AtomicLong
     ${SELF} java.util.concurrent.atomic -c AtomicInteger -c AtomicBoolean -c AtomicLong
 

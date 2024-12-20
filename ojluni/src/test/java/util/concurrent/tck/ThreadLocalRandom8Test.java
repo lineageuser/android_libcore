@@ -32,21 +32,35 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ThreadLocalRandom8Test extends JSR166TestCase {
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ThreadLocalRandom8Test");
     }
-    public static Test suite() {
-        return new TestSuite(ThreadLocalRandom8Test.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ThreadLocalRandom8Test.class);
+    // }
 
     // max sampled int bound
     static final int MAX_INT_BOUND = (1 << 26);
@@ -62,6 +76,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
      * Invoking sized ints, long, doubles, with negative sizes throws
      * IllegalArgumentException
      */
+        @Test
     public void testBadStreamSize() {
         ThreadLocalRandom r = ThreadLocalRandom.current();
         Runnable[] throwingActions = {
@@ -79,6 +94,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
      * Invoking bounded ints, long, doubles, with illegal bounds throws
      * IllegalArgumentException
      */
+    @Test
     public void testBadStreamBounds() {
         ThreadLocalRandom r = ThreadLocalRandom.current();
         Runnable[] throwingActions = {
@@ -95,6 +111,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A parallel sized stream of ints generates the given number of values
      */
+    @Test
     public void testIntsCount() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -110,6 +127,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A parallel sized stream of longs generates the given number of values
      */
+    @Test
     public void testLongsCount() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -125,6 +143,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A parallel sized stream of doubles generates the given number of values
      */
+    @Test
     public void testDoublesCount() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -140,6 +159,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * Each of a parallel sized stream of bounded ints is within bounds
      */
+    @Test
     public void testBoundedInts() {
         AtomicInteger fails = new AtomicInteger(0);
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -159,6 +179,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * Each of a parallel sized stream of bounded longs is within bounds
      */
+    @Test
     public void testBoundedLongs() {
         AtomicInteger fails = new AtomicInteger(0);
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -178,6 +199,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * Each of a parallel sized stream of bounded doubles is within bounds
      */
+    @Test
     public void testBoundedDoubles() {
         AtomicInteger fails = new AtomicInteger(0);
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -197,6 +219,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A parallel unsized stream of ints generates at least 100 values
      */
+    @Test
     public void testUnsizedIntsCount() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -208,6 +231,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A parallel unsized stream of longs generates at least 100 values
      */
+    @Test
     public void testUnsizedLongsCount() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -219,6 +243,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A parallel unsized stream of doubles generates at least 100 values
      */
+    @Test
     public void testUnsizedDoublesCount() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -230,6 +255,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A sequential unsized stream of ints generates at least 100 values
      */
+    @Test
     public void testUnsizedIntsCountSeq() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -241,6 +267,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A sequential unsized stream of longs generates at least 100 values
      */
+    @Test
     public void testUnsizedLongsCountSeq() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -252,6 +279,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
     /**
      * A sequential unsized stream of doubles generates at least 100 values
      */
+    @Test
     public void testUnsizedDoublesCountSeq() {
         LongAdder counter = new LongAdder();
         ThreadLocalRandom r = ThreadLocalRandom.current();
@@ -264,6 +292,7 @@ public class ThreadLocalRandom8Test extends JSR166TestCase {
      * A deserialized ThreadLocalRandom is always identical to
      * ThreadLocalRandom.current()
      */
+    @Test
     public void testSerialization() {
         assertSame(
             ThreadLocalRandom.current(),

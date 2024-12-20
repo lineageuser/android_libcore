@@ -34,21 +34,29 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.AbstractQueue;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AbstractQueueTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AbstractQueueTest");
     }
-    public static Test suite() {
-        return new TestSuite(AbstractQueueTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AbstractQueueTest.class);
+    // }
 
     static class Succeed extends AbstractQueue<Integer> {
         public boolean offer(Integer x) {
@@ -75,6 +83,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * add returns true if offer succeeds
      */
+    @Test
     public void testAddS() {
         Succeed q = new Succeed();
         assertTrue(q.add(two));
@@ -83,6 +92,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * add throws ISE true if offer fails
      */
+    @Test
     public void testAddF() {
         Fail q = new Fail();
         try {
@@ -94,6 +104,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * add throws NPE if offer does
      */
+    @Test
     public void testAddNPE() {
         Succeed q = new Succeed();
         try {
@@ -105,6 +116,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * remove returns normally if poll succeeds
      */
+    @Test
     public void testRemoveS() {
         Succeed q = new Succeed();
         q.remove();
@@ -113,6 +125,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * remove throws NSEE if poll returns null
      */
+    @Test
     public void testRemoveF() {
         Fail q = new Fail();
         try {
@@ -124,6 +137,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * element returns normally if peek succeeds
      */
+    @Test
     public void testElementS() {
         Succeed q = new Succeed();
         q.element();
@@ -132,6 +146,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * element throws NSEE if peek returns null
      */
+    @Test
     public void testElementF() {
         Fail q = new Fail();
         try {
@@ -143,6 +158,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * addAll(null) throws NPE
      */
+    @Test
     public void testAddAll1() {
         Succeed q = new Succeed();
         try {
@@ -154,6 +170,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * addAll(this) throws IAE
      */
+    @Test
     public void testAddAllSelf() {
         Succeed q = new Succeed();
         try {
@@ -165,6 +182,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * addAll of a collection with null elements throws NPE
      */
+    @Test
     public void testAddAll2() {
         Succeed q = new Succeed();
         Integer[] ints = new Integer[SIZE];
@@ -178,6 +196,7 @@ public class AbstractQueueTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         Succeed q = new Succeed();
         Integer[] ints = new Integer[SIZE];
@@ -192,6 +211,7 @@ public class AbstractQueueTest extends JSR166TestCase {
     /**
      * addAll throws ISE if an add fails
      */
+    @Test
     public void testAddAll4() {
         Fail q = new Fail();
         Integer[] ints = new Integer[SIZE];

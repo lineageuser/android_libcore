@@ -82,6 +82,12 @@ java_sdk_library {
 
     // Don't copy any output files to the dist.
     no_dist: true,
+
+    // This module's output stubs contain apis defined in "art.module.public.api.stubs",
+    // but adding "art.module.public.api" as a dependency of this module leads to circular
+    // dependency and requires further bootstrapping. Thus, disable stubs generation from the
+    // api signature files and generate stubs from the source Java files instead.
+    build_from_text_stub: false,
 }
 
 // Bootstrap the art-module-intra-core-api-stubs-system-modules.
@@ -110,7 +116,7 @@ java_library {
         ":openjdk_lambda_stub_files",
     ],
     libs: [
-        "art.module.intra.core.api",
+        "art.module.intra.core.api.stubs",
     ],
     system_modules: "art-module-intra-core-api-stubs-bootstrap-system-modules",
     sdk_version: "none",

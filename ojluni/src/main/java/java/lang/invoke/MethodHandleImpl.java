@@ -37,10 +37,11 @@ import java.lang.reflect.Modifier;
  * @hide
  */
 public class MethodHandleImpl extends MethodHandle implements Cloneable {
-    private HandleInfo info;
+    private Object targetClassOrMethodHandleInfo;
 
     MethodHandleImpl(long artFieldOrMethod, int handleKind, MethodType type) {
         super(artFieldOrMethod, handleKind, type);
+        this.targetClassOrMethodHandleInfo = getMemberInternal().getDeclaringClass();
     }
 
     @Override
@@ -49,12 +50,13 @@ public class MethodHandleImpl extends MethodHandle implements Cloneable {
     }
 
     MethodHandleInfo reveal() {
-        if (info == null) {
-            final Member member = getMemberInternal();
-            info = new HandleInfo(member, this);
+        if (!(targetClassOrMethodHandleInfo instanceof HandleInfo handleInfo)) {
+            MethodHandleInfo info = new HandleInfo(getMemberInternal(), this);
+            targetClassOrMethodHandleInfo = info;
+            return info;
         }
 
-        return info;
+        return handleInfo;
     }
 
     /**

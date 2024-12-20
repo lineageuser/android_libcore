@@ -35,6 +35,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
@@ -43,16 +51,21 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class CyclicBarrierTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.CyclicBarrierTest");
     }
-    public static Test suite() {
-        return new TestSuite(CyclicBarrierTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(CyclicBarrierTest.class);
+    // }
 
     /**
      * Spin-waits till the number of waiters == numberOfWaiters.
@@ -69,6 +82,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * Creating with negative parties throws IAE
      */
+    @Test
     public void testConstructor1() {
         try {
             new CyclicBarrier(-1, (Runnable)null);
@@ -79,6 +93,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * Creating with negative parties and no action throws IAE
      */
+    @Test
     public void testConstructor2() {
         try {
             new CyclicBarrier(-1);
@@ -89,6 +104,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * getParties returns the number of parties given in constructor
      */
+    @Test
     public void testGetParties() {
         CyclicBarrier b = new CyclicBarrier(2);
         assertEquals(2, b.getParties());
@@ -98,6 +114,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * A 1-party barrier triggers after single await
      */
+    @Test
     public void testSingleParty() throws Exception {
         CyclicBarrier b = new CyclicBarrier(1);
         assertEquals(1, b.getParties());
@@ -110,6 +127,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * The supplied barrier action is run at barrier
      */
+    @Test
     public void testBarrierAction() throws Exception {
         final AtomicInteger count = new AtomicInteger(0);
         final Runnable incCount = new Runnable() { public void run() {
@@ -126,6 +144,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * A 2-party/thread barrier triggers after both threads invoke await
      */
+    @Test
     public void testTwoParties() throws Exception {
         final CyclicBarrier b = new CyclicBarrier(2);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -147,6 +166,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
      * An interruption in one party causes others waiting in await to
      * throw BrokenBarrierException
      */
+    @Test
     public void testAwait1_Interrupted_BrokenBarrier() {
         final CyclicBarrier c = new CyclicBarrier(3);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(2);
@@ -173,6 +193,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
      * An interruption in one party causes others waiting in timed await to
      * throw BrokenBarrierException
      */
+    @Test
     public void testAwait2_Interrupted_BrokenBarrier() throws Exception {
         final CyclicBarrier c = new CyclicBarrier(3);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(2);
@@ -198,6 +219,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * A timeout in timed await throws TimeoutException
      */
+    @Test
     public void testAwait3_TimeoutException() throws InterruptedException {
         final CyclicBarrier c = new CyclicBarrier(2);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -217,6 +239,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
      * A timeout in one party causes others waiting in timed await to
      * throw BrokenBarrierException
      */
+    @Test
     public void testAwait4_Timeout_BrokenBarrier() throws InterruptedException {
         final CyclicBarrier c = new CyclicBarrier(3);
         Thread t1 = newStartedThread(new CheckedRunnable() {
@@ -245,6 +268,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
      * A timeout in one party causes others waiting in await to
      * throw BrokenBarrierException
      */
+    @Test
     public void testAwait5_Timeout_BrokenBarrier() throws InterruptedException {
         final CyclicBarrier c = new CyclicBarrier(3);
         Thread t1 = newStartedThread(new CheckedRunnable() {
@@ -273,6 +297,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
      * A reset of an active barrier causes waiting threads to throw
      * BrokenBarrierException
      */
+    @Test
     public void testReset_BrokenBarrier() throws InterruptedException {
         final CyclicBarrier c = new CyclicBarrier(3);
         final CountDownLatch pleaseReset = new CountDownLatch(2);
@@ -301,6 +326,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
      * A reset before threads enter barrier does not throw
      * BrokenBarrierException
      */
+    @Test
     public void testReset_NoBrokenBarrier() throws Exception {
         final CyclicBarrier c = new CyclicBarrier(3);
         c.reset();
@@ -322,6 +348,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * All threads block while a barrier is broken.
      */
+    @Test
     public void testReset_Leakage() throws InterruptedException {
         final CyclicBarrier c = new CyclicBarrier(2);
         final AtomicBoolean done = new AtomicBoolean();
@@ -351,6 +378,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * Reset of a non-broken barrier does not break barrier
      */
+    @Test
     public void testResetWithoutBreakage() throws Exception {
         final CyclicBarrier barrier = new CyclicBarrier(3);
         for (int i = 0; i < 3; i++) {
@@ -382,6 +410,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * Reset of a barrier after interruption reinitializes it.
      */
+    @Test
     public void testResetAfterInterrupt() throws Exception {
         final CyclicBarrier barrier = new CyclicBarrier(3);
         for (int i = 0; i < 2; i++) {
@@ -415,6 +444,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * Reset of a barrier after timeout reinitializes it.
      */
+    @Test
     public void testResetAfterTimeout() throws Exception {
         final CyclicBarrier barrier = new CyclicBarrier(3);
         for (int i = 0; i < 2; i++) {
@@ -451,6 +481,7 @@ public class CyclicBarrierTest extends JSR166TestCase {
     /**
      * Reset of a barrier after a failed command reinitializes it.
      */
+    @Test
     public void testResetAfterCommandException() throws Exception {
         final CyclicBarrier barrier =
             new CyclicBarrier(3, new Runnable() {

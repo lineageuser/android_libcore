@@ -231,17 +231,30 @@ public final class Daemons {
             super("ReferenceQueueDaemon");
         }
 
+        private long lastGcCount = 0;
+
+        private void onRefQueueEmptyAfterGc() {
+            long gcCount = VMRuntime.getFullGcCount();
+            if (gcCount > lastGcCount) {
+                VMRuntime.onPostCleanup();
+                lastGcCount = gcCount;
+            }
+        }
+
         @Override public void runInternal() {
             FinalizerWatchdogDaemon.INSTANCE.monitoringNeeded(FinalizerWatchdogDaemon.RQ_DAEMON);
 
             // Call once early to reduce later allocation, and hence chance of OOMEs.
             FinalizerWatchdogDaemon.INSTANCE.resetTimeouts();
 
+            lastGcCount = VMRuntime.getFullGcCount();
+
             while (isRunning()) {
                 Reference<?> list;
                 try {
                     synchronized (ReferenceQueue.class) {
                         if (ReferenceQueue.unenqueued == null) {
+                            onRefQueueEmptyAfterGc();
                             FinalizerWatchdogDaemon.INSTANCE.monitoringNotNeeded(
                                     FinalizerWatchdogDaemon.RQ_DAEMON);
                             // Increment after above call. If watchdog saw it active, it should see

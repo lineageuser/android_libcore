@@ -34,6 +34,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,16 +51,21 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class CopyOnWriteArraySetTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.CopyOnWriteArraySetTest");
     }
-    public static Test suite() {
-        return new TestSuite(CopyOnWriteArraySetTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(CopyOnWriteArraySetTest.class);
+    // }
 
     static CopyOnWriteArraySet<Integer> populatedSet(int n) {
         CopyOnWriteArraySet<Integer> a = new CopyOnWriteArraySet<>();
@@ -76,6 +90,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * Default-constructed set is empty
      */
+    @Test
     public void testConstructor() {
         CopyOnWriteArraySet a = new CopyOnWriteArraySet();
         assertTrue(a.isEmpty());
@@ -84,6 +99,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * Collection-constructed set holds all of its elements
      */
+    @Test
     public void testConstructor3() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
@@ -96,6 +112,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * addAll adds each non-duplicate element from the given collection
      */
+    @Test
     public void testAddAll() {
         Set full = populatedSet(3);
         assertTrue(full.addAll(Arrays.asList(three, four, five)));
@@ -107,6 +124,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * addAll adds each non-duplicate element from the given collection
      */
+    @Test
     public void testAddAll2() {
         Set full = populatedSet(3);
         // "one" is duplicate and will not be added
@@ -119,6 +137,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * add will not add the element if it already exists in the set
      */
+    @Test
     public void testAdd2() {
         Set full = populatedSet(3);
         full.add(one);
@@ -128,6 +147,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * add adds the element when it does not exist in the set
      */
+    @Test
     public void testAdd3() {
         Set full = populatedSet(3);
         full.add(three);
@@ -137,6 +157,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * clear removes all elements from the set
      */
+    @Test
     public void testClear() {
         Collection full = populatedSet(3);
         full.clear();
@@ -147,6 +168,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * contains returns true for added elements
      */
+    @Test
     public void testContains() {
         Collection full = populatedSet(3);
         assertTrue(full.contains(one));
@@ -156,6 +178,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * Sets with equal elements are equal
      */
+    @Test
     public void testEquals() {
         CopyOnWriteArraySet a = populatedSet(3);
         CopyOnWriteArraySet b = populatedSet(3);
@@ -206,6 +229,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * containsAll returns true for collections with subset of elements
      */
+    @Test
     public void testContainsAll() {
         Collection full = populatedSet(3);
         assertTrue(full.containsAll(full));
@@ -231,6 +255,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * isEmpty is true when empty, else false
      */
+    @Test
     public void testIsEmpty() {
         assertTrue(populatedSet(0).isEmpty());
         assertFalse(populatedSet(3).isEmpty());
@@ -240,6 +265,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
      * iterator() returns an iterator containing the elements of the
      * set in insertion order
      */
+    @Test
     public void testIterator() {
         Collection empty = new CopyOnWriteArraySet();
         assertFalse(empty.iterator().hasNext());
@@ -265,6 +291,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * iterator of empty collection has no elements
      */
+    @Test
     public void testEmptyIterator() {
         assertIteratorExhausted(new CopyOnWriteArraySet().iterator());
     }
@@ -272,6 +299,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * iterator remove is unsupported
      */
+    @Test
     public void testIteratorRemove() {
         Collection full = populatedSet(3);
         Iterator it = full.iterator();
@@ -285,6 +313,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * toString holds toString of elements
      */
+    @Test
     public void testToString() {
         assertEquals("[]", new CopyOnWriteArraySet().toString());
         Collection full = populatedSet(3);
@@ -298,6 +327,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * removeAll removes all elements from the given collection
      */
+    @Test
     public void testRemoveAll() {
         Set full = populatedSet(3);
         assertTrue(full.removeAll(Arrays.asList(one, two)));
@@ -309,6 +339,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * remove removes an element
      */
+    @Test
     public void testRemove() {
         Collection full = populatedSet(3);
         full.remove(one);
@@ -319,6 +350,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * size returns the number of elements
      */
+    @Test
     public void testSize() {
         Collection empty = new CopyOnWriteArraySet();
         Collection full = populatedSet(3);
@@ -330,6 +362,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
      * toArray() returns an Object array containing all elements from
      * the set in insertion order
      */
+    @Test
     public void testToArray() {
         Object[] a = new CopyOnWriteArraySet().toArray();
         assertTrue(Arrays.equals(new Object[0], a));
@@ -349,6 +382,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
      * toArray(Integer array) returns an Integer array containing all
      * elements from the set in insertion order
      */
+    @Test
     public void testToArray2() {
         Collection empty = new CopyOnWriteArraySet();
         Integer[] a;
@@ -393,6 +427,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
      * toArray throws an ArrayStoreException when the given array can
      * not store the objects inside the set
      */
+    @Test
     public void testToArray_ArrayStoreException() {
         CopyOnWriteArraySet c = new CopyOnWriteArraySet();
         c.add("zfasdfsdf");
@@ -406,6 +441,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * A deserialized serialized set is equal
      */
+    @Test
     public void testSerialization() throws Exception {
         Set x = populatedSet(SIZE);
         Set y = serialClone(x);
@@ -421,6 +457,7 @@ public class CopyOnWriteArraySetTest extends JSR166TestCase {
     /**
      * addAll is idempotent
      */
+    @Test
     public void testAddAll_idempotent() throws Exception {
         Set x = populatedSet(SIZE);
         Set y = new CopyOnWriteArraySet(x);

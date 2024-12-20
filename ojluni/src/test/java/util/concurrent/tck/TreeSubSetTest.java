@@ -32,6 +32,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -40,16 +49,21 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class TreeSubSetTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.TreeSubSetTest");
     }
-    public static Test suite() {
-        return new TestSuite(TreeSubSetTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(TreeSubSetTest.class);
+    // }
 
     static class MyReverseComparator implements Comparator {
         public int compare(Object x, Object y) {
@@ -123,6 +137,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * A new set has unbounded capacity
      */
+    @Test
     public void testConstructor1() {
         assertEquals(0, set0().size());
     }
@@ -130,6 +145,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         NavigableSet q = set0();
         assertTrue(q.isEmpty());
@@ -144,6 +160,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * size changes when elements added and removed
      */
+    @Test
     public void testSize() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -159,6 +176,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * add(null) throws NPE
      */
+    @Test
     public void testAddNull() {
         NavigableSet q = set0();
         try {
@@ -170,6 +188,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Add of comparable element succeeds
      */
+    @Test
     public void testAdd() {
         NavigableSet q = set0();
         assertTrue(q.add(six));
@@ -178,6 +197,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Add of duplicate element fails
      */
+    @Test
     public void testAddDup() {
         NavigableSet q = set0();
         assertTrue(q.add(six));
@@ -187,6 +207,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Add of non-Comparable throws CCE
      */
+    @Test
     public void testAddNonComparable() {
         NavigableSet q = set0();
         try {
@@ -199,6 +220,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * addAll(null) throws NPE
      */
+    @Test
     public void testAddAll1() {
         NavigableSet q = set0();
         try {
@@ -210,6 +232,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * addAll of a collection with null elements throws NPE
      */
+    @Test
     public void testAddAll2() {
         NavigableSet q = set0();
         Integer[] ints = new Integer[SIZE];
@@ -223,6 +246,7 @@ public class TreeSubSetTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         NavigableSet q = set0();
         Integer[] ints = new Integer[SIZE];
@@ -237,6 +261,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Set contains all elements of successful addAll
      */
+    @Test
     public void testAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -252,6 +277,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * poll succeeds unless empty
      */
+    @Test
     public void testPoll() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -263,6 +289,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * remove(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveElement() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -284,6 +311,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -296,6 +324,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testClear() {
         NavigableSet q = populatedSet(SIZE);
         q.clear();
@@ -310,6 +339,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         NavigableSet q = populatedSet(SIZE);
         NavigableSet p = set0();
@@ -324,6 +354,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testRetainAll() {
         NavigableSet q = populatedSet(SIZE);
         NavigableSet p = populatedSet(SIZE);
@@ -343,6 +374,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             NavigableSet q = populatedSet(SIZE);
@@ -359,6 +391,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * lower returns preceding element
      */
+    @Test
     public void testLower() {
         NavigableSet q = set5();
         Object e1 = q.lower(three);
@@ -377,6 +410,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * higher returns next element
      */
+    @Test
     public void testHigher() {
         NavigableSet q = set5();
         Object e1 = q.higher(three);
@@ -395,6 +429,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * floor returns preceding element
      */
+    @Test
     public void testFloor() {
         NavigableSet q = set5();
         Object e1 = q.floor(three);
@@ -413,6 +448,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * ceiling returns next element
      */
+    @Test
     public void testCeiling() {
         NavigableSet q = set5();
         Object e1 = q.ceiling(three);
@@ -431,6 +467,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * toArray contains all elements in sorted order
      */
+    @Test
     public void testToArray() {
         NavigableSet q = populatedSet(SIZE);
         Object[] o = q.toArray();
@@ -441,6 +478,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements in sorted order
      */
+    @Test
     public void testToArray2() {
         NavigableSet<Integer> q = populatedSet(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -453,6 +491,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * iterator iterates through all elements
      */
+    @Test
     public void testIterator() {
         NavigableSet q = populatedSet(SIZE);
         Iterator it = q.iterator();
@@ -466,6 +505,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * iterator of empty set has no elements
      */
+    @Test
     public void testEmptyIterator() {
         assertIteratorExhausted(set0().iterator());
     }
@@ -473,6 +513,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * iterator.remove removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final NavigableSet q = set0();
         q.add(new Integer(2));
@@ -492,6 +533,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * toString contains toStrings of elements
      */
+    @Test
     public void testToString() {
         NavigableSet q = populatedSet(SIZE);
         String s = q.toString();
@@ -503,6 +545,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * A deserialized serialized set has same elements
      */
+    @Test
     public void testSerialization() throws Exception {
         NavigableSet x = populatedSet(SIZE);
         NavigableSet y = serialClone(x);
@@ -521,6 +564,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * subSet returns set with keys in requested range
      */
+    @Test
     public void testSubSetContents() {
         NavigableSet set = set5();
         SortedSet sm = set.subSet(two, four);
@@ -552,6 +596,7 @@ public class TreeSubSetTest extends JSR166TestCase {
         assertEquals(3, set.size());
     }
 
+    @Test
     public void testSubSetContents2() {
         NavigableSet set = set5();
         SortedSet sm = set.subSet(two, three);
@@ -582,6 +627,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * headSet returns set with keys in requested range
      */
+    @Test
     public void testHeadSetContents() {
         NavigableSet set = set5();
         SortedSet sm = set.headSet(four);
@@ -608,6 +654,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * tailSet returns set with keys in requested range
      */
+    @Test
     public void testTailSetContents() {
         NavigableSet set = set5();
         SortedSet sm = set.tailSet(two);
@@ -640,6 +687,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * size changes when elements added and removed
      */
+    @Test
     public void testDescendingSize() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -655,6 +703,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Add of comparable element succeeds
      */
+    @Test
     public void testDescendingAdd() {
         NavigableSet q = dset0();
         assertTrue(q.add(m6));
@@ -663,6 +712,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Add of duplicate element fails
      */
+    @Test
     public void testDescendingAddDup() {
         NavigableSet q = dset0();
         assertTrue(q.add(m6));
@@ -672,6 +722,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Add of non-Comparable throws CCE
      */
+    @Test
     public void testDescendingAddNonComparable() {
         NavigableSet q = dset0();
         try {
@@ -684,6 +735,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * addAll(null) throws NPE
      */
+    @Test
     public void testDescendingAddAll1() {
         NavigableSet q = dset0();
         try {
@@ -695,6 +747,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * addAll of a collection with null elements throws NPE
      */
+    @Test
     public void testDescendingAddAll2() {
         NavigableSet q = dset0();
         Integer[] ints = new Integer[SIZE];
@@ -708,6 +761,7 @@ public class TreeSubSetTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testDescendingAddAll3() {
         NavigableSet q = dset0();
         Integer[] ints = new Integer[SIZE];
@@ -722,6 +776,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * Set contains all elements of successful addAll
      */
+    @Test
     public void testDescendingAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -737,6 +792,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * poll succeeds unless empty
      */
+    @Test
     public void testDescendingPoll() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -748,6 +804,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * remove(x) removes x and returns true if present
      */
+    @Test
     public void testDescendingRemoveElement() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -763,6 +820,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testDescendingContains() {
         NavigableSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -775,6 +833,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testDescendingClear() {
         NavigableSet q = populatedSet(SIZE);
         q.clear();
@@ -789,6 +848,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testDescendingContainsAll() {
         NavigableSet q = populatedSet(SIZE);
         NavigableSet p = dset0();
@@ -803,6 +863,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testDescendingRetainAll() {
         NavigableSet q = populatedSet(SIZE);
         NavigableSet p = populatedSet(SIZE);
@@ -822,6 +883,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testDescendingRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             NavigableSet q = populatedSet(SIZE);
@@ -838,6 +900,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * lower returns preceding element
      */
+    @Test
     public void testDescendingLower() {
         NavigableSet q = dset5();
         Object e1 = q.lower(m3);
@@ -856,6 +919,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * higher returns next element
      */
+    @Test
     public void testDescendingHigher() {
         NavigableSet q = dset5();
         Object e1 = q.higher(m3);
@@ -874,6 +938,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * floor returns preceding element
      */
+    @Test
     public void testDescendingFloor() {
         NavigableSet q = dset5();
         Object e1 = q.floor(m3);
@@ -892,6 +957,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * ceiling returns next element
      */
+    @Test
     public void testDescendingCeiling() {
         NavigableSet q = dset5();
         Object e1 = q.ceiling(m3);
@@ -910,6 +976,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * toArray contains all elements
      */
+    @Test
     public void testDescendingToArray() {
         NavigableSet q = populatedSet(SIZE);
         Object[] o = q.toArray();
@@ -921,6 +988,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements
      */
+    @Test
     public void testDescendingToArray2() {
         NavigableSet q = populatedSet(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -933,6 +1001,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * iterator iterates through all elements
      */
+    @Test
     public void testDescendingIterator() {
         NavigableSet q = populatedSet(SIZE);
         int i = 0;
@@ -947,6 +1016,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * iterator of empty set has no elements
      */
+    @Test
     public void testDescendingEmptyIterator() {
         NavigableSet q = dset0();
         int i = 0;
@@ -961,6 +1031,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * iterator.remove removes current element
      */
+    @Test
     public void testDescendingIteratorRemove() {
         final NavigableSet q = dset0();
         q.add(new Integer(2));
@@ -980,6 +1051,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * toString contains toStrings of elements
      */
+    @Test
     public void testDescendingToString() {
         NavigableSet q = populatedSet(SIZE);
         String s = q.toString();
@@ -991,6 +1063,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * A deserialized serialized set has same elements
      */
+    @Test
     public void testDescendingSerialization() throws Exception {
         NavigableSet x = dset5();
         NavigableSet y = serialClone(x);
@@ -1010,6 +1083,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * subSet returns set with keys in requested range
      */
+    @Test
     public void testDescendingSubSetContents() {
         NavigableSet set = dset5();
         SortedSet sm = set.subSet(m2, m4);
@@ -1041,6 +1115,7 @@ public class TreeSubSetTest extends JSR166TestCase {
         assertEquals(3, set.size());
     }
 
+    @Test
     public void testDescendingSubSetContents2() {
         NavigableSet set = dset5();
         SortedSet sm = set.subSet(m2, m3);
@@ -1071,6 +1146,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * headSet returns set with keys in requested range
      */
+    @Test
     public void testDescendingHeadSetContents() {
         NavigableSet set = dset5();
         SortedSet sm = set.headSet(m4);
@@ -1097,6 +1173,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * tailSet returns set with keys in requested range
      */
+    @Test
     public void testDescendingTailSetContents() {
         NavigableSet set = dset5();
         SortedSet sm = set.tailSet(m2);
@@ -1129,6 +1206,7 @@ public class TreeSubSetTest extends JSR166TestCase {
     /**
      * addAll is idempotent
      */
+    @Test
     public void testAddAll_idempotent() throws Exception {
         Set x = populatedSet(SIZE);
         Set y = new TreeSet(x);

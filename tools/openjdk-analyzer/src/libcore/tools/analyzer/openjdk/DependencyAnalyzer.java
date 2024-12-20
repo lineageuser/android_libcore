@@ -565,9 +565,9 @@ public class DependencyAnalyzer {
         /**
          * It contains mappings of classes and / or packages renamed in a new OpenJDK version.
          */
-        private static final Map<String, String> PREFIX_RENAMES = new HashMap<>() {{
-            put("sun/", "jdk/internal/");
-        }};
+        private static final Map<String, String> PREFIX_RENAMES = Map.of(
+                "sun/", "jdk/internal/"
+        );
 
         /**
          * Contains the dependency of a given class in the expected upstream version.

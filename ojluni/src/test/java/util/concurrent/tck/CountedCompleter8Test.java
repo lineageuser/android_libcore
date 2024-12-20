@@ -35,6 +35,14 @@
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountedCompleter;
 import java.util.concurrent.ThreadLocalRandom;
@@ -42,18 +50,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class CountedCompleter8Test extends JSR166TestCase {
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.CountedCompleter8Test");
     }
-
-    public static Test suite() {
-        return new TestSuite(CountedCompleter8Test.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(CountedCompleter8Test.class);
+    // }
 
     /** CountedCompleter class javadoc code sample, version 1. */
     public static <E> void forEach1(E[] array, Consumer<E> action) {
@@ -145,7 +156,7 @@ public class CountedCompleter8Test extends JSR166TestCase {
             new Task(null, 0, array.length).invoke();
     }
 
-    void testRecursiveDecomposition(
+    private void testRecursiveDecomposition(
         BiConsumer<Integer[], Consumer<Integer>> action) {
         int n = ThreadLocalRandom.current().nextInt(8);
         Integer[] a = new Integer[n];
@@ -159,6 +170,7 @@ public class CountedCompleter8Test extends JSR166TestCase {
      * Variants of divide-by-two recursive decomposition into leaf tasks,
      * as described in the CountedCompleter class javadoc code samples
      */
+    @Test
     public void testRecursiveDecomposition() {
         testRecursiveDecomposition(CountedCompleter8Test::forEach1);
         testRecursiveDecomposition(CountedCompleter8Test::forEach2);

@@ -34,17 +34,31 @@
  */
 
 package test.java.util.concurrent.tck;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ThreadLocalTest extends JSR166TestCase {
-    public static void main(String[] args) {
-        main(suite(), args);
-    }
 
-    public static Test suite() {
-        return new TestSuite(ThreadLocalTest.class);
+    // Android-changed: Use JUnitCore.main.
+    public static void main(String[] args) {
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ThreadLocalTest");
     }
+    // public static Test suite() {
+    //     return new TestSuite(ThreadLocalTest.class);
+    // }
 
     static ThreadLocal<Integer> tl = new ThreadLocal<Integer>() {
             public Integer initialValue() {
@@ -66,6 +80,7 @@ public class ThreadLocalTest extends JSR166TestCase {
     /**
      * remove causes next access to return initial value
      */
+    @Test
     public void testRemove() {
         assertSame(tl.get(), one);
         tl.set(two);
@@ -78,6 +93,7 @@ public class ThreadLocalTest extends JSR166TestCase {
      * remove in InheritableThreadLocal causes next access to return
      * initial value
      */
+    @Test
     public void testRemoveITL() {
         assertSame(itl.get(), zero);
         itl.set(two);
@@ -116,6 +132,7 @@ public class ThreadLocalTest extends JSR166TestCase {
     /**
      * InheritableThreadLocal propagates generic values.
      */
+    @Test
     public void testGenericITL() throws InterruptedException {
         final int threadCount = 10;
         final int[] x = new int[threadCount];

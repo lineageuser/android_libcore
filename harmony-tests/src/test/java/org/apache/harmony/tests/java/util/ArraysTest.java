@@ -3274,8 +3274,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((byte[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3311,8 +3311,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((short[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3348,8 +3348,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((int[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3385,8 +3385,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((boolean[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3422,8 +3422,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((char[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3459,8 +3459,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((float[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3496,8 +3496,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((double[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3533,8 +3533,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOf((long[]) null, -1);
-            fail("should throw NegativeArraySizeException");
-        } catch (NegativeArraySizeException e) {
+            fail("should throw NegativeArraySizeException or NPE");
+        } catch (NegativeArraySizeException | NullPointerException e) {
             // expected
         }
     }
@@ -3685,8 +3685,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((byte[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {
@@ -3738,8 +3738,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((short[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {
@@ -3791,8 +3791,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((int[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {
@@ -3844,8 +3844,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((long[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {
@@ -3897,8 +3897,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((char[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {
@@ -3947,8 +3947,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((float[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {
@@ -4000,8 +4000,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((double[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {
@@ -4053,8 +4053,8 @@ public class ArraysTest extends junit.framework.TestCase {
         }
         try {
             Arrays.copyOfRange((boolean[]) null, 0, -1);
-            fail("should throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
+            fail("should throw IllegalArgumentException or NPE");
+        } catch (IllegalArgumentException | NullPointerException e) {
             // expected
         }
         try {

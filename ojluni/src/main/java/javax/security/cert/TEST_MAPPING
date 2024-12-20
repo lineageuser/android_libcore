@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "org.apache.harmony.tests.javax.security.cert"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_javax_security_cert"
     }
   ]
 }

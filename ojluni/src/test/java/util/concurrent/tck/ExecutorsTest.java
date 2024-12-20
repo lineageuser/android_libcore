@@ -35,6 +35,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.AccessControlContext;
 import java.security.AccessControlException;
@@ -51,20 +59,27 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ExecutorsTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ExecutorsTest");
     }
-    public static Test suite() {
-        return new TestSuite(ExecutorsTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ExecutorsTest.class);
+    // }
 
     /**
      * A newCachedThreadPool can execute runnables
      */
+    @Test
     public void testNewCachedThreadPool1() {
         final ExecutorService e = Executors.newCachedThreadPool();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -77,6 +92,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A newCachedThreadPool with given ThreadFactory can execute runnables
      */
+    @Test
     public void testNewCachedThreadPool2() {
         final ExecutorService e = Executors.newCachedThreadPool(new SimpleThreadFactory());
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -89,6 +105,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A newCachedThreadPool with null ThreadFactory throws NPE
      */
+    @Test
     public void testNewCachedThreadPool3() {
         try {
             ExecutorService e = Executors.newCachedThreadPool(null);
@@ -99,6 +116,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new SingleThreadExecutor can execute runnables
      */
+    @Test
     public void testNewSingleThreadExecutor1() {
         final ExecutorService e = Executors.newSingleThreadExecutor();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -111,6 +129,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new SingleThreadExecutor with given ThreadFactory can execute runnables
      */
+    @Test
     public void testNewSingleThreadExecutor2() {
         final ExecutorService e = Executors.newSingleThreadExecutor(new SimpleThreadFactory());
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -123,6 +142,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new SingleThreadExecutor with null ThreadFactory throws NPE
      */
+    @Test
     public void testNewSingleThreadExecutor3() {
         try {
             ExecutorService e = Executors.newSingleThreadExecutor(null);
@@ -133,6 +153,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new SingleThreadExecutor cannot be casted to concrete implementation
      */
+    @Test
     public void testCastNewSingleThreadExecutor() {
         final ExecutorService e = Executors.newSingleThreadExecutor();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -146,6 +167,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new newFixedThreadPool can execute runnables
      */
+    @Test
     public void testNewFixedThreadPool1() {
         final ExecutorService e = Executors.newFixedThreadPool(2);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -158,6 +180,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new newFixedThreadPool with given ThreadFactory can execute runnables
      */
+    @Test
     public void testNewFixedThreadPool2() {
         final ExecutorService e = Executors.newFixedThreadPool(2, new SimpleThreadFactory());
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -170,6 +193,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new newFixedThreadPool with null ThreadFactory throws NPE
      */
+    @Test
     public void testNewFixedThreadPool3() {
         try {
             ExecutorService e = Executors.newFixedThreadPool(2, null);
@@ -180,6 +204,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * A new newFixedThreadPool with 0 threads throws IAE
      */
+    @Test
     public void testNewFixedThreadPool4() {
         try {
             ExecutorService e = Executors.newFixedThreadPool(0);
@@ -190,6 +215,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * An unconfigurable newFixedThreadPool can execute runnables
      */
+    @Test
     public void testUnconfigurableExecutorService() {
         final ExecutorService e = Executors.unconfigurableExecutorService(Executors.newFixedThreadPool(2));
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -202,6 +228,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * unconfigurableExecutorService(null) throws NPE
      */
+    @Test
     public void testUnconfigurableExecutorServiceNPE() {
         try {
             ExecutorService e = Executors.unconfigurableExecutorService(null);
@@ -212,6 +239,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * unconfigurableScheduledExecutorService(null) throws NPE
      */
+    @Test
     public void testUnconfigurableScheduledExecutorServiceNPE() {
         try {
             ExecutorService e = Executors.unconfigurableScheduledExecutorService(null);
@@ -222,6 +250,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * a newSingleThreadScheduledExecutor successfully runs delayed task
      */
+    @Test
     public void testNewSingleThreadScheduledExecutor() throws Exception {
         final ScheduledExecutorService p = Executors.newSingleThreadScheduledExecutor();
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -246,6 +275,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * a newScheduledThreadPool successfully runs delayed task
      */
+    @Test
     public void testNewScheduledThreadPool() throws Exception {
         final ScheduledExecutorService p = Executors.newScheduledThreadPool(2);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -270,6 +300,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * an unconfigurable newScheduledThreadPool successfully runs delayed task
      */
+    @Test
     public void testUnconfigurableScheduledExecutorService() throws Exception {
         final ScheduledExecutorService p =
             Executors.unconfigurableScheduledExecutorService
@@ -296,6 +327,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * Future.get on submitted tasks will time out if they compute too long.
      */
+    @Test
     public void testTimedCallable() throws Exception {
         final ExecutorService[] executors = {
             Executors.newSingleThreadExecutor(),
@@ -327,6 +359,7 @@ public class ExecutorsTest extends JSR166TestCase {
      * ThreadPoolExecutor using defaultThreadFactory has
      * specified group, priority, daemon status, and name
      */
+    @Test
     public void testDefaultThreadFactory() throws Exception {
         final ThreadGroup egroup = Thread.currentThread().getThreadGroup();
         final CountDownLatch done = new CountDownLatch(1);
@@ -361,6 +394,8 @@ public class ExecutorsTest extends JSR166TestCase {
      * specified group, priority, daemon status, name,
      * access control context and context class loader
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testPrivilegedThreadFactory() throws Exception {
         final CountDownLatch done = new CountDownLatch(1);
         Runnable r = new CheckedRunnable() {
@@ -431,6 +466,8 @@ public class ExecutorsTest extends JSR166TestCase {
      * Without class loader permissions, creating
      * privilegedCallableUsingCurrentClassLoader throws ACE
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testCreatePrivilegedCallableUsingCCLWithNoPrivs() {
         Runnable r = new CheckedRunnable() {
             public void realRun() throws Exception {
@@ -449,6 +486,8 @@ public class ExecutorsTest extends JSR166TestCase {
      * With class loader permissions, calling
      * privilegedCallableUsingCurrentClassLoader does not throw ACE
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testPrivilegedCallableUsingCCLWithPrivs() throws Exception {
         Runnable r = new CheckedRunnable() {
             public void realRun() throws Exception {
@@ -465,6 +504,8 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * Without permissions, calling privilegedCallable throws ACE
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testPrivilegedCallableWithNoPrivs() throws Exception {
         // Avoid classloader-related SecurityExceptions in swingui.TestRunner
         Executors.privilegedCallable(new CheckCCL());
@@ -537,6 +578,8 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * With permissions, calling privilegedCallable succeeds
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testPrivilegedCallableWithPrivs() throws Exception {
         Runnable r = new CheckedRunnable() {
             public void realRun() throws Exception {
@@ -551,6 +594,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(Runnable) returns null when called
      */
+    @Test
     public void testCallable1() throws Exception {
         Callable c = Executors.callable(new NoOpRunnable());
         assertNull(c.call());
@@ -559,6 +603,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(Runnable, result) returns result when called
      */
+    @Test
     public void testCallable2() throws Exception {
         Callable c = Executors.callable(new NoOpRunnable(), one);
         assertSame(one, c.call());
@@ -567,6 +612,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(PrivilegedAction) returns its result when called
      */
+    @Test
     public void testCallable3() throws Exception {
         Callable c = Executors.callable(new PrivilegedAction() {
                 public Object run() { return one; }});
@@ -576,6 +622,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(PrivilegedExceptionAction) returns its result when called
      */
+    @Test
     public void testCallable4() throws Exception {
         Callable c = Executors.callable(new PrivilegedExceptionAction() {
                 public Object run() { return one; }});
@@ -585,6 +632,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(null Runnable) throws NPE
      */
+    @Test
     public void testCallableNPE1() {
         try {
             Callable c = Executors.callable((Runnable) null);
@@ -595,6 +643,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(null, result) throws NPE
      */
+    @Test
     public void testCallableNPE2() {
         try {
             Callable c = Executors.callable((Runnable) null, one);
@@ -605,6 +654,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(null PrivilegedAction) throws NPE
      */
+    @Test
     public void testCallableNPE3() {
         try {
             Callable c = Executors.callable((PrivilegedAction) null);
@@ -615,6 +665,7 @@ public class ExecutorsTest extends JSR166TestCase {
     /**
      * callable(null PrivilegedExceptionAction) throws NPE
      */
+    @Test
     public void testCallableNPE4() {
         try {
             Callable c = Executors.callable((PrivilegedExceptionAction) null);

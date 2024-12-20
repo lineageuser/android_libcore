@@ -33,6 +33,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,39 +56,50 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import junit.framework.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class LinkedBlockingDequeTest extends JSR166TestCase {
 
+    // Android-changed: Use JUnit4.
+    @RunWith(JUnit4.class)
     public static class Unbounded extends BlockingQueueTest {
         protected BlockingQueue emptyCollection() {
             return new LinkedBlockingDeque();
         }
     }
 
+    // Android-changed: Use JUnit4.
+    @RunWith(JUnit4.class)
     public static class Bounded extends BlockingQueueTest {
         protected BlockingQueue emptyCollection() {
             return new LinkedBlockingDeque(SIZE);
         }
     }
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.LinkedBlockingDequeTest");
     }
 
-    public static Test suite() {
-        class Implementation implements CollectionImplementation {
-            public Class<?> klazz() { return LinkedBlockingDeque.class; }
-            public Collection emptyCollection() { return new LinkedBlockingDeque(); }
-            public Object makeElement(int i) { return i; }
-            public boolean isConcurrent() { return true; }
-            public boolean permitsNulls() { return false; }
-        }
-        return newTestSuite(LinkedBlockingDequeTest.class,
-                            new Unbounded().testSuite(),
-                            new Bounded().testSuite(),
-                            CollectionTest.testSuite(new Implementation()));
-    }
+    // Android-removed: No usage of suite().
+    // public static Test suite() {
+    //     class Implementation implements CollectionImplementation {
+    //         public Class<?> klazz() { return LinkedBlockingDeque.class; }
+    //         public Collection emptyCollection() { return new LinkedBlockingDeque(); }
+    //         public Object makeElement(int i) { return i; }
+    //         public boolean isConcurrent() { return true; }
+    //         public boolean permitsNulls() { return false; }
+    //     }
+    //     return newTestSuite(LinkedBlockingDequeTest.class,
+    //                         new Unbounded().testSuite(),
+    //                         new Bounded().testSuite(),
+    //                         CollectionTest.testSuite(new Implementation()));
+    // }
 
     /**
      * Returns a new deque of given size containing consecutive
@@ -103,6 +122,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         LinkedBlockingDeque q = new LinkedBlockingDeque();
         assertTrue(q.isEmpty());
@@ -117,6 +137,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * size changes when elements added and removed
      */
+    @Test
     public void testSize() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -132,6 +153,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * offerFirst(null) throws NullPointerException
      */
+    @Test
     public void testOfferFirstNull() {
         LinkedBlockingDeque q = new LinkedBlockingDeque();
         try {
@@ -143,6 +165,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * offerLast(null) throws NullPointerException
      */
+    @Test
     public void testOfferLastNull() {
         LinkedBlockingDeque q = new LinkedBlockingDeque();
         try {
@@ -154,6 +177,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * OfferFirst succeeds
      */
+    @Test
     public void testOfferFirst() {
         LinkedBlockingDeque q = new LinkedBlockingDeque();
         assertTrue(q.offerFirst(new Integer(0)));
@@ -163,6 +187,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * OfferLast succeeds
      */
+    @Test
     public void testOfferLast() {
         LinkedBlockingDeque q = new LinkedBlockingDeque();
         assertTrue(q.offerLast(new Integer(0)));
@@ -172,6 +197,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * pollFirst succeeds unless empty
      */
+    @Test
     public void testPollFirst() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -183,6 +209,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * pollLast succeeds unless empty
      */
+    @Test
     public void testPollLast() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -194,6 +221,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * peekFirst returns next element, or null if empty
      */
+    @Test
     public void testPeekFirst() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -208,6 +236,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * peek returns next element, or null if empty
      */
+    @Test
     public void testPeek() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -222,6 +251,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * peekLast returns next element, or null if empty
      */
+    @Test
     public void testPeekLast() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -236,6 +266,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * getFirst() returns first element, or throws NSEE if empty
      */
+    @Test
     public void testFirstElement() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -252,6 +283,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * getLast() returns last element, or throws NSEE if empty
      */
+    @Test
     public void testLastElement() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -268,6 +300,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * removeFirst() removes first element, or throws NSEE if empty
      */
+    @Test
     public void testRemoveFirst() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -283,6 +316,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * removeLast() removes last element, or throws NSEE if empty
      */
+    @Test
     public void testRemoveLast() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -298,6 +332,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * remove removes next element, or throws NSEE if empty
      */
+    @Test
     public void testRemove() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -312,6 +347,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * removeFirstOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveFirstOccurrence() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -327,6 +363,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * removeLastOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveLastOccurrence() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -342,6 +379,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * peekFirst returns element inserted with addFirst
      */
+    @Test
     public void testAddFirst() {
         LinkedBlockingDeque q = populatedDeque(3);
         q.pollLast();
@@ -352,6 +390,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * peekLast returns element inserted with addLast
      */
+    @Test
     public void testAddLast() {
         LinkedBlockingDeque q = populatedDeque(3);
         q.pollLast();
@@ -363,6 +402,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * A new deque has the indicated capacity, or Integer.MAX_VALUE if
      * none given
      */
+    @Test
     public void testConstructor1() {
         assertEquals(SIZE, new LinkedBlockingDeque(SIZE).remainingCapacity());
         assertEquals(Integer.MAX_VALUE, new LinkedBlockingDeque().remainingCapacity());
@@ -371,6 +411,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Constructor throws IllegalArgumentException if capacity argument nonpositive
      */
+    @Test
     public void testConstructor2() {
         try {
             new LinkedBlockingDeque(0);
@@ -381,6 +422,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Initializing from null Collection throws NullPointerException
      */
+    @Test
     public void testConstructor3() {
         try {
             new LinkedBlockingDeque(null);
@@ -391,6 +433,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Initializing from Collection of null elements throws NullPointerException
      */
+    @Test
     public void testConstructor4() {
         Collection<Integer> elements = Arrays.asList(new Integer[SIZE]);
         try {
@@ -403,6 +446,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * Initializing from Collection with some null elements throws
      * NullPointerException
      */
+    @Test
     public void testConstructor5() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
@@ -417,6 +461,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Deque contains all elements of collection used to initialize
      */
+    @Test
     public void testConstructor6() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
@@ -429,6 +474,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Deque transitions from empty to full when elements added
      */
+    @Test
     public void testEmptyFull() {
         LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         assertTrue(q.isEmpty());
@@ -444,6 +490,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * remainingCapacity decreases on add, increases on remove
      */
+    @Test
     public void testRemainingCapacity() {
         BlockingQueue q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -461,6 +508,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * push(null) throws NPE
      */
+    @Test
     public void testPushNull() {
         LinkedBlockingDeque q = new LinkedBlockingDeque(1);
         try {
@@ -472,6 +520,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * push succeeds if not full; throws ISE if full
      */
+    @Test
     public void testPush() {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -489,6 +538,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * peekFirst returns element inserted with push
      */
+    @Test
     public void testPushWithPeek() {
         LinkedBlockingDeque q = populatedDeque(3);
         q.pollLast();
@@ -499,6 +549,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * pop removes next element, or throws NSEE if empty
      */
+    @Test
     public void testPop() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -513,6 +564,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Offer succeeds if not full; fails if full
      */
+    @Test
     public void testOffer() {
         LinkedBlockingDeque q = new LinkedBlockingDeque(1);
         assertTrue(q.offer(zero));
@@ -522,6 +574,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * add succeeds if not full; throws ISE if full
      */
+    @Test
     public void testAdd() {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         for (int i = 0; i < SIZE; ++i)
@@ -536,6 +589,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * addAll(this) throws IAE
      */
+    @Test
     public void testAddAllSelf() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         try {
@@ -548,6 +602,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -563,6 +618,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * addAll throws IllegalStateException if not enough room
      */
+    @Test
     public void testAddAll4() {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE - 1);
         Integer[] ints = new Integer[SIZE];
@@ -578,6 +634,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Deque contains all elements, in traversal order, of successful addAll
      */
+    @Test
     public void testAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -593,6 +650,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * all elements successfully put are contained
      */
+    @Test
     public void testPut() throws InterruptedException {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -606,6 +664,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * put blocks interruptibly if full
      */
+    @Test
     public void testBlockingPut() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -642,6 +701,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * put blocks interruptibly waiting for take when full
      */
+    @Test
     public void testPutWithTake() throws InterruptedException {
         final int capacity = 2;
         final LinkedBlockingDeque q = new LinkedBlockingDeque(capacity);
@@ -676,6 +736,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed offer times out if full and elements not taken
      */
+    @Test
     public void testTimedOffer() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -702,6 +763,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * take retrieves elements in FIFO order
      */
+    @Test
     public void testTake() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -712,6 +774,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * take removes existing elements until empty, then blocks interruptibly
      */
+    @Test
     public void testBlockingTake() throws InterruptedException {
         final LinkedBlockingDeque q = populatedDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -745,6 +808,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * poll succeeds unless empty
      */
+    @Test
     public void testPoll() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -756,6 +820,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed poll with zero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPoll0() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -767,6 +832,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed poll with nonzero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPoll() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -784,6 +850,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * Interrupted timed poll throws InterruptedException instead of
      * returning timeout status
      */
+    @Test
     public void testInterruptedTimedPoll() throws InterruptedException {
         final BlockingQueue<Integer> q = populatedDeque(SIZE);
         final CountDownLatch aboutToWait = new CountDownLatch(1);
@@ -812,6 +879,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * putFirst(null) throws NPE
      */
+    @Test
     public void testPutFirstNull() throws InterruptedException {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         try {
@@ -823,6 +891,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * all elements successfully putFirst are contained
      */
+    @Test
     public void testPutFirst() throws InterruptedException {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -836,6 +905,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * putFirst blocks interruptibly if full
      */
+    @Test
     public void testBlockingPutFirst() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -872,6 +942,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * putFirst blocks interruptibly waiting for take when full
      */
+    @Test
     public void testPutFirstWithTake() throws InterruptedException {
         final int capacity = 2;
         final LinkedBlockingDeque q = new LinkedBlockingDeque(capacity);
@@ -906,6 +977,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed offerFirst times out if full and elements not taken
      */
+    @Test
     public void testTimedOfferFirst() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -932,6 +1004,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * take retrieves elements in FIFO order
      */
+    @Test
     public void testTakeFirst() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -942,6 +1015,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * takeFirst() blocks interruptibly when empty
      */
+    @Test
     public void testTakeFirstFromEmptyBlocksInterruptibly() {
         final BlockingDeque q = new LinkedBlockingDeque();
         final CountDownLatch threadStarted = new CountDownLatch(1);
@@ -965,6 +1039,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * takeFirst() throws InterruptedException immediately if interrupted
      * before waiting
      */
+    @Test
     public void testTakeFirstFromEmptyAfterInterrupt() {
         final BlockingDeque q = new LinkedBlockingDeque();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -983,6 +1058,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * takeLast() blocks interruptibly when empty
      */
+    @Test
     public void testTakeLastFromEmptyBlocksInterruptibly() {
         final BlockingDeque q = new LinkedBlockingDeque();
         final CountDownLatch threadStarted = new CountDownLatch(1);
@@ -1006,6 +1082,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * takeLast() throws InterruptedException immediately if interrupted
      * before waiting
      */
+    @Test
     public void testTakeLastFromEmptyAfterInterrupt() {
         final BlockingDeque q = new LinkedBlockingDeque();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -1024,6 +1101,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * takeFirst removes existing elements until empty, then blocks interruptibly
      */
+    @Test
     public void testBlockingTakeFirst() throws InterruptedException {
         final LinkedBlockingDeque q = populatedDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -1057,6 +1135,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed pollFirst with zero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPollFirst0() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1068,6 +1147,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed pollFirst with nonzero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPollFirst() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1085,6 +1165,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * Interrupted timed pollFirst throws InterruptedException instead of
      * returning timeout status
      */
+    @Test
     public void testInterruptedTimedPollFirst() throws InterruptedException {
         final LinkedBlockingDeque q = populatedDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -1121,6 +1202,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * timed pollFirst before a delayed offerFirst fails; after offerFirst succeeds;
      * on interruption throws
      */
+    @Test
     public void testTimedPollFirstWithOfferFirst() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         final CheckedBarrier barrier = new CheckedBarrier(2);
@@ -1161,6 +1243,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * putLast(null) throws NPE
      */
+    @Test
     public void testPutLastNull() throws InterruptedException {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         try {
@@ -1172,6 +1255,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * all elements successfully putLast are contained
      */
+    @Test
     public void testPutLast() throws InterruptedException {
         LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1185,6 +1269,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * putLast blocks interruptibly if full
      */
+    @Test
     public void testBlockingPutLast() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -1221,6 +1306,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * putLast blocks interruptibly waiting for take when full
      */
+    @Test
     public void testPutLastWithTake() throws InterruptedException {
         final int capacity = 2;
         final LinkedBlockingDeque q = new LinkedBlockingDeque(capacity);
@@ -1255,6 +1341,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed offerLast times out if full and elements not taken
      */
+    @Test
     public void testTimedOfferLast() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -1281,6 +1368,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * takeLast retrieves elements in FIFO order
      */
+    @Test
     public void testTakeLast() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1291,6 +1379,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * takeLast removes existing elements until empty, then blocks interruptibly
      */
+    @Test
     public void testBlockingTakeLast() throws InterruptedException {
         final LinkedBlockingDeque q = populatedDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -1324,6 +1413,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed pollLast with zero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPollLast0() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1335,6 +1425,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed pollLast with nonzero timeout succeeds when non-empty, else times out
      */
+    @Test
     public void testTimedPollLast() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1352,6 +1443,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * Interrupted timed pollLast throws InterruptedException instead of
      * returning timeout status
      */
+    @Test
     public void testInterruptedTimedPollLast() throws InterruptedException {
         final LinkedBlockingDeque q = populatedDeque(SIZE);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
@@ -1391,6 +1483,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
      * timed poll before a delayed offerLast fails; after offerLast succeeds;
      * on interruption throws
      */
+    @Test
     public void testTimedPollWithOfferLast() throws InterruptedException {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         final CheckedBarrier barrier = new CheckedBarrier(2);
@@ -1435,6 +1528,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * element returns next element, or throws NSEE if empty
      */
+    @Test
     public void testElement() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1450,6 +1544,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -1462,6 +1557,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testClear() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         q.clear();
@@ -1478,6 +1574,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         LinkedBlockingDeque p = new LinkedBlockingDeque(SIZE);
@@ -1492,6 +1589,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testRetainAll() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         LinkedBlockingDeque p = populatedDeque(SIZE);
@@ -1511,6 +1609,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             LinkedBlockingDeque q = populatedDeque(SIZE);
@@ -1527,6 +1626,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * toArray contains all elements in FIFO order
      */
+    @Test
     public void testToArray() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         Object[] o = q.toArray();
@@ -1537,6 +1637,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements in FIFO order
      */
+    @Test
     public void testToArray2() {
         LinkedBlockingDeque<Integer> q = populatedDeque(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -1549,6 +1650,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * toArray(incompatible array type) throws ArrayStoreException
      */
+    @Test
     public void testToArray1_BadArg() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         try {
@@ -1560,6 +1662,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * iterator iterates through all elements
      */
+    @Test
     public void testIterator() throws InterruptedException {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         Iterator it = q.iterator();
@@ -1579,6 +1682,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * iterator of empty collection has no elements
      */
+    @Test
     public void testEmptyIterator() {
         Deque c = new LinkedBlockingDeque();
         assertIteratorExhausted(c.iterator());
@@ -1588,6 +1692,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * iterator.remove removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(3);
         q.add(two);
@@ -1607,6 +1712,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * iterator ordering is FIFO
      */
+    @Test
     public void testIteratorOrdering() {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(3);
         q.add(one);
@@ -1623,6 +1729,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Modifications do not cause iterators to fail
      */
+    @Test
     public void testWeaklyConsistentIteration() {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(3);
         q.add(one);
@@ -1638,6 +1745,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Descending iterator iterates through all elements
      */
+    @Test
     public void testDescendingIterator() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         int i = 0;
@@ -1657,6 +1765,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * Descending iterator ordering is reverse FIFO
      */
+    @Test
     public void testDescendingIteratorOrdering() {
         final LinkedBlockingDeque q = new LinkedBlockingDeque();
         for (int iters = 0; iters < 100; ++iters) {
@@ -1678,6 +1787,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * descendingIterator.remove removes current element
      */
+    @Test
     public void testDescendingIteratorRemove() {
         final LinkedBlockingDeque q = new LinkedBlockingDeque();
         for (int iters = 0; iters < 100; ++iters) {
@@ -1700,6 +1810,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * toString contains toStrings of elements
      */
+    @Test
     public void testToString() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         String s = q.toString();
@@ -1711,6 +1822,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * offer transfers elements across Executor tasks
      */
+    @Test
     public void testOfferInExecutor() {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         q.add(one);
@@ -1737,6 +1849,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * timed poll retrieves elements across Executor threads
      */
+    @Test
     public void testPollInExecutor() {
         final LinkedBlockingDeque q = new LinkedBlockingDeque(2);
         final CheckedBarrier threadsStarted = new CheckedBarrier(2);
@@ -1761,6 +1874,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * A deserialized serialized deque has same elements in same order
      */
+    @Test
     public void testSerialization() throws Exception {
         Queue x = populatedDeque(SIZE);
         Queue y = serialClone(x);
@@ -1779,6 +1893,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * drainTo(c) empties deque into another collection c
      */
+    @Test
     public void testDrainTo() {
         LinkedBlockingDeque q = populatedDeque(SIZE);
         ArrayList l = new ArrayList();
@@ -1803,6 +1918,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * drainTo empties full deque, unblocking a waiting put.
      */
+    @Test
     public void testDrainToWithActivePut() throws InterruptedException {
         final LinkedBlockingDeque q = populatedDeque(SIZE);
         Thread t = new Thread(new CheckedRunnable() {
@@ -1823,6 +1939,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * drainTo(c, n) empties first min(n, size) elements of queue into c
      */
+    @Test
     public void testDrainToN() {
         LinkedBlockingDeque q = new LinkedBlockingDeque();
         for (int i = 0; i < SIZE + 2; ++i) {
@@ -1842,6 +1959,7 @@ public class LinkedBlockingDequeTest extends JSR166TestCase {
     /**
      * remove(null), contains(null) always return false
      */
+    @Test
     public void testNeverContainsNull() {
         Deque<?>[] qs = {
             new LinkedBlockingDeque<Object>(),

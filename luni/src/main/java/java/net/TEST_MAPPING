@@ -1,29 +1,10 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.java.net"
-        },
-        {
-          "include-filter": "org.apache.harmony.luni.tests.internal.net.www.protocol.http"
-        },
-        {
-          "include-filter": "org.apache.harmony.tests.java.net"
-        },
-        {
-          "include-filter": "org.apache.harmony.luni.tests.java.net"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_java_net"
     },
     {
-      "name": "CtsLibcoreOjTestCases",
-      "options": [
-        {
-          "include-filter": "test.java.net"
-        }
-      ]
+      "name": "CtsLibcoreOjTestCases_java_net"
     }
   ]
 }

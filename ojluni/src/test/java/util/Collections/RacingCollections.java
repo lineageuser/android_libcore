@@ -362,7 +362,20 @@ public class RacingCollections {
 
     //--------------------- Infrastructure ---------------------------
     static volatile int passed = 0, failed = 0;
-    static void pass() {passed++;}
+    // Android-changed: Add more logs for http://b/349042322
+    // static void pass() {passed++;}
+    static volatile long lastLogTimeMs = Long.MIN_VALUE;
+    static void pass() {
+        passed++;
+        long currentTimeMs = System.currentTimeMillis();
+        long lastMs = lastLogTimeMs;
+        // For simplicity, it's okay that we log more than once in 10 seconds due to race.
+        // For reference, on cuttlefish x86_64, the test finishes in 3 seconds.
+        if (currentTimeMs - lastMs >= 10000 /* 10 seconds */) {
+            lastLogTimeMs = currentTimeMs;
+            System.logI("RacingCollections counter pass: " + passed + " failures: " + failed);
+        }
+    }
     static void fail() {failed++; Thread.dumpStack();}
     static void fail(String msg) {System.out.println(msg); fail();}
     static void unexpected(Throwable t) {failed++; t.printStackTrace();}

@@ -16,9 +16,14 @@
 
 package libcore.libcore.util;
 
+import android.platform.test.annotations.RequiresFlagsEnabled;
+
+import java.util.Collection;
 import junit.framework.TestCase;
 
 import libcore.util.NativeAllocationRegistry;
+
+import org.junit.Ignore;
 
 public class NativeAllocationRegistryTest extends TestCase {
 
@@ -31,10 +36,16 @@ public class NativeAllocationRegistryTest extends TestCase {
     private static class TestConfig {
         public boolean treatAsMalloced;
         public boolean shareRegistry;
+        public boolean testMetrics;
 
-        public TestConfig(boolean treatAsMalloced, boolean shareRegistry) {
+        public TestConfig(boolean treatAsMalloced, boolean shareRegistry, boolean testMetrics) {
+            this.treatAsMalloced = treatAsMalloced;
             this.shareRegistry = shareRegistry;
+            this.testMetrics = testMetrics;
         }
+    }
+
+    private static class TestClass {
     }
 
     private static class Allocation {
@@ -77,10 +88,16 @@ public class NativeAllocationRegistryTest extends TestCase {
         for (int i = 0; i < numAllocationsToSimulate; i++) {
             if (!config.shareRegistry || registry == null) {
                 if (config.treatAsMalloced) {
-                    registry = NativeAllocationRegistry.createMalloced(
+                    registry = config.testMetrics
+                        ? NativeAllocationRegistry.createMalloced(
+                            TestClass.class, getNativeFinalizer(), nativeSize)
+                        : NativeAllocationRegistry.createMalloced(
                             classLoader, getNativeFinalizer(), nativeSize);
                 } else {
-                    registry = NativeAllocationRegistry.createNonmalloced(
+                    registry = config.testMetrics
+                        ? NativeAllocationRegistry.createNonmalloced(
+                            TestClass.class, getNativeFinalizer(), nativeSize)
+                        : NativeAllocationRegistry.createNonmalloced(
                             classLoader, getNativeFinalizer(), nativeSize);
                 }
             }
@@ -126,22 +143,70 @@ public class NativeAllocationRegistryTest extends TestCase {
         assertTrue("Too few native bytes still allocated (" + nativeBytes + "); "
                 + nativeReachableBytes + " bytes are reachable",
                 nativeBytes >= nativeReachableBytes);
+
+        if (config.testMetrics) {
+            Collection<NativeAllocationRegistry.Metrics> metrics =
+                NativeAllocationRegistry.getMetrics();
+
+            assertTrue("Expect at least 1 metrics, got "+ metrics.size() + "instead",
+                metrics.size() >= 1);
+
+            boolean hasTestClassMetrics = false;
+            for (NativeAllocationRegistry.Metrics m : metrics) {
+                if (m.getClassName().equals(TestClass.class.getName())) {
+                    final long count = config.treatAsMalloced ? m.getMallocedCount()
+                                                              : m.getNonmallocedCount();
+                    final long bytes = config.treatAsMalloced ? m.getMallocedBytes()
+                                                              : m.getNonmallocedBytes();
+
+                    assertTrue("Expect native allocations count to be at least " +
+                               numSavedAllocations + ", got " + count + " instead",
+                               count >= numSavedAllocations);
+                    assertTrue("Expect native allocations bytes to be at least " +
+                               nativeReachableBytes + ", got " + bytes + " instead",
+                               bytes >= nativeReachableBytes);
+
+                    hasTestClassMetrics = true;
+                }
+            }
+            assertTrue("No metrics for " + TestClass.class.getName(), hasTestClassMetrics);
+        }
     }
 
     public void testNativeAllocationNonmallocNoSharedRegistry() {
-        testNativeAllocation(new TestConfig(false, false));
+        testNativeAllocation(new TestConfig(false, false, false));
     }
 
     public void testNativeAllocationNonmallocSharedRegistry() {
-        testNativeAllocation(new TestConfig(false, true));
+        testNativeAllocation(new TestConfig(false, true, false));
     }
 
     public void testNativeAllocationMallocNoSharedRegistry() {
-        testNativeAllocation(new TestConfig(true, false));
+        testNativeAllocation(new TestConfig(true, false, false));
     }
 
     public void testNativeAllocationMallocSharedRegistry() {
-        testNativeAllocation(new TestConfig(true, true));
+        testNativeAllocation(new TestConfig(true, true, false));
+    }
+
+    @RequiresFlagsEnabled(com.android.libcore.Flags.FLAG_NATIVE_METRICS)
+    public void ignoreNativeAllocationNonmallocNoSharedRegistryWithMetrics() {
+        testNativeAllocation(new TestConfig(false, false, true));
+    }
+
+    @RequiresFlagsEnabled(com.android.libcore.Flags.FLAG_NATIVE_METRICS)
+    public void ignoreNativeAllocationNonmallocSharedRegistryWithMetrics() {
+        testNativeAllocation(new TestConfig(false, true, true));
+    }
+
+    @RequiresFlagsEnabled(com.android.libcore.Flags.FLAG_NATIVE_METRICS)
+    public void ignoreNativeAllocationMallocNoSharedRegistryWithMetrics() {
+        testNativeAllocation(new TestConfig(true, false, true));
+    }
+
+    @RequiresFlagsEnabled(com.android.libcore.Flags.FLAG_NATIVE_METRICS)
+    public void ignoreNativeAllocationMallocSharedRegistryWithMetrics() {
+        testNativeAllocation(new TestConfig(true, true, true));
     }
 
     public void testBadSize() {

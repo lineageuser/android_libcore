@@ -30,6 +30,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.lang.ref.Cleaner.Cleanable;
 import jdk.internal.ref.CleanerFactory;
 
+import android.compat.annotation.ChangeId;
+import android.compat.annotation.EnabledAfter;
+import android.compat.Compatibility;
+
+import dalvik.annotation.compat.VersionCodes;
+
 /**
  * A facility for threads to schedule tasks for future execution in a
  * background thread.  Tasks may be scheduled for one-time execution, or for
@@ -90,6 +96,27 @@ import jdk.internal.ref.CleanerFactory;
  */
 
 public class Timer {
+    /**
+     * For fixed rate tasks, prevent multiple tasks from running back-to-back to
+     * account for missed periods.
+     * On Android, it's often the case that app processes will miss multiple
+     * scheduled periods because the CPU often enters suspended states, or
+     * because app processes may be moved to the Cached Apps Freezer.
+     * This flag prevents apps from thrashing upon exiting suspend or frozen
+     * states to needlessly "catch up" to lost time.
+     *
+     * @hide
+     */
+    @ChangeId
+    @EnabledAfter(targetSdkVersion = VersionCodes.VANILLA_ICE_CREAM)
+    public static final long SKIP_MULTIPLE_MISSED_PERIODIC_TASKS = 351566728L;
+
+    /** @hide */
+    public static boolean skipMultipleMissedPeriodicTasks() {
+        return Compatibility.isChangeEnabled(
+            SKIP_MULTIPLE_MISSED_PERIODIC_TASKS);
+    }
+
     /**
      * The timer task queue.  This data structure is shared with the timer
      * thread.  The timer produces tasks, via its various schedule calls,
@@ -338,6 +365,16 @@ public class Timer {
      * @throws IllegalStateException if task was already scheduled or
      *         cancelled, timer was cancelled, or timer thread terminated.
      * @throws NullPointerException if {@code task} is null
+     *
+     * <p>Since API level 31: If the app is frozen by the Android cached apps
+     * freezer before the fixed rate task is done or canceled, the task may run
+     * many times immediately when the app unfreezes, just as if a single
+     * execution of the command had taken the duration of the frozen period to
+     * execute.
+     *
+     * <p>Since API level 36: If any execution of this task takes longer than
+     * its period, then the subsequent execution will be scheduled for the most
+     * recent missed period.
      */
     public void scheduleAtFixedRate(TimerTask task, long delay, long period) {
         if (delay < 0)
@@ -533,6 +570,7 @@ class TimerThread extends Thread {
     /**
      * The main timer loop.  (See class comment.)
      */
+    // Android-changed: b/351566728 relax scheduling on missed repeating tasks.
     private void mainLoop() {
         while (true) {
             try {
@@ -546,28 +584,34 @@ class TimerThread extends Thread {
                         break; // Queue is empty and will forever remain; die
 
                     // Queue nonempty; look at first evt and do the right thing
-                    long currentTime, executionTime;
+                    long now, execTime;
                     task = queue.getMin();
                     synchronized(task.lock) {
                         if (task.state == TimerTask.CANCELLED) {
                             queue.removeMin();
                             continue;  // No action required, poll queue again
                         }
-                        currentTime = System.currentTimeMillis();
-                        executionTime = task.nextExecutionTime;
-                        if (taskFired = (executionTime<=currentTime)) {
-                            if (task.period == 0) { // Non-repeating, remove
+                        now = System.currentTimeMillis();
+                        execTime = task.nextExecutionTime;
+                        if (taskFired = (execTime<=now)) {
+                            final long p = task.period;
+                            if (p == 0) { // Non-repeating, remove
                                 queue.removeMin();
                                 task.state = TimerTask.EXECUTED;
-                            } else { // Repeating task, reschedule
-                                queue.rescheduleMin(
-                                  task.period<0 ? currentTime   - task.period
-                                                : executionTime + task.period);
+                            } else if (p < 0) { // Fixed delay
+                                queue.rescheduleMin(now - p);
+                            } else { // Fixed rate
+                                long newTime = execTime + p;
+                                if (Timer.skipMultipleMissedPeriodicTasks()
+                                        && (newTime < now - p)) {
+                                    newTime = now - ((now - execTime + p) % p);
+                                }
+                                queue.rescheduleMin(newTime);
                             }
                         }
                     }
                     if (!taskFired) // Task hasn't yet fired; wait
-                        queue.wait(executionTime - currentTime);
+                        queue.wait(execTime - now);
                 }
                 if (taskFired)  // Task fired; run it, holding no locks
                     task.run();

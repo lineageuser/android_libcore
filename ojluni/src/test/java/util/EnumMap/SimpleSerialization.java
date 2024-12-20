@@ -25,28 +25,27 @@
  * Portions Copyright (c) 2011 IBM Corporation
  */
 
+package test.java.util.EnumMap;
+
 /*
  * @test
  * @bug 6312706
  * @summary A serialized EnumMap can be successfully de-serialized.
  * @author Neil Richards <neil.richards@ngmr.net>, <neil_richards@uk.ibm.com>
  */
-package test.java.util.EnumMap;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.EnumMap;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 public class SimpleSerialization {
     private enum TestEnum { e00, e01, e02, e03, e04, e05, e06, e07 }
-
-    @Test
-    public void testSimpleSerialization() throws Exception {
+    public static void main(final String[] args) throws Exception {
         final EnumMap<TestEnum, String> enumMap = new EnumMap<>(TestEnum.class);
 
         enumMap.put(TestEnum.e01, TestEnum.e01.name());
@@ -66,6 +65,27 @@ public class SimpleSerialization {
         final Object deserializedObject = ois.readObject();
         ois.close();
 
-        Assert.assertTrue(enumMap.equals(deserializedObject));
+        if (false == enumMap.equals(deserializedObject)) {
+            throw new RuntimeException(getFailureText(enumMap, deserializedObject));
+        }
+    }
+
+    private static String getFailureText(final Object orig, final Object copy) {
+        final StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
+
+        pw.println("Test FAILED: Deserialized object is not equal to the original object");
+        pw.print("\tOriginal: ");
+        printObject(pw, orig).println();
+        pw.print("\tCopy:     ");
+        printObject(pw, copy).println();
+
+        pw.close();
+        return sw.toString();
+    }
+
+    private static PrintWriter printObject(final PrintWriter pw, final Object o) {
+        pw.printf("%s@%08x", o.getClass().getName(), System.identityHashCode(o));
+        return pw;
     }
 }

@@ -34,18 +34,32 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicLong;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicLongTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicLongTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicLongTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicLongTest.class);
+    // }
 
     final long[] VALUES = {
         Long.MIN_VALUE,
@@ -56,6 +70,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * constructor initializes to given value
      */
+    @Test
     public void testConstructor() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(1, ai.get());
@@ -64,6 +79,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * default constructed initializes to zero
      */
+    @Test
     public void testConstructor2() {
         AtomicLong ai = new AtomicLong();
         assertEquals(0, ai.get());
@@ -72,6 +88,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * get returns the last value set
      */
+    @Test
     public void testGetSet() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(1, ai.get());
@@ -84,6 +101,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * get returns the last value lazySet in same thread
      */
+    @Test
     public void testGetLazySet() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(1, ai.get());
@@ -96,6 +114,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * compareAndSet succeeds in changing value if equal to expected else fails
      */
+    @Test
     public void testCompareAndSet() {
         AtomicLong ai = new AtomicLong(1);
         assertTrue(ai.compareAndSet(1, 2));
@@ -111,6 +130,7 @@ public class AtomicLongTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         final AtomicLong ai = new AtomicLong(1);
         Thread t = new Thread(new CheckedRunnable() {
@@ -130,6 +150,7 @@ public class AtomicLongTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing value when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         AtomicLong ai = new AtomicLong(1);
         do {} while (!ai.weakCompareAndSet(1, 2));
@@ -142,6 +163,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * getAndSet returns previous value and sets to given value
      */
+    @Test
     public void testGetAndSet() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(1, ai.getAndSet(0));
@@ -152,6 +174,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * getAndAdd returns previous value and adds given value
      */
+    @Test
     public void testGetAndAdd() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(1, ai.getAndAdd(2));
@@ -163,6 +186,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * getAndDecrement returns previous value and decrements
      */
+    @Test
     public void testGetAndDecrement() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(1, ai.getAndDecrement());
@@ -173,6 +197,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * getAndIncrement returns previous value and increments
      */
+    @Test
     public void testGetAndIncrement() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(1, ai.getAndIncrement());
@@ -187,6 +212,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * addAndGet adds given value to current, and returns current value
      */
+    @Test
     public void testAddAndGet() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(3, ai.addAndGet(2));
@@ -198,6 +224,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * decrementAndGet decrements and returns current value
      */
+    @Test
     public void testDecrementAndGet() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(0, ai.decrementAndGet());
@@ -209,6 +236,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * incrementAndGet increments and returns current value
      */
+    @Test
     public void testIncrementAndGet() {
         AtomicLong ai = new AtomicLong(1);
         assertEquals(2, ai.incrementAndGet());
@@ -223,6 +251,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * a deserialized serialized atomic holds same value
      */
+    @Test
     public void testSerialization() throws Exception {
         AtomicLong x = new AtomicLong();
         AtomicLong y = serialClone(x);
@@ -238,6 +267,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * toString returns current value.
      */
+    @Test
     public void testToString() {
         AtomicLong ai = new AtomicLong();
         assertEquals("0", ai.toString());
@@ -250,6 +280,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * intValue returns current value.
      */
+    @Test
     public void testIntValue() {
         AtomicLong ai = new AtomicLong();
         assertEquals(0, ai.intValue());
@@ -262,6 +293,7 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * longValue returns current value.
      */
+    @Test
     public void testLongValue() {
         AtomicLong ai = new AtomicLong();
         assertEquals(0L, ai.longValue());
@@ -274,24 +306,26 @@ public class AtomicLongTest extends JSR166TestCase {
     /**
      * floatValue returns current value.
      */
+    @Test
     public void testFloatValue() {
         AtomicLong ai = new AtomicLong();
-        assertEquals(0.0f, ai.floatValue());
+        assertEquals(0.0f, ai.floatValue(), 0.0f);
         for (long x : VALUES) {
             ai.set(x);
-            assertEquals((float)x, ai.floatValue());
+            assertEquals((float)x, ai.floatValue(), 0.0f);
         }
     }
 
     /**
      * doubleValue returns current value.
      */
+    @Test
     public void testDoubleValue() {
         AtomicLong ai = new AtomicLong();
-        assertEquals(0.0d, ai.doubleValue());
+        assertEquals(0.0d, ai.doubleValue(), 0.0d);
         for (long x : VALUES) {
             ai.set(x);
-            assertEquals((double)x, ai.doubleValue());
+            assertEquals((double)x, ai.doubleValue(), 0.0d);
         }
     }
 

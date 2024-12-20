@@ -59,6 +59,7 @@ declare -A PATH_TO_CONFIG=(
     [luni/src/test/java/tests/security]=tools/checkstyle/not-gpl.xml
     [luni/src/test/java/tests/support]=tools/checkstyle/aosp-copyright.xml
     [luni/src/test/java/tests/targets]=tools/checkstyle/aosp-copyright.xml
+    [luni/src/test/java21language]=tools/checkstyle/aosp-copyright.xml
     [luni/src/test/java17language]=tools/checkstyle/aosp-copyright.xml
     [luni/src/test/java11language]=tools/checkstyle/aosp-copyright.xml
     [luni/src/test/java9compatibility]=tools/checkstyle/aosp-copyright.xml

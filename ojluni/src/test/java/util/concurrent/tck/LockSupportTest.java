@@ -36,22 +36,35 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class LockSupportTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.LockSupportTest");
     }
 
-    public static Test suite() {
-        return new TestSuite(LockSupportTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(LockSupportTest.class);
+    // }
 
     static {
         // Reduce the risk of rare disastrous classloading in first call to
@@ -119,25 +132,31 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * park is released by subsequent unpark
      */
+    @Test
     public void testParkBeforeUnpark_park() {
         testParkBeforeUnpark(ParkMethod.park);
     }
+    @Test
     public void testParkBeforeUnpark_parkNanos() {
         testParkBeforeUnpark(ParkMethod.parkNanos);
     }
+    @Test
     public void testParkBeforeUnpark_parkUntil() {
         testParkBeforeUnpark(ParkMethod.parkUntil);
     }
+    @Test
     public void testParkBeforeUnpark_parkBlocker() {
         testParkBeforeUnpark(ParkMethod.parkBlocker);
     }
+    @Test
     public void testParkBeforeUnpark_parkNanosBlocker() {
         testParkBeforeUnpark(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testParkBeforeUnpark_parkUntilBlocker() {
         testParkBeforeUnpark(ParkMethod.parkUntilBlocker);
     }
-    public void testParkBeforeUnpark(final ParkMethod parkMethod) {
+    private void testParkBeforeUnpark(final ParkMethod parkMethod) {
         final CountDownLatch pleaseUnpark = new CountDownLatch(1);
         Thread t = newStartedThread(new CheckedRunnable() {
             public void realRun() {
@@ -153,25 +172,31 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * park is released by preceding unpark
      */
+    @Test
     public void testParkAfterUnpark_park() {
         testParkAfterUnpark(ParkMethod.park);
     }
+    @Test
     public void testParkAfterUnpark_parkNanos() {
         testParkAfterUnpark(ParkMethod.parkNanos);
     }
+    @Test
     public void testParkAfterUnpark_parkUntil() {
         testParkAfterUnpark(ParkMethod.parkUntil);
     }
+    @Test
     public void testParkAfterUnpark_parkBlocker() {
         testParkAfterUnpark(ParkMethod.parkBlocker);
     }
+    @Test
     public void testParkAfterUnpark_parkNanosBlocker() {
         testParkAfterUnpark(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testParkAfterUnpark_parkUntilBlocker() {
         testParkAfterUnpark(ParkMethod.parkUntilBlocker);
     }
-    public void testParkAfterUnpark(final ParkMethod parkMethod) {
+    private void testParkAfterUnpark(final ParkMethod parkMethod) {
         final CountDownLatch pleaseUnpark = new CountDownLatch(1);
         final AtomicBoolean pleasePark = new AtomicBoolean(false);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -191,25 +216,31 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * park is released by subsequent interrupt
      */
+    @Test
     public void testParkBeforeInterrupt_park() {
         testParkBeforeInterrupt(ParkMethod.park);
     }
+    @Test
     public void testParkBeforeInterrupt_parkNanos() {
         testParkBeforeInterrupt(ParkMethod.parkNanos);
     }
+    @Test
     public void testParkBeforeInterrupt_parkUntil() {
         testParkBeforeInterrupt(ParkMethod.parkUntil);
     }
+    @Test
     public void testParkBeforeInterrupt_parkBlocker() {
         testParkBeforeInterrupt(ParkMethod.parkBlocker);
     }
+    @Test
     public void testParkBeforeInterrupt_parkNanosBlocker() {
         testParkBeforeInterrupt(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testParkBeforeInterrupt_parkUntilBlocker() {
         testParkBeforeInterrupt(ParkMethod.parkUntilBlocker);
     }
-    public void testParkBeforeInterrupt(final ParkMethod parkMethod) {
+    private void testParkBeforeInterrupt(final ParkMethod parkMethod) {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         Thread t = newStartedThread(new CheckedRunnable() {
             public void realRun() {
@@ -229,25 +260,31 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * park is released by preceding interrupt
      */
+    @Test
     public void testParkAfterInterrupt_park() {
         testParkAfterInterrupt(ParkMethod.park);
     }
+    @Test
     public void testParkAfterInterrupt_parkNanos() {
         testParkAfterInterrupt(ParkMethod.parkNanos);
     }
+    @Test
     public void testParkAfterInterrupt_parkUntil() {
         testParkAfterInterrupt(ParkMethod.parkUntil);
     }
+    @Test
     public void testParkAfterInterrupt_parkBlocker() {
         testParkAfterInterrupt(ParkMethod.parkBlocker);
     }
+    @Test
     public void testParkAfterInterrupt_parkNanosBlocker() {
         testParkAfterInterrupt(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testParkAfterInterrupt_parkUntilBlocker() {
         testParkAfterInterrupt(ParkMethod.parkUntilBlocker);
     }
-    public void testParkAfterInterrupt(final ParkMethod parkMethod) {
+    private void testParkAfterInterrupt(final ParkMethod parkMethod) {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         final AtomicBoolean pleasePark = new AtomicBoolean(false);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -269,19 +306,23 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * timed park times out if not unparked
      */
+    @Test
     public void testParkTimesOut_parkNanos() {
         testParkTimesOut(ParkMethod.parkNanos);
     }
+    @Test
     public void testParkTimesOut_parkUntil() {
         testParkTimesOut(ParkMethod.parkUntil);
     }
+    @Test
     public void testParkTimesOut_parkNanosBlocker() {
         testParkTimesOut(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testParkTimesOut_parkUntilBlocker() {
         testParkTimesOut(ParkMethod.parkUntilBlocker);
     }
-    public void testParkTimesOut(final ParkMethod parkMethod) {
+    private void testParkTimesOut(final ParkMethod parkMethod) {
         Thread t = newStartedThread(new CheckedRunnable() {
             public void realRun() {
                 for (;;) {
@@ -299,6 +340,7 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * getBlocker(null) throws NullPointerException
      */
+    @Test
     public void testGetBlockerNull() {
         try {
             LockSupport.getBlocker(null);
@@ -309,16 +351,19 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * getBlocker returns the blocker object passed to park
      */
+    @Test
     public void testGetBlocker_parkBlocker() {
         testGetBlocker(ParkMethod.parkBlocker);
     }
+    @Test
     public void testGetBlocker_parkNanosBlocker() {
         testGetBlocker(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testGetBlocker_parkUntilBlocker() {
         testGetBlocker(ParkMethod.parkUntilBlocker);
     }
-    public void testGetBlocker(final ParkMethod parkMethod) {
+    private void testGetBlocker(final ParkMethod parkMethod) {
         final CountDownLatch started = new CountDownLatch(1);
         Thread t = newStartedThread(new CheckedRunnable() {
             public void realRun() {
@@ -357,19 +402,23 @@ public class LockSupportTest extends JSR166TestCase {
      * 6763959 java.util.concurrent.locks.LockSupport.parkUntil(0) blocks forever
      * which is in jdk7-b118 and 6u25.
      */
+    @Test
     public void testPark0_parkNanos() {
         testPark0(ParkMethod.parkNanos);
     }
+    @Test
     public void testPark0_parkUntil() {
         testPark0(ParkMethod.parkUntil);
     }
+    @Test
     public void testPark0_parkNanosBlocker() {
         testPark0(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testPark0_parkUntilBlocker() {
         testPark0(ParkMethod.parkUntilBlocker);
     }
-    public void testPark0(final ParkMethod parkMethod) {
+    private void testPark0(final ParkMethod parkMethod) {
         Thread t = newStartedThread(new CheckedRunnable() {
             public void realRun() {
                 parkMethod.park(0L);
@@ -381,19 +430,23 @@ public class LockSupportTest extends JSR166TestCase {
     /**
      * timed park(Long.MIN_VALUE) returns immediately.
      */
+    @Test
     public void testParkNeg_parkNanos() {
         testParkNeg(ParkMethod.parkNanos);
     }
+    @Test
     public void testParkNeg_parkUntil() {
         testParkNeg(ParkMethod.parkUntil);
     }
+    @Test
     public void testParkNeg_parkNanosBlocker() {
         testParkNeg(ParkMethod.parkNanosBlocker);
     }
+    @Test
     public void testParkNeg_parkUntilBlocker() {
         testParkNeg(ParkMethod.parkUntilBlocker);
     }
-    public void testParkNeg(final ParkMethod parkMethod) {
+    private void testParkNeg(final ParkMethod parkMethod) {
         Thread t = newStartedThread(new CheckedRunnable() {
             public void realRun() {
                 parkMethod.park(Long.MIN_VALUE);

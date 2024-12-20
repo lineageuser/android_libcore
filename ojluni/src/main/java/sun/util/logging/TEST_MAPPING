@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.sun.util.logging"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_sun_util_logging"
     }
   ]
 }

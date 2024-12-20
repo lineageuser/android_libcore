@@ -196,4 +196,51 @@ public class StringBuilderTest extends junit.framework.TestCase {
         sb.append('a');
         assertFalse(sb.isEmpty());
     }
+
+    // Regression test for b/356007654.
+    public void testIndexOf_afterAppendChar() {
+        assertIndexOfAfterAppend('Z');
+        assertIndexOfAfterAppend(' ');
+        assertIndexOfAfterAppend('\u0010');
+        assertIndexOfAfterAppend('\u00B0');
+        assertIndexOfAfterAppend('\u0080');
+        assertIndexOfAfterAppend('\u00ff');
+        assertIndexOfAfterAppend('\u0100');
+        assertIndexOfAfterAppend('\u201f');
+        assertIndexOfAfterAppend('\uffff');
+    }
+
+    private static void assertIndexOfAfterAppend(char ch) {
+        String str = String.valueOf(ch);
+
+        StringBuilder sb = new StringBuilder("abc");
+        sb.append(ch);
+        sb.append("123");
+        sb.append(ch);
+        sb.append("abc");
+        assertEquals(3, sb.indexOf(str));
+    }
+    // Regression test for b/356007654.
+    public void testLastIndexOf_afterAppendChar() {
+        assertLastIndexOfAfterAppend('Z');
+        assertLastIndexOfAfterAppend(' ');
+        assertLastIndexOfAfterAppend('\u0010');
+        assertLastIndexOfAfterAppend('\u00B0');
+        assertLastIndexOfAfterAppend('\u0080');
+        assertLastIndexOfAfterAppend('\u00ff');
+        assertLastIndexOfAfterAppend('\u0100');
+        assertLastIndexOfAfterAppend('\u201f');
+        assertLastIndexOfAfterAppend('\uffff');
+    }
+
+    private static void assertLastIndexOfAfterAppend(char ch) {
+        String str = String.valueOf(ch);
+
+        StringBuilder sb = new StringBuilder("abc");
+        sb.append(ch);
+        sb.append("123");
+        sb.append(ch);
+        sb.append("abc");
+        assertEquals(7, sb.lastIndexOf(str));
+    }
 }

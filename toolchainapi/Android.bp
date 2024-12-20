@@ -47,6 +47,16 @@ droidstubs {
             removed_api_file: "api/removed.txt",
         },
     },
+    libs: [
+        "framework-api-annotations-lib",
+        "libcore-aconfig-flags-lib",
+    ],
+    aconfig_declarations: [
+        "libcore-aconfig-flags",
+    ],
+    merge_inclusion_annotations_dirs: [
+        "toolchainapi-annotated-flagged-stubs",
+    ],
     // LambdaMetaFactory depends on CallSite etc. which are provided by
     // the system module art-module-intra-core-api-stubs-bootstrap-system-modules
     // via art.module.intra.core.api.stubs

@@ -35,22 +35,34 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class SemaphoreTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.SemaphoreTest");
     }
-    public static Test suite() {
-        return new TestSuite(SemaphoreTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(SemaphoreTest.class);
+    // }
 
     /**
      * Subclass to expose protected methods
@@ -101,7 +113,7 @@ public class SemaphoreTest extends JSR166TestCase {
         long startTime = System.nanoTime();
         while (!s.hasQueuedThread(t)) {
             if (millisElapsedSince(startTime) > LONG_DELAY_MS)
-                throw new AssertionFailedError("timed out");
+                fail("timed out");
             Thread.yield();
         }
         assertTrue(s.hasQueuedThreads());
@@ -115,7 +127,7 @@ public class SemaphoreTest extends JSR166TestCase {
         long startTime = System.nanoTime();
         while (!s.hasQueuedThreads()) {
             if (millisElapsedSince(startTime) > LONG_DELAY_MS)
-                throw new AssertionFailedError("timed out");
+                fail("timed out");
             Thread.yield();
         }
     }
@@ -178,9 +190,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * Zero, negative, and positive initial values are allowed in constructor
      */
+    @Test
     public void testConstructor()      { testConstructor(false); }
+    @Test
     public void testConstructor_fair() { testConstructor(true); }
-    public void testConstructor(boolean fair) {
+    private void testConstructor(boolean fair) {
         for (int permits : new int[] { -42, -1, 0, 1, 42 }) {
             Semaphore s = new Semaphore(permits, fair);
             assertEquals(permits, s.availablePermits());
@@ -191,6 +205,7 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * Constructor without fairness argument behaves as nonfair
      */
+    @Test
     public void testConstructorDefaultsToNonFair() {
         for (int permits : new int[] { -42, -1, 0, 1, 42 }) {
             Semaphore s = new Semaphore(permits);
@@ -202,9 +217,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * tryAcquire succeeds when sufficient permits, else fails
      */
+    @Test
     public void testTryAcquireInSameThread()      { testTryAcquireInSameThread(false); }
+    @Test
     public void testTryAcquireInSameThread_fair() { testTryAcquireInSameThread(true); }
-    public void testTryAcquireInSameThread(boolean fair) {
+    private void testTryAcquireInSameThread(boolean fair) {
         Semaphore s = new Semaphore(2, fair);
         assertEquals(2, s.availablePermits());
         assertTrue(s.tryAcquire());
@@ -218,9 +235,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * timed tryAcquire times out
      */
+    @Test
     public void testTryAcquire_timeout()      { testTryAcquire_timeout(false); }
+    @Test
     public void testTryAcquire_timeout_fair() { testTryAcquire_timeout(true); }
-    public void testTryAcquire_timeout(boolean fair) {
+    private void testTryAcquire_timeout(boolean fair) {
         Semaphore s = new Semaphore(0, fair);
         long startTime = System.nanoTime();
         try { assertFalse(s.tryAcquire(timeoutMillis(), MILLISECONDS)); }
@@ -231,9 +250,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * timed tryAcquire(N) times out
      */
+    @Test
     public void testTryAcquireN_timeout()      { testTryAcquireN_timeout(false); }
+    @Test
     public void testTryAcquireN_timeout_fair() { testTryAcquireN_timeout(true); }
-    public void testTryAcquireN_timeout(boolean fair) {
+    private void testTryAcquireN_timeout(boolean fair) {
         Semaphore s = new Semaphore(2, fair);
         long startTime = System.nanoTime();
         try { assertFalse(s.tryAcquire(3, timeoutMillis(), MILLISECONDS)); }
@@ -245,15 +266,23 @@ public class SemaphoreTest extends JSR166TestCase {
      * acquire(), acquire(N), timed tryAcquired, timed tryAcquire(N)
      * are interruptible
      */
+    @Test
     public void testInterruptible_acquire()               { testInterruptible(false, AcquireMethod.acquire); }
+    @Test
     public void testInterruptible_acquire_fair()          { testInterruptible(true,  AcquireMethod.acquire); }
+    @Test
     public void testInterruptible_acquireN()              { testInterruptible(false, AcquireMethod.acquireN); }
+    @Test
     public void testInterruptible_acquireN_fair()         { testInterruptible(true,  AcquireMethod.acquireN); }
+    @Test
     public void testInterruptible_tryAcquireTimed()       { testInterruptible(false, AcquireMethod.tryAcquireTimed); }
+    @Test
     public void testInterruptible_tryAcquireTimed_fair()  { testInterruptible(true,  AcquireMethod.tryAcquireTimed); }
+    @Test
     public void testInterruptible_tryAcquireTimedN()      { testInterruptible(false, AcquireMethod.tryAcquireTimedN); }
+    @Test
     public void testInterruptible_tryAcquireTimedN_fair() { testInterruptible(true,  AcquireMethod.tryAcquireTimedN); }
-    public void testInterruptible(boolean fair, final AcquireMethod acquirer) {
+    private void testInterruptible(boolean fair, final AcquireMethod acquirer) {
         final PublicSemaphore s = new PublicSemaphore(0, fair);
         final Semaphore pleaseInterrupt = new Semaphore(0, fair);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -299,11 +328,15 @@ public class SemaphoreTest extends JSR166TestCase {
      * acquireUninterruptibly(), acquireUninterruptibly(N) are
      * uninterruptible
      */
+    @Test
     public void testUninterruptible_acquireUninterruptibly()       { testUninterruptible(false, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testUninterruptible_acquireUninterruptibly_fair()  { testUninterruptible(true,  AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testUninterruptible_acquireUninterruptiblyN()      { testUninterruptible(false, AcquireMethod.acquireUninterruptiblyN); }
+    @Test
     public void testUninterruptible_acquireUninterruptiblyN_fair() { testUninterruptible(true,  AcquireMethod.acquireUninterruptiblyN); }
-    public void testUninterruptible(boolean fair, final AcquireMethod acquirer) {
+    private void testUninterruptible(boolean fair, final AcquireMethod acquirer) {
         final PublicSemaphore s = new PublicSemaphore(0, fair);
         final Semaphore pleaseInterrupt = new Semaphore(-1, fair);
 
@@ -341,9 +374,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * hasQueuedThreads reports whether there are waiting threads
      */
+    @Test
     public void testHasQueuedThreads()      { testHasQueuedThreads(false); }
+    @Test
     public void testHasQueuedThreads_fair() { testHasQueuedThreads(true); }
-    public void testHasQueuedThreads(boolean fair) {
+    private void testHasQueuedThreads(boolean fair) {
         final PublicSemaphore lock = new PublicSemaphore(1, fair);
         assertFalse(lock.hasQueuedThreads());
         lock.acquireUninterruptibly();
@@ -364,9 +399,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * getQueueLength reports number of waiting threads
      */
+    @Test
     public void testGetQueueLength()      { testGetQueueLength(false); }
+    @Test
     public void testGetQueueLength_fair() { testGetQueueLength(true); }
-    public void testGetQueueLength(boolean fair) {
+    private void testGetQueueLength(boolean fair) {
         final PublicSemaphore lock = new PublicSemaphore(1, fair);
         assertEquals(0, lock.getQueueLength());
         lock.acquireUninterruptibly();
@@ -387,9 +424,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * getQueuedThreads includes waiting threads
      */
+    @Test
     public void testGetQueuedThreads()      { testGetQueuedThreads(false); }
+    @Test
     public void testGetQueuedThreads_fair() { testGetQueuedThreads(true); }
-    public void testGetQueuedThreads(boolean fair) {
+    private void testGetQueuedThreads(boolean fair) {
         final PublicSemaphore lock = new PublicSemaphore(1, fair);
         assertTrue(lock.getQueuedThreads().isEmpty());
         lock.acquireUninterruptibly();
@@ -413,9 +452,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * drainPermits reports and removes given number of permits
      */
+    @Test
     public void testDrainPermits()      { testDrainPermits(false); }
+    @Test
     public void testDrainPermits_fair() { testDrainPermits(true); }
-    public void testDrainPermits(boolean fair) {
+    private void testDrainPermits(boolean fair) {
         Semaphore s = new Semaphore(0, fair);
         assertEquals(0, s.availablePermits());
         assertEquals(0, s.drainPermits());
@@ -429,9 +470,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * release(-N) throws IllegalArgumentException
      */
+    @Test
     public void testReleaseIAE()      { testReleaseIAE(false); }
+    @Test
     public void testReleaseIAE_fair() { testReleaseIAE(true); }
-    public void testReleaseIAE(boolean fair) {
+    private void testReleaseIAE(boolean fair) {
         Semaphore s = new Semaphore(10, fair);
         try {
             s.release(-1);
@@ -442,9 +485,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * reducePermits(-N) throws IllegalArgumentException
      */
+    @Test
     public void testReducePermitsIAE()      { testReducePermitsIAE(false); }
+    @Test
     public void testReducePermitsIAE_fair() { testReducePermitsIAE(true); }
-    public void testReducePermitsIAE(boolean fair) {
+    private void testReducePermitsIAE(boolean fair) {
         PublicSemaphore s = new PublicSemaphore(10, fair);
         try {
             s.reducePermits(-1);
@@ -455,9 +500,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * reducePermits reduces number of permits
      */
+    @Test
     public void testReducePermits()      { testReducePermits(false); }
+    @Test
     public void testReducePermits_fair() { testReducePermits(true); }
-    public void testReducePermits(boolean fair) {
+    private void testReducePermits(boolean fair) {
         PublicSemaphore s = new PublicSemaphore(10, fair);
         assertEquals(10, s.availablePermits());
         s.reducePermits(0);
@@ -476,9 +523,11 @@ public class SemaphoreTest extends JSR166TestCase {
      * a reserialized semaphore has same number of permits and
      * fairness, but no queued threads
      */
+    @Test
     public void testSerialization()      { testSerialization(false); }
+    @Test
     public void testSerialization_fair() { testSerialization(true); }
-    public void testSerialization(boolean fair) {
+    private void testSerialization(boolean fair) {
         try {
             Semaphore s = new Semaphore(3, fair);
             s.acquire();
@@ -521,9 +570,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * tryAcquire(n) succeeds when sufficient permits, else fails
      */
+    @Test
     public void testTryAcquireNInSameThread()      { testTryAcquireNInSameThread(false); }
+    @Test
     public void testTryAcquireNInSameThread_fair() { testTryAcquireNInSameThread(true); }
-    public void testTryAcquireNInSameThread(boolean fair) {
+    private void testTryAcquireNInSameThread(boolean fair) {
         Semaphore s = new Semaphore(2, fair);
         assertEquals(2, s.availablePermits());
         assertFalse(s.tryAcquire(3));
@@ -538,23 +589,39 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * acquire succeeds if permits available
      */
+    @Test
     public void testReleaseAcquireSameThread_acquire()       { testReleaseAcquireSameThread(false, AcquireMethod.acquire); }
+    @Test
     public void testReleaseAcquireSameThread_acquire_fair()  { testReleaseAcquireSameThread(true, AcquireMethod.acquire); }
+    @Test
     public void testReleaseAcquireSameThread_acquireN()      { testReleaseAcquireSameThread(false, AcquireMethod.acquireN); }
+    @Test
     public void testReleaseAcquireSameThread_acquireN_fair() { testReleaseAcquireSameThread(true, AcquireMethod.acquireN); }
+    @Test
     public void testReleaseAcquireSameThread_acquireUninterruptibly()       { testReleaseAcquireSameThread(false, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireSameThread_acquireUninterruptibly_fair()  { testReleaseAcquireSameThread(true, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireSameThread_acquireUninterruptiblyN()      { testReleaseAcquireSameThread(false, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireSameThread_acquireUninterruptiblyN_fair() { testReleaseAcquireSameThread(true, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquire()       { testReleaseAcquireSameThread(false, AcquireMethod.tryAcquire); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquire_fair()  { testReleaseAcquireSameThread(true, AcquireMethod.tryAcquire); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquireN()      { testReleaseAcquireSameThread(false, AcquireMethod.tryAcquireN); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquireN_fair() { testReleaseAcquireSameThread(true, AcquireMethod.tryAcquireN); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquireTimed()       { testReleaseAcquireSameThread(false, AcquireMethod.tryAcquireTimed); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquireTimed_fair()  { testReleaseAcquireSameThread(true, AcquireMethod.tryAcquireTimed); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquireTimedN()      { testReleaseAcquireSameThread(false, AcquireMethod.tryAcquireTimedN); }
+    @Test
     public void testReleaseAcquireSameThread_tryAcquireTimedN_fair() { testReleaseAcquireSameThread(true, AcquireMethod.tryAcquireTimedN); }
-    public void testReleaseAcquireSameThread(boolean fair,
+    private void testReleaseAcquireSameThread(boolean fair,
                                              final AcquireMethod acquirer) {
         Semaphore s = new Semaphore(1, fair);
         for (int i = 1; i < 6; i++) {
@@ -570,19 +637,31 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * release in one thread enables acquire in another thread
      */
+    @Test
     public void testReleaseAcquireDifferentThreads_acquire()       { testReleaseAcquireDifferentThreads(false, AcquireMethod.acquire); }
+    @Test
     public void testReleaseAcquireDifferentThreads_acquire_fair()  { testReleaseAcquireDifferentThreads(true, AcquireMethod.acquire); }
+    @Test
     public void testReleaseAcquireDifferentThreads_acquireN()      { testReleaseAcquireDifferentThreads(false, AcquireMethod.acquireN); }
+    @Test
     public void testReleaseAcquireDifferentThreads_acquireN_fair() { testReleaseAcquireDifferentThreads(true, AcquireMethod.acquireN); }
+    @Test
     public void testReleaseAcquireDifferentThreads_acquireUninterruptibly()       { testReleaseAcquireDifferentThreads(false, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireDifferentThreads_acquireUninterruptibly_fair()  { testReleaseAcquireDifferentThreads(true, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireDifferentThreads_acquireUninterruptiblyN()      { testReleaseAcquireDifferentThreads(false, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireDifferentThreads_acquireUninterruptiblyN_fair() { testReleaseAcquireDifferentThreads(true, AcquireMethod.acquireUninterruptibly); }
+    @Test
     public void testReleaseAcquireDifferentThreads_tryAcquireTimed()       { testReleaseAcquireDifferentThreads(false, AcquireMethod.tryAcquireTimed); }
+    @Test
     public void testReleaseAcquireDifferentThreads_tryAcquireTimed_fair()  { testReleaseAcquireDifferentThreads(true, AcquireMethod.tryAcquireTimed); }
+    @Test
     public void testReleaseAcquireDifferentThreads_tryAcquireTimedN()      { testReleaseAcquireDifferentThreads(false, AcquireMethod.tryAcquireTimedN); }
+    @Test
     public void testReleaseAcquireDifferentThreads_tryAcquireTimedN_fair() { testReleaseAcquireDifferentThreads(true, AcquireMethod.tryAcquireTimedN); }
-    public void testReleaseAcquireDifferentThreads(boolean fair,
+    private void testReleaseAcquireDifferentThreads(boolean fair,
                                                    final AcquireMethod acquirer) {
         final Semaphore s = new Semaphore(0, fair);
         final int rounds = 4;
@@ -614,6 +693,7 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * fair locks are strictly FIFO
      */
+    @Test
     public void testFairLocksFifo() {
         final PublicSemaphore s = new PublicSemaphore(1, true);
         final CountDownLatch pleaseRelease = new CountDownLatch(1);
@@ -654,9 +734,11 @@ public class SemaphoreTest extends JSR166TestCase {
     /**
      * toString indicates current number of permits
      */
+    @Test
     public void testToString()      { testToString(false); }
+    @Test
     public void testToString_fair() { testToString(true); }
-    public void testToString(boolean fair) {
+    private void testToString(boolean fair) {
         PublicSemaphore s = new PublicSemaphore(0, fair);
         assertTrue(s.toString().contains("Permits = 0"));
         s.release();

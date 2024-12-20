@@ -33,6 +33,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -70,18 +79,21 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class CompletableFutureTest extends JSR166TestCase {
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.CompletableFutureTest");
     }
-    public static Test suite() {
-        return new TestSuite(CompletableFutureTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(CompletableFutureTest.class);
+    // }
 
     static class CFException extends RuntimeException {}
 
@@ -237,6 +249,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * A newly constructed CompletableFuture is incomplete, as indicated
      * by methods isDone, isCancelled, and getNow
      */
+    @Test
     public void testConstructor() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         checkIncomplete(f);
@@ -246,6 +259,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * complete completes normally, as indicated by methods isDone,
      * isCancelled, join, get, and getNow
      */
+    @Test
     public void testComplete() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -260,6 +274,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * completeExceptionally completes exceptionally, as indicated by
      * methods isDone, isCancelled, join, get, and getNow
      */
+    @Test
     public void testCompleteExceptionally() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         CFException ex = new CFException();
@@ -272,6 +287,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * cancel completes exceptionally and reports cancelled, as indicated by
      * methods isDone, isCancelled, join, get, and getNow
      */
+    @Test
     public void testCancel() {
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
     {
@@ -286,6 +302,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * obtrudeValue forces completion with given value
      */
+    @Test
     public void testObtrudeValue() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         checkIncomplete(f);
@@ -309,6 +326,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * obtrudeException forces completion with given exception
      */
+    @Test
     public void testObtrudeException() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -343,6 +361,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * getNumberOfDependents returns number of dependent tasks
      */
+    @Test
     public void testGetNumberOfDependents() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -366,23 +385,27 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * toString indicates current completion state
      */
+    @Test
     public void testToString_incomplete() {
         CompletableFuture<String> f = new CompletableFuture<>();
         assertTrue(f.toString().matches(".*\\[.*Not completed.*\\]"));
     }
 
+    @Test
     public void testToString_normal() {
         CompletableFuture<String> f = new CompletableFuture<>();
         assertTrue(f.complete("foo"));
         assertTrue(f.toString().matches(".*\\[.*Completed normally.*\\]"));
     }
 
+    @Test
     public void testToString_exception() {
         CompletableFuture<String> f = new CompletableFuture<>();
         assertTrue(f.completeExceptionally(new IndexOutOfBoundsException()));
         assertTrue(f.toString().matches(".*\\[.*Completed exceptionally.*\\]"));
     }
 
+    @Test
     public void testToString_cancelled() {
         for (boolean mayInterruptIfRunning : new boolean[] { true, false }) {
             CompletableFuture<String> f = new CompletableFuture<>();
@@ -394,6 +417,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completedFuture returns a completed CompletableFuture with given value
      */
+    @Test
     public void testCompletedFuture() {
         CompletableFuture<String> f = CompletableFuture.completedFuture("test");
         checkCompletedNormally(f, "test");
@@ -939,6 +963,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * exceptionally action is not invoked when source completes
      * normally, and source result is propagated
      */
+    @Test
     public void testExceptionally_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -963,6 +988,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * exceptionally action completes with function value on source
      * exception
      */
+    @Test
     public void testExceptionally_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -989,6 +1015,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * If an "exceptionally action" throws an exception, it completes
      * exceptionally with that exception
      */
+    @Test
     public void testExceptionally_exceptionalCompletionActionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -1016,6 +1043,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * whenComplete action executes on normal completion, propagating
      * source result.
      */
+    @Test
     public void testWhenComplete_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -1043,6 +1071,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * whenComplete action executes on exceptional completion, propagating
      * source result.
      */
+    @Test
     public void testWhenComplete_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -1070,6 +1099,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * whenComplete action executes on cancelled source, propagating
      * CancellationException.
      */
+    @Test
     public void testWhenComplete_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -1097,6 +1127,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * If a whenComplete action throws an exception when triggered by
      * a normal completion, it completes exceptionally
      */
+    @Test
     public void testWhenComplete_sourceCompletedNormallyActionFailed() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (ExecutionMode m : ExecutionMode.values())
@@ -1127,6 +1158,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * a source completion that also throws an exception, the source
      * exception takes precedence (unlike handle)
      */
+    @Test
     public void testWhenComplete_sourceFailedActionFailed() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (ExecutionMode m : ExecutionMode.values())
@@ -1161,6 +1193,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * handle action completes normally with function value on normal
      * completion of source
      */
+    @Test
     public void testHandle_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -1189,6 +1222,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * handle action completes normally with function value on
      * exceptional completion of source
      */
+    @Test
     public void testHandle_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -1218,6 +1252,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * handle action completes normally with function value on
      * cancelled source
      */
+    @Test
     public void testHandle_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -1247,6 +1282,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * If a "handle action" throws an exception when triggered by
      * a normal completion, it completes exceptionally
      */
+    @Test
     public void testHandle_sourceCompletedNormallyActionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -1277,6 +1313,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * a source completion that also throws an exception, the action
      * exception takes precedence (unlike whenComplete)
      */
+    @Test
     public void testHandle_sourceFailedActionFailed() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (ExecutionMode m : ExecutionMode.values())
@@ -1306,6 +1343,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * runAsync completes after running Runnable
      */
+    @Test
     public void testRunAsync_normalCompletion() {
         ExecutionMode[] executionModes = {
             ExecutionMode.ASYNC,
@@ -1323,6 +1361,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * failing runAsync completes exceptionally after running Runnable
      */
+    @Test
     public void testRunAsync_exceptionalCompletion() {
         ExecutionMode[] executionModes = {
             ExecutionMode.ASYNC,
@@ -1337,6 +1376,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     }}
 
     @SuppressWarnings("FutureReturnValueIgnored")
+    @Test
     public void testRunAsync_rejectingExecutor() {
         CountingRejectingExecutor e = new CountingRejectingExecutor();
         try {
@@ -1352,6 +1392,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * supplyAsync completes with result of supplier
      */
+    @Test
     public void testSupplyAsync_normalCompletion() {
         ExecutionMode[] executionModes = {
             ExecutionMode.ASYNC,
@@ -1370,6 +1411,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * Failing supplyAsync completes exceptionally
      */
+    @Test
     public void testSupplyAsync_exceptionalCompletion() {
         ExecutionMode[] executionModes = {
             ExecutionMode.ASYNC,
@@ -1384,6 +1426,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     }}
 
     @SuppressWarnings("FutureReturnValueIgnored")
+    @Test
     public void testSupplyAsync_rejectingExecutor() {
         CountingRejectingExecutor e = new CountingRejectingExecutor();
         try {
@@ -1401,6 +1444,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenRun result completes normally after normal completion of source
      */
+    @Test
     public void testThenRun_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -1434,6 +1478,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenRun result completes exceptionally after exceptional
      * completion of source
      */
+    @Test
     public void testThenRun_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
     {
@@ -1466,6 +1511,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenRun result completes exceptionally if source cancelled
      */
+    @Test
     public void testThenRun_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -1498,6 +1544,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenRun result completes exceptionally if action does
      */
+    @Test
     public void testThenRun_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -1526,6 +1573,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenApply result completes normally after normal completion of source
      */
+    @Test
     public void testThenApply_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -1554,6 +1602,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenApply result completes exceptionally after exceptional
      * completion of source
      */
+    @Test
     public void testThenApply_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
     {
@@ -1579,6 +1628,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenApply result completes exceptionally if source cancelled
      */
+    @Test
     public void testThenApply_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -1604,6 +1654,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenApply result completes exceptionally if action does
      */
+    @Test
     public void testThenApply_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -1628,6 +1679,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenAccept result completes normally after normal completion of source
      */
+    @Test
     public void testThenAccept_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -1656,6 +1708,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenAccept result completes exceptionally after exceptional
      * completion of source
      */
+    @Test
     public void testThenAccept_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
     {
@@ -1681,6 +1734,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenAccept result completes exceptionally if source cancelled
      */
+    @Test
     public void testThenAccept_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -1706,6 +1760,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenAccept result completes exceptionally if action does
      */
+    @Test
     public void testThenAccept_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -1731,6 +1786,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenCombine result completes normally after normal completion
      * of sources
      */
+    @Test
     public void testThenCombine_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -1776,6 +1832,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenCombine result completes exceptionally after exceptional
      * completion of either source
      */
+    @Test
     public void testThenCombine_exceptionalCompletion() throws Throwable {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -1819,6 +1876,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenCombine result completes exceptionally if either source cancelled
      */
+    @Test
     public void testThenCombine_sourceCancelled() throws Throwable {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -1862,6 +1920,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenCombine result completes exceptionally if action does
      */
+    @Test
     public void testThenCombine_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -1899,6 +1958,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenAcceptBoth result completes normally after normal
      * completion of sources
      */
+    @Test
     public void testThenAcceptBoth_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -1940,6 +2000,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenAcceptBoth result completes exceptionally after exceptional
      * completion of either source
      */
+    @Test
     public void testThenAcceptBoth_exceptionalCompletion() throws Throwable {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -1983,6 +2044,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenAcceptBoth result completes exceptionally if either source cancelled
      */
+    @Test
     public void testThenAcceptBoth_sourceCancelled() throws Throwable {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -2026,6 +2088,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenAcceptBoth result completes exceptionally if action does
      */
+    @Test
     public void testThenAcceptBoth_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -2063,6 +2126,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * runAfterBoth result completes normally after normal
      * completion of sources
      */
+    @Test
     public void testRunAfterBoth_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -2104,6 +2168,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * runAfterBoth result completes exceptionally after exceptional
      * completion of either source
      */
+    @Test
     public void testRunAfterBoth_exceptionalCompletion() throws Throwable {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -2147,6 +2212,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * runAfterBoth result completes exceptionally if either source cancelled
      */
+    @Test
     public void testRunAfterBoth_sourceCancelled() throws Throwable {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -2190,6 +2256,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * runAfterBoth result completes exceptionally if action does
      */
+    @Test
     public void testRunAfterBoth_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -2227,6 +2294,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * applyToEither result completes normally after normal completion
      * of either source
      */
+    @Test
     public void testApplyToEither_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2275,6 +2343,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * applyToEither result completes exceptionally after exceptional
      * completion of either source
      */
+    @Test
     public void testApplyToEither_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2328,6 +2397,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         for (int i = 0; i < 4; i++) rs[i].assertNotInvoked();
     }}
 
+    @Test
     public void testApplyToEither_exceptionalCompletion2() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -2383,6 +2453,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * applyToEither result completes exceptionally if either source cancelled
      */
+    @Test
     public void testApplyToEither_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -2435,6 +2506,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         for (int i = 0; i < 4; i++) rs[i].assertNotInvoked();
     }}
 
+    @Test
     public void testApplyToEither_sourceCancelled2() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -2490,6 +2562,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * applyToEither result completes exceptionally if action does
      */
+    @Test
     public void testApplyToEither_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2532,6 +2605,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * acceptEither result completes normally after normal completion
      * of either source
      */
+    @Test
     public void testAcceptEither_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2584,6 +2658,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * acceptEither result completes exceptionally after exceptional
      * completion of either source
      */
+    @Test
     public void testAcceptEither_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2638,6 +2713,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         for (int i = 0; i < 4; i++) rs[i].assertNotInvoked();
     }}
 
+    @Test
     public void testAcceptEither_exceptionalCompletion2() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -2693,6 +2769,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * acceptEither result completes exceptionally if either source cancelled
      */
+    @Test
     public void testAcceptEither_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -2749,6 +2826,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * acceptEither result completes exceptionally if action does
      */
+    @Test
     public void testAcceptEither_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2791,6 +2869,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * runAfterEither result completes normally after normal completion
      * of either source
      */
+    @Test
     public void testRunAfterEither_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2844,6 +2923,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * runAfterEither result completes exceptionally after exceptional
      * completion of either source
      */
+    @Test
     public void testRunAfterEither_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -2898,6 +2978,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         for (int i = 0; i < 4; i++) rs[i].assertNotInvoked();
     }}
 
+    @Test
     public void testRunAfterEither_exceptionalCompletion2() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean fFirst : new boolean[] { true, false })
@@ -2953,6 +3034,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * runAfterEither result completes exceptionally if either source cancelled
      */
+    @Test
     public void testRunAfterEither_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean mayInterruptIfRunning : new boolean[] { true, false })
@@ -3009,6 +3091,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * runAfterEither result completes exceptionally if action does
      */
+    @Test
     public void testRunAfterEither_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (Item v1 : new Item[] { itemOne, null })
@@ -3043,6 +3126,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenCompose result completes normally after normal completion of source
      */
+    @Test
     public void testThenCompose_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -3063,6 +3147,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * thenCompose result completes exceptionally after exceptional
      * completion of source
      */
+    @Test
     public void testThenCompose_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -3082,6 +3167,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenCompose result completes exceptionally if action does
      */
+    @Test
     public void testThenCompose_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -3101,6 +3187,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenCompose result completes exceptionally if source cancelled
      */
+    @Test
     public void testThenCompose_sourceCancelled() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -3122,6 +3209,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * thenCompose result completes exceptionally if the result of the action does
      */
+    @Test
     public void testThenCompose_actionReturnsFailingFuture() {
         for (ExecutionMode m : ExecutionMode.values())
         for (int order = 0; order < 6; order++)
@@ -3175,6 +3263,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * exceptionallyCompose result completes normally after normal
      * completion of source
      */
+    @Test
     public void testExceptionallyCompose_normalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -3196,6 +3285,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * exceptionallyCompose result completes normally after exceptional
      * completion of source
      */
+    @Test
     public void testExceptionallyCompose_exceptionalCompletion() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -3216,6 +3306,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * exceptionallyCompose completes exceptionally on exception if action does
      */
+    @Test
     public void testExceptionallyCompose_actionFailed() {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean createIncomplete : new boolean[] { true, false })
@@ -3237,6 +3328,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * exceptionallyCompose result completes exceptionally if the
      * result of the action does
      */
+    @Test
     public void testExceptionallyCompose_actionReturnsFailingFuture() {
         for (ExecutionMode m : ExecutionMode.values())
         for (int order = 0; order < 6; order++)
@@ -3292,6 +3384,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * allOf(no component futures) returns a future completed normally
      * with the value null
      */
+    @Test
     public void testAllOf_empty() throws Exception {
         CompletableFuture<Void> f = CompletableFuture.allOf();
         checkCompletedNormally(f, null);
@@ -3301,6 +3394,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * allOf returns a future completed normally with the value null
      * when all components complete normally
      */
+    @Test
     public void testAllOf_normal() throws Exception {
         for (int k = 1; k < 10; k++) {
             @SuppressWarnings("unchecked")
@@ -3319,6 +3413,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         }
     }
 
+    @Test
     public void testAllOf_normal_backwards() throws Exception {
         for (int k = 1; k < 10; k++) {
             @SuppressWarnings("unchecked")
@@ -3337,6 +3432,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         }
     }
 
+    @Test
     public void testAllOf_exceptional() throws Exception {
         for (int k = 1; k < 10; k++) {
             @SuppressWarnings("unchecked")
@@ -3366,6 +3462,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * anyOf(no component futures) returns an incomplete future
      */
+    @Test
     public void testAnyOf_empty() throws Exception {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -3380,6 +3477,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * anyOf returns a future completed normally with a value when
      * a component future does
      */
+    @Test
     public void testAnyOf_normal() throws Exception {
         for (int k = 0; k < 10; k++) {
             @SuppressWarnings("unchecked")
@@ -3397,6 +3495,7 @@ public class CompletableFutureTest extends JSR166TestCase {
             }
         }
     }
+    @Test
     public void testAnyOf_normal_backwards() throws Exception {
         for (int k = 0; k < 10; k++) {
             @SuppressWarnings("unchecked")
@@ -3418,6 +3517,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * anyOf result completes exceptionally when any component does.
      */
+    @Test
     public void testAnyOf_exceptional() throws Exception {
         for (int k = 0; k < 10; k++) {
             @SuppressWarnings("unchecked")
@@ -3438,6 +3538,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         }
     }
 
+    @Test
     public void testAnyOf_exceptional_backwards() throws Exception {
         for (int k = 0; k < 10; k++) {
             @SuppressWarnings("unchecked")
@@ -3462,6 +3563,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * Completion methods throw NullPointerException with null arguments
      */
     @SuppressWarnings("FutureReturnValueIgnored")
+    @Test
     public void testNPE() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         CompletableFuture<Item> g = new CompletableFuture<>();
@@ -3581,6 +3683,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * Test submissions to an executor that rejects all tasks.
      */
+    @Test
     public void testRejectingExecutor() {
         for (Item v : new Item[] { itemOne, null })
     {
@@ -3669,6 +3772,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * should never be invoked because the dependent future is
      * explicitly completed.
      */
+    @Test
     public void testRejectingExecutorNeverInvoked() {
         for (Item v : new Item[] { itemOne, null })
     {
@@ -3720,6 +3824,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * toCompletableFuture returns this CompletableFuture.
      */
+    @Test
     public void testToCompletableFuture() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         assertSame(f, f.toCompletableFuture());
@@ -3730,6 +3835,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * newIncompleteFuture returns an incomplete CompletableFuture
      */
+    @Test
     public void testNewIncompleteFuture() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -3748,6 +3854,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completedStage returns a completed CompletionStage
      */
+    @Test
     public void testCompletedStage() {
         AtomicInteger x = new AtomicInteger(0);
         AtomicReference<Throwable> r = new AtomicReference<>();
@@ -3761,6 +3868,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * defaultExecutor by default returns the commonPool if
      * it supports more than one thread.
      */
+    @Test
     public void testDefaultExecutor() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         Executor e = f.defaultExecutor();
@@ -3775,6 +3883,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * failedFuture returns a CompletableFuture completed
      * exceptionally with the given Exception
      */
+    @Test
     public void testFailedFuture() {
         CFException ex = new CFException();
         CompletableFuture<Item> f = CompletableFuture.failedFuture(ex);
@@ -3785,6 +3894,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * copy returns a CompletableFuture that is completed normally,
      * with the same value, when source is.
      */
+    @Test
     public void testCopy_normalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -3805,6 +3915,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * copy returns a CompletableFuture that is completed exceptionally
      * when source is.
      */
+    @Test
     public void testCopy_exceptionalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -3824,6 +3935,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * Completion of a copy does not complete its source.
      */
+    @Test
     public void testCopy_oneWayPropagation() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         assertTrue(f.copy().complete(itemOne));
@@ -3838,6 +3950,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * minimalCompletionStage returns a CompletableFuture that is
      * completed normally, with the same value, when source is.
      */
+    @Test
     public void testMinimalCompletionStage() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         CompletionStage<Item> g = f.minimalCompletionStage();
@@ -3855,6 +3968,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * minimalCompletionStage returns a CompletableFuture that is
      * completed exceptionally when source is.
      */
+    @Test
     public void testMinimalCompletionStage2() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         CompletionStage<Item> g = f.minimalCompletionStage();
@@ -3873,6 +3987,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * failedStage returns a CompletionStage completed
      * exceptionally with the given Exception
      */
+    @Test
     public void testFailedStage() {
         CFException ex = new CFException();
         CompletionStage<Item> f = CompletableFuture.failedStage(ex);
@@ -3886,6 +4001,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completeAsync completes with value of given supplier
      */
+    @Test
     public void testCompleteAsync() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -3898,6 +4014,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completeAsync completes exceptionally if given supplier throws
      */
+    @Test
     public void testCompleteAsync2() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         CFException ex = new CFException();
@@ -3912,6 +4029,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completeAsync with given executor completes with value of given supplier
      */
+    @Test
     public void testCompleteAsync3() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -3927,6 +4045,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * completeAsync with given executor completes exceptionally if
      * given supplier throws
      */
+    @Test
     public void testCompleteAsync4() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         CFException ex = new CFException();
@@ -3943,6 +4062,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * orTimeout completes with TimeoutException if not complete
      */
+    @Test
     public void testOrTimeout_timesOut() {
         long timeoutMillis = timeoutMillis();
         CompletableFuture<Item> f = new CompletableFuture<>();
@@ -3955,6 +4075,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * orTimeout completes normally if completed before timeout
      */
+    @Test
     public void testOrTimeout_completed() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -3973,6 +4094,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completeOnTimeout completes with given value if not complete
      */
+    @Test
     public void testCompleteOnTimeout_timesOut() {
         testInParallel(() -> testCompleteOnTimeout_timesOut(fortytwo),
                        () -> testCompleteOnTimeout_timesOut(null));
@@ -3981,7 +4103,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completeOnTimeout completes with given value if not complete
      */
-    public void testCompleteOnTimeout_timesOut(Item v) {
+    private void testCompleteOnTimeout_timesOut(Item v) {
         long timeoutMillis = timeoutMillis();
         CompletableFuture<Item> f = new CompletableFuture<>();
         long startTime = System.nanoTime();
@@ -3995,6 +4117,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * completeOnTimeout has no effect if completed within timeout
      */
+    @Test
     public void testCompleteOnTimeout_completed() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -4013,6 +4136,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * delayedExecutor returns an executor that delays submission
      */
+    @Test
     public void testDelayedExecutor() {
         testInParallel(() -> testDelayedExecutor(null, null),
                        () -> testDelayedExecutor(null, itemOne),
@@ -4020,7 +4144,7 @@ public class CompletableFutureTest extends JSR166TestCase {
                        () -> testDelayedExecutor(new ThreadExecutor(), itemOne));
     }
 
-    public void testDelayedExecutor(Executor executor, Item v) throws Exception {
+    private void testDelayedExecutor(Executor executor, Item v) throws Exception {
         long timeoutMillis = timeoutMillis();
         // Use an "unreasonably long" long timeout to catch lingering threads
         long longTimeoutMillis = 1000 * 60 * 60 * 24;
@@ -4075,6 +4199,7 @@ public class CompletableFutureTest extends JSR166TestCase {
         }
     }
 
+    @Test
     public void testExceptionPropagationReusesResultObject() {
         if (!testImplementationDetails) return;
         for (ExecutionMode m : ExecutionMode.values())
@@ -4168,6 +4293,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * Minimal completion stages throw UOE for most non-CompletionStage methods
      */
+    @Test
     public void testMinimalCompletionStage_minimality() {
         if (!testImplementationDetails) return;
         Function<Method, String> toSignature =
@@ -4236,6 +4362,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * minimalStage.toCompletableFuture() returns a CompletableFuture that
      * is completed normally, with the same value, when source is.
      */
+    @Test
     public void testMinimalCompletionStage_toCompletableFuture_normalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -4257,6 +4384,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * minimalStage.toCompletableFuture() returns a CompletableFuture that
      * is completed exceptionally when source is.
      */
+    @Test
     public void testMinimalCompletionStage_toCompletableFuture_exceptionalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -4277,6 +4405,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * minimalStage.toCompletableFuture() gives mutable CompletableFuture
      */
+    @Test
     public void testMinimalCompletionStage_toCompletableFuture_mutable() {
         for (Item v1 : new Item[] { itemOne, null })
     {
@@ -4292,6 +4421,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * minimalStage.toCompletableFuture().join() awaits completion
      */
+    @Test
     public void testMinimalCompletionStage_toCompletableFuture_join() throws Exception {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -4309,6 +4439,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * Completion of a toCompletableFuture copy of a minimal stage
      * does not complete its source.
      */
+    @Test
     public void testMinimalCompletionStage_toCompletableFuture_oneWayPropagation() {
         CompletableFuture<Item> f = new CompletableFuture<>();
         CompletionStage<Item> g = f.minimalCompletionStage();
@@ -4341,6 +4472,7 @@ public class CompletableFutureTest extends JSR166TestCase {
     /**
      * Joining a minimal stage "by hand" works
      */
+    @Test
     public void testMinimalCompletionStage_join_by_hand() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -4447,6 +4579,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * CompletableFuture is an additive monad - sort of.
      * https://en.wikipedia.org/wiki/Monad_(functional_programming)#Additive_monads
      */
+    @Test
     public void testAdditiveMonad() throws Throwable {
         Function<Long, CompletableFuture<Long>> unit = Monad::unit;
         CompletableFuture<Long> zero = Monad.zero();
@@ -4505,6 +4638,7 @@ public class CompletableFutureTest extends JSR166TestCase {
 
     /** Test long recursive chains of CompletableFutures with cascading completions */
     @SuppressWarnings("FutureReturnValueIgnored")
+    @Test
     public void testRecursiveChains() throws Throwable {
         for (ExecutionMode m : ExecutionMode.values())
         for (boolean addDeadEnds : new boolean[] { true, false })
@@ -4530,6 +4664,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * A demo of scalability - runtime is O(n).
      */
     @SuppressWarnings("FutureReturnValueIgnored")
+    @Test
     public void testManyDependents() throws Throwable {
         final int n = expensiveTests ? 1_000_000 : 10;
         final CompletableFuture<Void> head = new CompletableFuture<>();
@@ -4560,6 +4695,7 @@ public class CompletableFutureTest extends JSR166TestCase {
 
     /** ant -Dvmoptions=-Xmx8m -Djsr166.expensiveTests=true -Djsr166.tckTestClass=CompletableFutureTest tck */
     @SuppressWarnings("FutureReturnValueIgnored")
+    @Test
     public void testCoCompletionGarbageRetention() throws Throwable {
         final int n = expensiveTests ? 1_000_000 : 10;
         final CompletableFuture<Item> incomplete = new CompletableFuture<>();
@@ -4606,6 +4742,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * 8160402: Garbage retention with CompletableFuture.anyOf
      * cvs update -D '2016-05-01' ./src/main/java/util/concurrent/CompletableFuture.java && ant -Dvmoptions=-Xmx8m -Djsr166.expensiveTests=true -Djsr166.tckTestClass=CompletableFutureTest -Djsr166.methodFilter=testAnyOfGarbageRetention tck; cvs update -A
      */
+    @Test
     public void testAnyOfGarbageRetention() throws Throwable {
         for (Item v : new Item[] { itemOne, null })
     {
@@ -4626,6 +4763,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * As of 2016-07, fails with OOME:
      * ant -Dvmoptions=-Xmx8m -Djsr166.expensiveTests=true -Djsr166.tckTestClass=CompletableFutureTest -Djsr166.methodFilter=testCancelledAllOfGarbageRetention tck
      */
+    @Test
     public void testCancelledAllOfGarbageRetention() throws Throwable {
         final int n = expensiveTests ? 100_000 : 10;
         @SuppressWarnings("unchecked")
@@ -4645,6 +4783,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * As of 2016-07, fails with OOME:
      * ant -Dvmoptions=-Xmx8m -Djsr166.expensiveTests=true -Djsr166.tckTestClass=CompletableFutureTest -Djsr166.methodFilter=testCancelledGarbageRetention tck
      */
+    @Test
     public void testCancelledGarbageRetention() throws Throwable {
         final int n = expensiveTests ? 100_000 : 10;
         CompletableFuture<Item> neverCompleted = new CompletableFuture<>();
@@ -4660,6 +4799,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * As of 2016-07, fails with OOME:
      * ant -Dvmoptions=-Xmx8m -Djsr166.expensiveTests=true -Djsr166.tckTestClass=CompletableFutureTest -Djsr166.methodFilter=testToCompletableFutureGarbageRetention tck
      */
+    @Test
     public void testToCompletableFutureGarbageRetention() throws Throwable {
         final int n = expensiveTests ? 900_000 : 10;
         CompletableFuture<Item> neverCompleted = new CompletableFuture<>();
@@ -4846,6 +4986,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyAsync action is not invoked when
      * source completes normally, and source result is propagated
      */
+    @Test
     public void testDefaultExceptionallyAsync_normalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -4871,6 +5012,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyAsync action completes with
      * function value on source exception
      */
+    @Test
     public void testDefaultExceptionallyAsync_exceptionalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -4899,6 +5041,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * throws an exception, it completes exceptionally with that
      * exception
      */
+    @Test
     public void testDefaultExceptionallyAsync_exceptionalCompletionActionFailed() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -4927,6 +5070,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyCompose result completes
      * normally after normal completion of source
      */
+    @Test
     public void testDefaultExceptionallyCompose_normalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -4949,6 +5093,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyCompose result completes
      * normally after exceptional completion of source
      */
+    @Test
     public void testDefaultExceptionallyCompose_exceptionalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -4971,6 +5116,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyCompose completes
      * exceptionally on exception if action does
      */
+    @Test
     public void testDefaultExceptionallyCompose_actionFailed() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -4993,6 +5139,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyComposeAsync result completes
      * normally after normal completion of source
      */
+    @Test
     public void testDefaultExceptionallyComposeAsync_normalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -5015,6 +5162,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyComposeAsync result completes
      * normally after exceptional completion of source
      */
+    @Test
     public void testDefaultExceptionallyComposeAsync_exceptionalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -5037,6 +5185,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyComposeAsync completes
      * exceptionally on exception if action does
      */
+    @Test
     public void testDefaultExceptionallyComposeAsync_actionFailed() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -5059,6 +5208,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyComposeAsync result completes
      * normally after normal completion of source
      */
+    @Test
     public void testDefaultExceptionallyComposeAsyncExecutor_normalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
         for (Item v1 : new Item[] { itemOne, null })
@@ -5081,6 +5231,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyComposeAsync result completes
      * normally after exceptional completion of source
      */
+    @Test
     public void testDefaultExceptionallyComposeAsyncExecutor_exceptionalCompletion() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {
@@ -5103,6 +5254,7 @@ public class CompletableFutureTest extends JSR166TestCase {
      * default-implemented exceptionallyComposeAsync completes
      * exceptionally on exception if action does
      */
+    @Test
     public void testDefaultExceptionallyComposeAsyncExecutor_actionFailed() {
         for (boolean createIncomplete : new boolean[] { true, false })
     {

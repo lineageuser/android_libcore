@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.android.system"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_android_system"
     }
   ]
 }

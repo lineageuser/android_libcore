@@ -41,7 +41,7 @@ java_library {
 
 // Generate a clone of Java17LanguageFeaturesTest which uses a version of
 // Java17LanguageFeatures repackaged by jarjar. This ensures that jarjar is able
-// to handle a class file which must be at least v55 and includes bytecode
+// to handle a class file which must be at least v61 and includes bytecode
 // compiled from Java 17 language features.
 filegroup {
     name: "core-rewrite-java-17-test-for-jarjar-sed-script",

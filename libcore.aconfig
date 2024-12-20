@@ -39,11 +39,42 @@ flag {
 }
 
 flag {
+    namespace: "core_libraries"
+    name: "openjdk_21_v1_apis"
+    is_exported: true
+    description: "This flag includes OpenJDK 21 APIs released in 2025."
+    bug: "340486785"
+    # APIs provided by a mainline module can only use a frozen flag.
+    is_fixed_read_only: true
+}
+
+
+flag {
     namespace: "devtools"
     name: "appinfo"
     is_exported: true
     description: "This flag controls whether Frameworks sends app info to adb so debuggers can attach"
     bug: "333161320"
+    # APIs provided by a mainline module can only use a frozen flag.
+    is_fixed_read_only: true
+}
+
+flag {
+    namespace: "core_libraries"
+    name: "post_cleanup_apis"
+    is_exported: true
+    description: "This flag includes APIs to add/remove/call callbacks post-cleanup"
+    bug: "331243037"
+    # APIs provided by a mainline module can only use a frozen flag.
+    is_fixed_read_only: true
+}
+
+flag {
+    namespace: "core_libraries"
+    name: "native_metrics"
+    is_exported: true
+    description: "This flag includes APIs fo maintaining and exposing native allocation metrics"
+    bug: "331243037"
     # APIs provided by a mainline module can only use a frozen flag.
     is_fixed_read_only: true
 }

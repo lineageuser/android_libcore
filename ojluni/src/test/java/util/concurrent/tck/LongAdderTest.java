@@ -32,25 +32,40 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.LongAdder;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class LongAdderTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.LongAdderTest");
     }
-    public static Test suite() {
-        return new TestSuite(LongAdderTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(LongAdderTest.class);
+    // }
 
     /**
      * default constructed initializes to zero
      */
+    @Test
     public void testConstructor() {
         LongAdder ai = new LongAdder();
         assertEquals(0, ai.sum());
@@ -59,6 +74,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * add adds given value to current, and sum returns current value
      */
+    @Test
     public void testAddAndSum() {
         LongAdder ai = new LongAdder();
         ai.add(2);
@@ -70,6 +86,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * decrement decrements and sum returns current value
      */
+    @Test
     public void testDecrementAndsum() {
         LongAdder ai = new LongAdder();
         ai.decrement();
@@ -81,6 +98,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * incrementAndGet increments and returns current value
      */
+    @Test
     public void testIncrementAndsum() {
         LongAdder ai = new LongAdder();
         ai.increment();
@@ -92,6 +110,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * reset() causes subsequent sum() to return zero
      */
+    @Test
     public void testReset() {
         LongAdder ai = new LongAdder();
         ai.add(2);
@@ -103,6 +122,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * sumThenReset() returns sum; subsequent sum() returns zero
      */
+    @Test
     public void testSumThenReset() {
         LongAdder ai = new LongAdder();
         ai.add(2);
@@ -114,6 +134,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * a deserialized serialized adder holds same value
      */
+    @Test
     public void testSerialization() throws Exception {
         LongAdder x = new LongAdder();
         LongAdder y = serialClone(x);
@@ -129,6 +150,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * toString returns current value.
      */
+    @Test
     public void testToString() {
         LongAdder ai = new LongAdder();
         assertEquals("0", ai.toString());
@@ -139,6 +161,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * intValue returns current value.
      */
+    @Test
     public void testIntValue() {
         LongAdder ai = new LongAdder();
         assertEquals(0, ai.intValue());
@@ -149,6 +172,7 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * longValue returns current value.
      */
+    @Test
     public void testLongValue() {
         LongAdder ai = new LongAdder();
         assertEquals(0, ai.longValue());
@@ -159,26 +183,29 @@ public class LongAdderTest extends JSR166TestCase {
     /**
      * floatValue returns current value.
      */
+    @Test
     public void testFloatValue() {
         LongAdder ai = new LongAdder();
-        assertEquals(0.0f, ai.floatValue());
+        assertEquals(0.0f, ai.floatValue(), 0.0f);
         ai.increment();
-        assertEquals(1.0f, ai.floatValue());
+        assertEquals(1.0f, ai.floatValue(), 0.0f);
     }
 
     /**
      * doubleValue returns current value.
      */
+    @Test
     public void testDoubleValue() {
         LongAdder ai = new LongAdder();
-        assertEquals(0.0, ai.doubleValue());
+        assertEquals(0.0, ai.doubleValue(), 0.0d);
         ai.increment();
-        assertEquals(1.0, ai.doubleValue());
+        assertEquals(1.0, ai.doubleValue(), 0.0d);
     }
 
     /**
      * adds by multiple threads produce correct sum
      */
+    @Test
     public void testAddAndSumMT() throws Throwable {
         final int incs = 1000000;
         final int nthreads = 4;

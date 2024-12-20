@@ -22,7 +22,6 @@
 #include <jni.h>
 #include <android-base/logging.h>
 
-extern "C" void register_java_util_zip_ZipFile(JNIEnv* env);
 extern "C" void register_java_util_zip_Inflater(JNIEnv* env);
 extern "C" void register_java_util_zip_Deflater(JNIEnv* env);
 extern "C" void register_java_io_FileDescriptor(JNIEnv* env);
@@ -93,7 +92,6 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void*) {
   register_java_lang_System(env);
 
   // Initialize the rest in the order in which they appear in Android.bp .
-  register_java_util_zip_ZipFile(env);
   register_java_util_zip_Inflater(env);
   register_java_util_zip_Deflater(env);
   register_java_io_FileDescriptor(env);

@@ -79,4 +79,51 @@ public class StringBufferTest extends TestCase {
         sb1.append("a");
         assertEquals(0, new StringBuffer("a").compareTo(sb1));
     }
+
+    // Regression test for b/356007654.
+    public void testIndexOf_afterAppendChar() {
+        assertIndexOfAfterAppend('Z');
+        assertIndexOfAfterAppend(' ');
+        assertIndexOfAfterAppend('\u0010');
+        assertIndexOfAfterAppend('\u00B0');
+        assertIndexOfAfterAppend('\u0080');
+        assertIndexOfAfterAppend('\u00ff');
+        assertIndexOfAfterAppend('\u0100');
+        assertIndexOfAfterAppend('\u201f');
+        assertIndexOfAfterAppend('\uffff');
+    }
+
+    private static void assertIndexOfAfterAppend(char ch) {
+        String str = String.valueOf(ch);
+
+        StringBuffer sb = new StringBuffer("abc");
+        sb.append(ch);
+        sb.append("123");
+        sb.append(ch);
+        sb.append("abc");
+        assertEquals(3, sb.indexOf(str));
+    }
+    // Regression test for b/356007654.
+    public void testLastIndexOf_afterAppendChar() {
+        assertLastIndexOfAfterAppend('Z');
+        assertLastIndexOfAfterAppend(' ');
+        assertLastIndexOfAfterAppend('\u0010');
+        assertLastIndexOfAfterAppend('\u00B0');
+        assertLastIndexOfAfterAppend('\u0080');
+        assertLastIndexOfAfterAppend('\u00ff');
+        assertLastIndexOfAfterAppend('\u0100');
+        assertLastIndexOfAfterAppend('\u201f');
+        assertLastIndexOfAfterAppend('\uffff');
+    }
+
+    private static void assertLastIndexOfAfterAppend(char ch) {
+        String str = String.valueOf(ch);
+
+        StringBuffer sb = new StringBuffer("abc");
+        sb.append(ch);
+        sb.append("123");
+        sb.append(ch);
+        sb.append("abc");
+        assertEquals(7, sb.lastIndexOf(str));
+    }
 }

@@ -107,9 +107,6 @@ public class ZipFile implements ZipConstants, Closeable {
     // c) the "native" source of this zip file.
     private final @Stable CleanableResource res;
 
-    // Android-added: CloseGuard support.
-    private final CloseGuard guard = CloseGuard.get();
-
     private static final int STORED = ZipEntry.STORED;
     private static final int DEFLATED = ZipEntry.DEFLATED;
 
@@ -754,6 +751,9 @@ public class ZipFile implements ZipConstants, Closeable {
 
         final Cleanable cleanable;
 
+        // Android-added: CloseGuard support.
+        final CloseGuard guard = CloseGuard.get();
+
         Source zsrc;
 
         CleanableResource(ZipFile zf, ZipCoder zc, File file, int mode) throws IOException {
@@ -767,6 +767,8 @@ public class ZipFile implements ZipConstants, Closeable {
             this.istreams = Collections.newSetFromMap(new WeakHashMap<>());
             this.inflaterCache = new ArrayDeque<>();
             this.zsrc = Source.get(file, (mode & OPEN_DELETE) != 0, zc, enableZipPathValidator);
+            // Android-added: CloseGuard support.
+            this.guard.open("ZipFile.close");
         }
 
         void clean() {
@@ -808,6 +810,8 @@ public class ZipFile implements ZipConstants, Closeable {
 
         public void run() {
             IOException ioe = null;
+            // Android-added: CloseGuard support.
+            guard.warnIfOpen();
 
             // Release cached inflaters and close the cache first
             Deque<Inflater> inflaters = this.inflaterCache;
@@ -873,16 +877,14 @@ public class ZipFile implements ZipConstants, Closeable {
         if (closeRequested) {
             return;
         }
-        // Android-added: CloseGuard support.
-        if (guard != null) {
-            guard.close();
-        }
         closeRequested = true;
 
         synchronized (this) {
             // Close streams, release their inflaters, release cached inflaters
             // and release zip source
             try {
+                // Android-added: CloseGuard support.
+                res.guard.close();
                 res.clean();
             } catch (UncheckedIOException ioe) {
                 throw ioe.getCause();

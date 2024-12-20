@@ -36,22 +36,26 @@ package test.java.util.EnumMap;
 import java.util.EnumMap;
 import java.util.Map;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 public class UniqueNullValue {
     static enum TestEnum { e00, e01 }
 
-    @Test
-    public void testUniqueNull() {
+    public static void main(String[] args) {
         Map<TestEnum, Integer> map = new EnumMap<>(TestEnum.class);
 
         map.put(TestEnum.e00, 0);
-        Assert.assertTrue(map.containsValue(0));
-        Assert.assertFalse(map.containsValue(null));
+        if (false == map.containsValue(0)) {
+            throw new RuntimeException("EnumMap unexpectedly missing 0 value");
+        }
+        if (map.containsValue(null)) {
+            throw new RuntimeException("EnumMap unexpectedly holds null value");
+        }
 
         map.put(TestEnum.e00, null);
-        Assert.assertFalse(map.containsValue(0));
-        Assert.assertTrue(map.containsValue(null));
+        if (map.containsValue(0)) {
+            throw new RuntimeException("EnumMap unexpectedly holds 0 value");
+        }
+        if (false == map.containsValue(null)) {
+            throw new RuntimeException("EnumMap unexpectedly missing null value");
+        }
     }
 }

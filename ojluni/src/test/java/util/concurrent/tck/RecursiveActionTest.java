@@ -33,6 +33,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,18 +54,23 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeoutException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class RecursiveActionTest extends JSR166TestCase {
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.RecursiveActionTest");
     }
 
-    public static Test suite() {
-        return new TestSuite(RecursiveActionTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(RecursiveActionTest.class);
+    // }
 
     private static ForkJoinPool mainPool() {
         return new ForkJoinPool();
@@ -237,6 +250,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * isCompletedAbnormally and isCancelled return false for normally
      * completed tasks. getRawResult of a RecursiveAction returns null;
      */
+    @Test
     public void testInvoke() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -253,6 +267,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * isCompletedAbnormally and isCancelled return false for normally
      * completed tasks
      */
+    @Test
     public void testQuietlyInvoke() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -267,6 +282,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * join of a forked task returns when task completes
      */
+    @Test
     public void testForkJoin() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -282,6 +298,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * join/quietlyJoin of a forked task succeeds in the presence of interrupts
      */
+    @Test
     public void testJoinIgnoresInterrupts() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -354,6 +371,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * join/quietlyJoin of a forked task when not in ForkJoinPool
      * succeeds in the presence of interrupts
      */
+    @Test
     public void testJoinIgnoresInterruptsOutsideForkJoinPool() {
         final SynchronousQueue<FibAction[]> sq =
             new SynchronousQueue<FibAction[]>();
@@ -450,6 +468,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * get of a forked task returns when task completes
      */
+    @Test
     public void testForkGet() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
@@ -465,6 +484,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * timed get of a forked task returns when task completes
      */
+    @Test
     public void testForkTimedGet() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
@@ -480,6 +500,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * timed get with null time unit throws NPE
      */
+    @Test
     public void testForkTimedGetNPE() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
@@ -496,6 +517,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task completes
      */
+    @Test
     public void testForkQuietlyJoin() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -512,6 +534,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * helpQuiesce returns when tasks are complete.
      * getQueuedTaskCount returns 0 when quiescent
      */
+    @Test
     public void testForkHelpQuiesce() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -530,6 +553,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invoke task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalInvoke() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -547,6 +571,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * quietlyInvoke task returns when task completes abnormally
      */
+    @Test
     public void testAbnormalQuietlyInvoke() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -561,6 +586,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * join of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkJoin() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -579,6 +605,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * get of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkGet() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
@@ -599,6 +626,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * timed get of a forked task throws exception when task completes abnormally
      */
+    @Test
     public void testAbnormalForkTimedGet() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
@@ -619,6 +647,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task completes abnormally
      */
+    @Test
     public void testAbnormalForkQuietlyJoin() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -634,6 +663,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invoke task throws exception when task cancelled
      */
+    @Test
     public void testCancelledInvoke() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -652,6 +682,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * join of a forked task throws exception when task cancelled
      */
+    @Test
     public void testCancelledForkJoin() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -671,6 +702,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * get of a forked task throws exception when task cancelled
      */
+    @Test
     public void testCancelledForkGet() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
@@ -690,6 +722,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * timed get of a forked task throws exception when task cancelled
      */
+    @Test
     public void testCancelledForkTimedGet() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() throws Exception {
@@ -709,6 +742,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * quietlyJoin of a forked task returns when task cancelled
      */
+    @Test
     public void testCancelledForkQuietlyJoin() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -724,6 +758,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * getPool of executing task returns its pool
      */
+    @Test
     public void testGetPool() {
         final ForkJoinPool mainPool = mainPool();
         RecursiveAction a = new CheckedRecursiveAction() {
@@ -736,6 +771,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * getPool of non-FJ task returns null
      */
+    @Test
     public void testGetPool2() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -747,6 +783,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * inForkJoinPool of executing task returns true
      */
+    @Test
     public void testInForkJoinPool() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -758,6 +795,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * inForkJoinPool of non-FJ task returns false
      */
+    @Test
     public void testInForkJoinPool2() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -769,6 +807,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * getPool of current thread in pool returns its pool
      */
+    @Test
     public void testWorkerGetPool() {
         final ForkJoinPool mainPool = mainPool();
         RecursiveAction a = new CheckedRecursiveAction() {
@@ -783,6 +822,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * getPoolIndex of current thread in pool returns 0 <= value < poolSize
      */
+    @Test
     public void testWorkerGetPoolIndex() {
         final ForkJoinPool mainPool = mainPool();
         RecursiveAction a = new CheckedRecursiveAction() {
@@ -799,6 +839,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * setRawResult(null) succeeds
      */
+    @Test
     public void testSetRawResult() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -811,6 +852,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * A reinitialized normally completed task may be re-invoked
      */
+    @Test
     public void testReinitialize() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -831,6 +873,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * A reinitialized abnormally completed task may be re-invoked
      */
+    @Test
     public void testReinitializeAbnormal() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -854,6 +897,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invoke task throws exception after invoking completeExceptionally
      */
+    @Test
     public void testCompleteExceptionally() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -872,6 +916,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invoke task suppresses execution invoking complete
      */
+    @Test
     public void testComplete() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -887,6 +932,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(t1, t2) invokes all task arguments
      */
+    @Test
     public void testInvokeAll2() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -904,6 +950,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with 1 argument invokes task
      */
+    @Test
     public void testInvokeAll1() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -918,6 +965,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with > 2 argument invokes tasks
      */
+    @Test
     public void testInvokeAll3() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -941,6 +989,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(collection) invokes all tasks in the collection
      */
+    @Test
     public void testInvokeAllCollection() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -968,6 +1017,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with any null task throws NPE
      */
+    @Test
     public void testInvokeAllNPE() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -985,6 +1035,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(t1, t2) throw exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAll2() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1003,6 +1054,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with 1 argument throws exception if task does
      */
+    @Test
     public void testAbnormalInvokeAll1() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1020,6 +1072,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(tasks) with > 2 argument throws exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAll3() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1039,6 +1092,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * invokeAll(collection) throws exception if any task does
      */
+    @Test
     public void testAbnormalInvokeAllCollection() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1063,6 +1117,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * tryUnfork returns true for most recent unexecuted task,
      * and suppresses execution
      */
+    @Test
     public void testTryUnfork() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1082,6 +1137,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * getSurplusQueuedTaskCount returns > 0 when
      * there are more tasks than threads
      */
+    @Test
     public void testGetSurplusQueuedTaskCount() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1104,6 +1160,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * peekNextLocalTask returns most recent unexecuted task.
      */
+    @Test
     public void testPeekNextLocalTask() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1125,6 +1182,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * pollNextLocalTask returns most recent unexecuted task
      * without executing it
      */
+    @Test
     public void testPollNextLocalTask() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1143,6 +1201,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * pollTask returns an unexecuted task without executing it
      */
+    @Test
     public void testPollTask() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1161,6 +1220,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * peekNextLocalTask returns least recent unexecuted task in async mode
      */
+    @Test
     public void testPeekNextLocalTaskAsync() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1181,6 +1241,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * pollNextLocalTask returns least recent unexecuted task without
      * executing it, in async mode
      */
+    @Test
     public void testPollNextLocalTaskAsync() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1200,6 +1261,7 @@ public class RecursiveActionTest extends JSR166TestCase {
      * pollTask returns an unexecuted task without executing it, in
      * async mode
      */
+    @Test
     public void testPollTaskAsync() {
         RecursiveAction a = new CheckedRecursiveAction() {
             protected void realCompute() {
@@ -1248,6 +1310,7 @@ public class RecursiveActionTest extends JSR166TestCase {
     /**
      * SortTask demo works as advertised
      */
+    @Test
     public void testSortTaskDemo() {
         ThreadLocalRandom rnd = ThreadLocalRandom.current();
         long[] array = new long[1007];

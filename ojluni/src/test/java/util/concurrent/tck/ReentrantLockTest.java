@@ -35,6 +35,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,17 +52,21 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ReentrantLockTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ReentrantLockTest");
     }
-    public static Test suite() {
-        return new TestSuite(ReentrantLockTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ReentrantLockTest.class);
+    // }
 
     /**
      * A checked runnable calling lockInterruptibly
@@ -113,7 +125,7 @@ public class ReentrantLockTest extends JSR166TestCase {
         long startTime = System.nanoTime();
         while (!lock.hasQueuedThread(t)) {
             if (millisElapsedSince(startTime) > LONG_DELAY_MS)
-                throw new AssertionFailedError("timed out");
+                fail("timed out");
             Thread.yield();
         }
         assertTrue(t.isAlive());
@@ -203,6 +215,7 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * Constructor sets given fairness, and is in unlocked state
      */
+    @Test
     public void testConstructor() {
         PublicReentrantLock lock;
 
@@ -222,9 +235,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * locking an unlocked lock succeeds
      */
+    @Test
     public void testLock()      { testLock(false); }
+    @Test
     public void testLock_fair() { testLock(true); }
-    public void testLock(boolean fair) {
+    private void testLock(boolean fair) {
         PublicReentrantLock lock = new PublicReentrantLock(fair);
         lock.lock();
         assertLockedByMoi(lock);
@@ -234,9 +249,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * Unlocking an unlocked lock throws IllegalMonitorStateException
      */
+    @Test
     public void testUnlock_IMSE()      { testUnlock_IMSE(false); }
+    @Test
     public void testUnlock_IMSE_fair() { testUnlock_IMSE(true); }
-    public void testUnlock_IMSE(boolean fair) {
+    private void testUnlock_IMSE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         try {
             lock.unlock();
@@ -247,9 +264,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * tryLock on an unlocked lock succeeds
      */
+    @Test
     public void testTryLock()      { testTryLock(false); }
+    @Test
     public void testTryLock_fair() { testTryLock(true); }
-    public void testTryLock(boolean fair) {
+    private void testTryLock(boolean fair) {
         PublicReentrantLock lock = new PublicReentrantLock(fair);
         assertTrue(lock.tryLock());
         assertLockedByMoi(lock);
@@ -262,9 +281,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * hasQueuedThreads reports whether there are waiting threads
      */
+    @Test
     public void testHasQueuedThreads()      { testHasQueuedThreads(false); }
+    @Test
     public void testHasQueuedThreads_fair() { testHasQueuedThreads(true); }
-    public void testHasQueuedThreads(boolean fair) {
+    private void testHasQueuedThreads(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
         Thread t2 = new Thread(new InterruptibleLockRunnable(lock));
@@ -288,9 +309,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getQueueLength reports number of waiting threads
      */
+    @Test
     public void testGetQueueLength()      { testGetQueueLength(false); }
+    @Test
     public void testGetQueueLength_fair() { testGetQueueLength(true); }
-    public void testGetQueueLength(boolean fair) {
+    private void testGetQueueLength(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
         Thread t2 = new Thread(new InterruptibleLockRunnable(lock));
@@ -313,9 +336,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * hasQueuedThread(null) throws NPE
      */
+    @Test
     public void testHasQueuedThreadNPE()      { testHasQueuedThreadNPE(false); }
+    @Test
     public void testHasQueuedThreadNPE_fair() { testHasQueuedThreadNPE(true); }
-    public void testHasQueuedThreadNPE(boolean fair) {
+    private void testHasQueuedThreadNPE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         try {
             lock.hasQueuedThread(null);
@@ -326,9 +351,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * hasQueuedThread reports whether a thread is queued
      */
+    @Test
     public void testHasQueuedThread()      { testHasQueuedThread(false); }
+    @Test
     public void testHasQueuedThread_fair() { testHasQueuedThread(true); }
-    public void testHasQueuedThread(boolean fair) {
+    private void testHasQueuedThread(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
         Thread t2 = new Thread(new InterruptibleLockRunnable(lock));
@@ -356,9 +383,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getQueuedThreads includes waiting threads
      */
+    @Test
     public void testGetQueuedThreads()      { testGetQueuedThreads(false); }
+    @Test
     public void testGetQueuedThreads_fair() { testGetQueuedThreads(true); }
-    public void testGetQueuedThreads(boolean fair) {
+    private void testGetQueuedThreads(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         Thread t1 = new Thread(new InterruptedLockRunnable(lock));
         Thread t2 = new Thread(new InterruptibleLockRunnable(lock));
@@ -387,9 +416,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * timed tryLock is interruptible
      */
+    @Test
     public void testTryLock_Interruptible()      { testTryLock_Interruptible(false); }
+    @Test
     public void testTryLock_Interruptible_fair() { testTryLock_Interruptible(true); }
-    public void testTryLock_Interruptible(boolean fair) {
+    private void testTryLock_Interruptible(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         lock.lock();
         Thread t = newStartedThread(new CheckedInterruptedRunnable() {
@@ -406,9 +437,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * tryLock on a locked lock fails
      */
+    @Test
     public void testTryLockWhenLocked()      { testTryLockWhenLocked(false); }
+    @Test
     public void testTryLockWhenLocked_fair() { testTryLockWhenLocked(true); }
-    public void testTryLockWhenLocked(boolean fair) {
+    private void testTryLockWhenLocked(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         lock.lock();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -423,9 +456,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * Timed tryLock on a locked lock times out
      */
+    @Test
     public void testTryLock_Timeout()      { testTryLock_Timeout(false); }
+    @Test
     public void testTryLock_Timeout_fair() { testTryLock_Timeout(true); }
-    public void testTryLock_Timeout(boolean fair) {
+    private void testTryLock_Timeout(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final long timeoutMillis = timeoutMillis();
         lock.lock();
@@ -443,9 +478,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getHoldCount returns number of recursive holds
      */
+    @Test
     public void testGetHoldCount()      { testGetHoldCount(false); }
+    @Test
     public void testGetHoldCount_fair() { testGetHoldCount(true); }
-    public void testGetHoldCount(boolean fair) {
+    private void testGetHoldCount(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         for (int i = 1; i <= SIZE; i++) {
             lock.lock();
@@ -460,9 +497,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * isLocked is true when locked and false when not
      */
+    @Test
     public void testIsLocked()      { testIsLocked(false); }
+    @Test
     public void testIsLocked_fair() { testIsLocked(true); }
-    public void testIsLocked(boolean fair) {
+    private void testIsLocked(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         try {
             assertFalse(lock.isLocked());
@@ -495,9 +534,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * lockInterruptibly succeeds when unlocked, else is interruptible
      */
+    @Test
     public void testLockInterruptibly()      { testLockInterruptibly(false); }
+    @Test
     public void testLockInterruptibly_fair() { testLockInterruptibly(true); }
-    public void testLockInterruptibly(boolean fair) {
+    private void testLockInterruptibly(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         try {
             lock.lockInterruptibly();
@@ -515,9 +556,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * Calling await without holding lock throws IllegalMonitorStateException
      */
+    @Test
     public void testAwait_IMSE()      { testAwait_IMSE(false); }
+    @Test
     public void testAwait_IMSE_fair() { testAwait_IMSE(true); }
-    public void testAwait_IMSE(boolean fair) {
+    private void testAwait_IMSE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         for (AwaitMethod awaitMethod : AwaitMethod.values()) {
@@ -534,9 +577,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * Calling signal without holding lock throws IllegalMonitorStateException
      */
+    @Test
     public void testSignal_IMSE()      { testSignal_IMSE(false); }
+    @Test
     public void testSignal_IMSE_fair() { testSignal_IMSE(true); }
-    public void testSignal_IMSE(boolean fair) {
+    private void testSignal_IMSE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         try {
@@ -548,9 +593,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * awaitNanos without a signal times out
      */
+    @Test
     public void testAwaitNanos_Timeout()      { testAwaitNanos_Timeout(false); }
+    @Test
     public void testAwaitNanos_Timeout_fair() { testAwaitNanos_Timeout(true); }
-    public void testAwaitNanos_Timeout(boolean fair) {
+    private void testAwaitNanos_Timeout(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         final long timeoutMillis = timeoutMillis();
@@ -568,9 +615,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * timed await without a signal times out
      */
+    @Test
     public void testAwait_Timeout()      { testAwait_Timeout(false); }
+    @Test
     public void testAwait_Timeout_fair() { testAwait_Timeout(true); }
-    public void testAwait_Timeout(boolean fair) {
+    private void testAwait_Timeout(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         final long timeoutMillis = timeoutMillis();
@@ -586,9 +635,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * awaitUntil without a signal times out
      */
+    @Test
     public void testAwaitUntil_Timeout()      { testAwaitUntil_Timeout(false); }
+    @Test
     public void testAwaitUntil_Timeout_fair() { testAwaitUntil_Timeout(true); }
-    public void testAwaitUntil_Timeout(boolean fair) {
+    private void testAwaitUntil_Timeout(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         lock.lock();
@@ -605,9 +656,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * await returns when signalled
      */
+    @Test
     public void testAwait()      { testAwait(false); }
+    @Test
     public void testAwait_fair() { testAwait(true); }
-    public void testAwait(boolean fair) {
+    private void testAwait(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         final CountDownLatch locked = new CountDownLatch(1);
@@ -632,9 +685,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * hasWaiters throws NPE if null
      */
+    @Test
     public void testHasWaitersNPE()      { testHasWaitersNPE(false); }
+    @Test
     public void testHasWaitersNPE_fair() { testHasWaitersNPE(true); }
-    public void testHasWaitersNPE(boolean fair) {
+    private void testHasWaitersNPE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         try {
             lock.hasWaiters(null);
@@ -645,9 +700,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitQueueLength throws NPE if null
      */
+    @Test
     public void testGetWaitQueueLengthNPE()      { testGetWaitQueueLengthNPE(false); }
+    @Test
     public void testGetWaitQueueLengthNPE_fair() { testGetWaitQueueLengthNPE(true); }
-    public void testGetWaitQueueLengthNPE(boolean fair) {
+    private void testGetWaitQueueLengthNPE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         try {
             lock.getWaitQueueLength(null);
@@ -658,9 +715,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitingThreads throws NPE if null
      */
+    @Test
     public void testGetWaitingThreadsNPE()      { testGetWaitingThreadsNPE(false); }
+    @Test
     public void testGetWaitingThreadsNPE_fair() { testGetWaitingThreadsNPE(true); }
-    public void testGetWaitingThreadsNPE(boolean fair) {
+    private void testGetWaitingThreadsNPE(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         try {
             lock.getWaitingThreads(null);
@@ -671,9 +730,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * hasWaiters throws IllegalArgumentException if not owned
      */
+    @Test
     public void testHasWaitersIAE()      { testHasWaitersIAE(false); }
+    @Test
     public void testHasWaitersIAE_fair() { testHasWaitersIAE(true); }
-    public void testHasWaitersIAE(boolean fair) {
+    private void testHasWaitersIAE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         final ReentrantLock lock2 = new ReentrantLock(fair);
@@ -686,9 +747,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * hasWaiters throws IllegalMonitorStateException if not locked
      */
+    @Test
     public void testHasWaitersIMSE()      { testHasWaitersIMSE(false); }
+    @Test
     public void testHasWaitersIMSE_fair() { testHasWaitersIMSE(true); }
-    public void testHasWaitersIMSE(boolean fair) {
+    private void testHasWaitersIMSE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         try {
@@ -700,9 +763,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitQueueLength throws IllegalArgumentException if not owned
      */
+    @Test
     public void testGetWaitQueueLengthIAE()      { testGetWaitQueueLengthIAE(false); }
+    @Test
     public void testGetWaitQueueLengthIAE_fair() { testGetWaitQueueLengthIAE(true); }
-    public void testGetWaitQueueLengthIAE(boolean fair) {
+    private void testGetWaitQueueLengthIAE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         final ReentrantLock lock2 = new ReentrantLock(fair);
@@ -715,9 +780,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitQueueLength throws IllegalMonitorStateException if not locked
      */
+    @Test
     public void testGetWaitQueueLengthIMSE()      { testGetWaitQueueLengthIMSE(false); }
+    @Test
     public void testGetWaitQueueLengthIMSE_fair() { testGetWaitQueueLengthIMSE(true); }
-    public void testGetWaitQueueLengthIMSE(boolean fair) {
+    private void testGetWaitQueueLengthIMSE(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         try {
@@ -729,9 +796,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitingThreads throws IllegalArgumentException if not owned
      */
+    @Test
     public void testGetWaitingThreadsIAE()      { testGetWaitingThreadsIAE(false); }
+    @Test
     public void testGetWaitingThreadsIAE_fair() { testGetWaitingThreadsIAE(true); }
-    public void testGetWaitingThreadsIAE(boolean fair) {
+    private void testGetWaitingThreadsIAE(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         final PublicReentrantLock lock2 = new PublicReentrantLock(fair);
@@ -744,9 +813,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitingThreads throws IllegalMonitorStateException if not locked
      */
+    @Test
     public void testGetWaitingThreadsIMSE()      { testGetWaitingThreadsIMSE(false); }
+    @Test
     public void testGetWaitingThreadsIMSE_fair() { testGetWaitingThreadsIMSE(true); }
-    public void testGetWaitingThreadsIMSE(boolean fair) {
+    private void testGetWaitingThreadsIMSE(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         try {
@@ -758,9 +829,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * hasWaiters returns true when a thread is waiting, else false
      */
+    @Test
     public void testHasWaiters()      { testHasWaiters(false); }
+    @Test
     public void testHasWaiters_fair() { testHasWaiters(true); }
-    public void testHasWaiters(boolean fair) {
+    private void testHasWaiters(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         final CountDownLatch pleaseSignal = new CountDownLatch(1);
@@ -791,9 +864,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitQueueLength returns number of waiting threads
      */
+    @Test
     public void testGetWaitQueueLength()      { testGetWaitQueueLength(false); }
+    @Test
     public void testGetWaitQueueLength_fair() { testGetWaitQueueLength(true); }
-    public void testGetWaitQueueLength(boolean fair) {
+    private void testGetWaitQueueLength(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         final CountDownLatch locked1 = new CountDownLatch(1);
@@ -849,9 +924,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * getWaitingThreads returns only and all waiting threads
      */
+    @Test
     public void testGetWaitingThreads()      { testGetWaitingThreads(false); }
+    @Test
     public void testGetWaitingThreads_fair() { testGetWaitingThreads(true); }
-    public void testGetWaitingThreads(boolean fair) {
+    private void testGetWaitingThreads(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         final CountDownLatch locked1 = new CountDownLatch(1);
@@ -909,9 +986,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * awaitUninterruptibly is uninterruptible
      */
+    @Test
     public void testAwaitUninterruptibly()      { testAwaitUninterruptibly(false); }
+    @Test
     public void testAwaitUninterruptibly_fair() { testAwaitUninterruptibly(true); }
-    public void testAwaitUninterruptibly(boolean fair) {
+    private void testAwaitUninterruptibly(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         final Condition c = lock.newCondition();
         final CountDownLatch pleaseInterrupt = new CountDownLatch(2);
@@ -956,15 +1035,23 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * await/awaitNanos/awaitUntil is interruptible
      */
+    @Test
     public void testInterruptible_await()           { testInterruptible(false, AwaitMethod.await); }
+    @Test
     public void testInterruptible_await_fair()      { testInterruptible(true,  AwaitMethod.await); }
+    @Test
     public void testInterruptible_awaitTimed()      { testInterruptible(false, AwaitMethod.awaitTimed); }
+    @Test
     public void testInterruptible_awaitTimed_fair() { testInterruptible(true,  AwaitMethod.awaitTimed); }
+    @Test
     public void testInterruptible_awaitNanos()      { testInterruptible(false, AwaitMethod.awaitNanos); }
+    @Test
     public void testInterruptible_awaitNanos_fair() { testInterruptible(true,  AwaitMethod.awaitNanos); }
+    @Test
     public void testInterruptible_awaitUntil()      { testInterruptible(false, AwaitMethod.awaitUntil); }
+    @Test
     public void testInterruptible_awaitUntil_fair() { testInterruptible(true,  AwaitMethod.awaitUntil); }
-    public void testInterruptible(boolean fair, final AwaitMethod awaitMethod) {
+    private void testInterruptible(boolean fair, final AwaitMethod awaitMethod) {
         final PublicReentrantLock lock =
             new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
@@ -995,15 +1082,23 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * signalAll wakes up all threads
      */
+    @Test
     public void testSignalAll_await()           { testSignalAll(false, AwaitMethod.await); }
+    @Test
     public void testSignalAll_await_fair()      { testSignalAll(true,  AwaitMethod.await); }
+    @Test
     public void testSignalAll_awaitTimed()      { testSignalAll(false, AwaitMethod.awaitTimed); }
+    @Test
     public void testSignalAll_awaitTimed_fair() { testSignalAll(true,  AwaitMethod.awaitTimed); }
+    @Test
     public void testSignalAll_awaitNanos()      { testSignalAll(false, AwaitMethod.awaitNanos); }
+    @Test
     public void testSignalAll_awaitNanos_fair() { testSignalAll(true,  AwaitMethod.awaitNanos); }
+    @Test
     public void testSignalAll_awaitUntil()      { testSignalAll(false, AwaitMethod.awaitUntil); }
+    @Test
     public void testSignalAll_awaitUntil_fair() { testSignalAll(true,  AwaitMethod.awaitUntil); }
-    public void testSignalAll(boolean fair, final AwaitMethod awaitMethod) {
+    private void testSignalAll(boolean fair, final AwaitMethod awaitMethod) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         final CountDownLatch pleaseSignal = new CountDownLatch(2);
@@ -1032,9 +1127,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * signal wakes up waiting threads in FIFO order
      */
+    @Test
     public void testSignalWakesFifo()      { testSignalWakesFifo(false); }
+    @Test
     public void testSignalWakesFifo_fair() { testSignalWakesFifo(true); }
-    public void testSignalWakesFifo(boolean fair) {
+    private void testSignalWakesFifo(boolean fair) {
         final PublicReentrantLock lock =
             new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
@@ -1079,9 +1176,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * await after multiple reentrant locking preserves lock count
      */
+    @Test
     public void testAwaitLockCount()      { testAwaitLockCount(false); }
+    @Test
     public void testAwaitLockCount_fair() { testAwaitLockCount(true); }
-    public void testAwaitLockCount(boolean fair) {
+    private void testAwaitLockCount(boolean fair) {
         final PublicReentrantLock lock = new PublicReentrantLock(fair);
         final Condition c = lock.newCondition();
         final CountDownLatch pleaseSignal = new CountDownLatch(2);
@@ -1125,9 +1224,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * A serialized lock deserializes as unlocked
      */
+    @Test
     public void testSerialization()      { testSerialization(false); }
+    @Test
     public void testSerialization_fair() { testSerialization(true); }
-    public void testSerialization(boolean fair) {
+    private void testSerialization(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         lock.lock();
 
@@ -1151,9 +1252,11 @@ public class ReentrantLockTest extends JSR166TestCase {
     /**
      * toString indicates current lock state
      */
+    @Test
     public void testToString()      { testToString(false); }
+    @Test
     public void testToString_fair() { testToString(true); }
-    public void testToString(boolean fair) {
+    private void testToString(boolean fair) {
         final ReentrantLock lock = new ReentrantLock(fair);
         assertTrue(lock.toString().contains("Unlocked"));
         lock.lock();

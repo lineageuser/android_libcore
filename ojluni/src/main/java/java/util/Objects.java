@@ -26,6 +26,7 @@
 package java.util;
 
 import jdk.internal.util.Preconditions;
+import jdk.internal.vm.annotation.ForceInline;
 
 import java.util.function.Supplier;
 
@@ -352,8 +353,7 @@ public final class Objects {
      * @throws IndexOutOfBoundsException if the {@code index} is out of bounds
      * @since 9
      */
-    // Android-removed: @ForceInline is an unsupported attribute.
-    //@ForceInline
+    @ForceInline
     public static
     int checkIndex(int index, int length) {
         return Preconditions.checkIndex(index, length, null);
@@ -429,8 +429,7 @@ public final class Objects {
      * @throws IndexOutOfBoundsException if the {@code index} is out of bounds
      * @since 16
      */
-    // Android-removed: @ForceInline is an unsupported attribute.
-    //@ForceInline
+    @ForceInline
     public static
     long checkIndex(long index, long length) {
         return Preconditions.checkIndex(index, length, null);

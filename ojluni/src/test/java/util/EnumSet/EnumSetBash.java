@@ -35,14 +35,15 @@ package test.java.util.EnumSet;
 import java.util.*;
 import java.io.*;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class EnumSetBash {
     static Random rnd = new Random();
 
+    // Android-changed: shard this test.
+    // public static void main(String[] args) {
     @Test
-    public void testEnumSetBash() {
+    public void testSmallSizesShard() {
         bash(Silly0.class);
         bash(Silly1.class);
         bash(Silly31.class);
@@ -95,34 +96,48 @@ public class EnumSetBash {
             EnumSet<T> diff2 = clone(s2, enumClass); diff2.removeAll(s1);
             EnumSet<T> union = clone(s1, enumClass); union.addAll(s2);
 
-            Assert.assertFalse(diff1.removeAll(diff2));
-            Assert.assertFalse(diff1.removeAll(intersection));
-            Assert.assertFalse(diff2.removeAll(diff1));
-            Assert.assertFalse(diff2.removeAll(intersection));
-            Assert.assertFalse(intersection.removeAll(diff1));
-            Assert.assertFalse(intersection.removeAll(diff1));
+            if (diff1.removeAll(diff2))
+                fail("Set algebra identity 2 failed");
+            if (diff1.removeAll(intersection))
+                fail("Set algebra identity 3 failed");
+            if (diff2.removeAll(diff1))
+                fail("Set algebra identity 4 failed");
+            if (diff2.removeAll(intersection))
+                fail("Set algebra identity 5 failed");
+            if (intersection.removeAll(diff1))
+                fail("Set algebra identity 6 failed");
+            if (intersection.removeAll(diff1))
+                fail("Set algebra identity 7 failed");
 
             intersection.addAll(diff1); intersection.addAll(diff2);
-            Assert.assertTrue(intersection.equals(union));
+            if (!intersection.equals(union))
+                fail("Set algebra identity 1 failed");
 
-            Assert.assertEquals(new HashSet<T>(union).hashCode(), union.hashCode());
+            if (new HashSet<T>(union).hashCode() != union.hashCode())
+                fail("Incorrect hashCode computation.");
 
             Iterator e = union.iterator();
             while (e.hasNext())
-                Assert.assertTrue(intersection.remove(e.next()));
-            Assert.assertTrue(intersection.isEmpty());
+                if (!intersection.remove(e.next()))
+                    fail("Couldn't remove element from copy.");
+            if (!intersection.isEmpty())
+                fail("Copy nonempty after deleting all elements.");
 
             e = union.iterator();
             while (e.hasNext()) {
                 Object o = e.next();
-                Assert.assertTrue(union.contains(o));
+                if (!union.contains(o))
+                    fail("Set doesn't contain one of its elements.");
                 e.remove();
-                Assert.assertFalse(union.contains(o));
+                if (union.contains(o))
+                    fail("Set contains element after deletion.");
             }
-            Assert.assertTrue(union.isEmpty());
+            if (!union.isEmpty())
+                fail("Set nonempty after deleting all elements.");
 
             s1.clear();
-            Assert.assertTrue(s1.isEmpty());
+            if (!s1.isEmpty())
+                fail("Set nonempty after clear.");
         }
     }
 
@@ -150,14 +165,17 @@ public class EnumSetBash {
                     clone = EnumSet.copyOf((Collection<E>)s);
                 else
                     clone = EnumSet.copyOf((Collection<E>)(Collection)
-                            Arrays.asList(s.toArray()));
+                                           Arrays.asList(s.toArray()));
                 break;
             case 5:
                 clone = (EnumSet<E>) deepCopy(s);
         }
-        Assert.assertTrue(s.equals(clone));
-        Assert.assertTrue(s.containsAll(clone));
-        Assert.assertTrue(clone.containsAll(s));
+        if (!s.equals(clone))
+            fail("Set not equal to copy. " + method);
+        if (!s.containsAll(clone))
+            fail("Set does not contain copy. " + method);
+        if (!clone.containsAll(s))
+            fail("Copy does not contain set. " + method);
         return clone;
     }
 
@@ -170,7 +188,7 @@ public class EnumSetBash {
             oos.writeObject(oldObj);
             oos.flush();
             ByteArrayInputStream bin = new ByteArrayInputStream(
-                    bos.toByteArray());
+                bos.toByteArray());
             ObjectInputStream ois = new ObjectInputStream(bin);
             return (T) ois.readObject();
         } catch(Exception e) {
@@ -185,12 +203,20 @@ public class EnumSetBash {
             boolean prePresent = s.contains(e);
             int preSize = s.size();
             boolean added = s.add(e);
-            Assert.assertTrue(s.contains(e));
-            Assert.assertFalse(added == prePresent);
+            if (!s.contains(e))
+                fail ("Element not present after addition.");
+            if (added == prePresent)
+                fail ("added == alreadyPresent");
             int postSize = s.size();
-            Assert.assertFalse(added && preSize == postSize);
-            Assert.assertFalse(!added && preSize != postSize);
+            if (added && preSize == postSize)
+                fail ("Add returned true, but size didn't change.");
+            if (!added && preSize != postSize)
+                fail ("Add returned false, but size changed.");
         }
+    }
+
+    static void fail(String s) {
+        throw new RuntimeException(s);
     }
 
     public enum Silly0 { };

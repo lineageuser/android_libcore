@@ -35,6 +35,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -50,20 +58,26 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ExecutorCompletionServiceTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ExecutorCompletionServiceTest");
     }
-    public static Test suite() {
-        return new TestSuite(ExecutorCompletionServiceTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ExecutorCompletionServiceTest.class);
+    // }
 
     /**
      * new ExecutorCompletionService(null) throws NullPointerException
      */
+    @Test
     public void testConstructorNPE() {
         try {
             new ExecutorCompletionService(null);
@@ -74,6 +88,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * new ExecutorCompletionService(e, null) throws NullPointerException
      */
+    @Test
     public void testConstructorNPE2() {
         try {
             new ExecutorCompletionService(cachedThreadPool, null);
@@ -84,6 +99,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * ecs.submit(null) throws NullPointerException
      */
+    @Test
     public void testSubmitNullCallable() {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
         try {
@@ -95,6 +111,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * ecs.submit(null, val) throws NullPointerException
      */
+    @Test
     public void testSubmitNullRunnable() {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
         try {
@@ -106,6 +123,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * A taken submitted task is completed
      */
+    @Test
     public void testTake()
         throws InterruptedException, ExecutionException {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
@@ -118,6 +136,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * Take returns the same future object returned by submit
      */
+    @Test
     public void testTake2() throws InterruptedException {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
         Future f1 = cs.submit(new StringTask());
@@ -128,6 +147,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * poll returns non-null when the returned task is completed
      */
+    @Test
     public void testPoll1()
         throws InterruptedException, ExecutionException {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
@@ -148,6 +168,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * timed poll returns non-null when the returned task is completed
      */
+    @Test
     public void testPoll2()
         throws InterruptedException, ExecutionException {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
@@ -168,6 +189,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * poll returns null before the returned task is completed
      */
+    @Test
     public void testPollReturnsNull()
         throws InterruptedException, ExecutionException {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
@@ -189,6 +211,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
     /**
      * successful and failed tasks are both returned
      */
+    @Test
     public void testTaskAssortment()
         throws InterruptedException, ExecutionException {
         CompletionService cs = new ExecutorCompletionService(cachedThreadPool);
@@ -219,6 +242,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
      * Submitting to underlying AES that overrides newTaskFor(Callable)
      * returns and eventually runs Future returned by newTaskFor.
      */
+    @Test
     public void testNewTaskForCallable() throws InterruptedException {
         final AtomicBoolean done = new AtomicBoolean(false);
         class MyCallableFuture<V> extends FutureTask<V> {
@@ -249,6 +273,7 @@ public class ExecutorCompletionServiceTest extends JSR166TestCase {
      * Submitting to underlying AES that overrides newTaskFor(Runnable,T)
      * returns and eventually runs Future returned by newTaskFor.
      */
+    @Test
     public void testNewTaskForRunnable() throws InterruptedException {
         final AtomicBoolean done = new AtomicBoolean(false);
         class MyRunnableFuture<V> extends FutureTask<V> {

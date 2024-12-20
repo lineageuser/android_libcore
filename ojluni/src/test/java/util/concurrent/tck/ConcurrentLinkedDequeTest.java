@@ -34,6 +34,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
@@ -43,26 +52,30 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ConcurrentLinkedDequeTest extends JSR166TestCase {
-
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ConcurrentLinkedDequeTest");
     }
 
-    public static Test suite() {
-        class Implementation implements CollectionImplementation {
-            public Class<?> klazz() { return ConcurrentLinkedDeque.class; }
-            public Collection emptyCollection() { return new ConcurrentLinkedDeque(); }
-            public Object makeElement(int i) { return i; }
-            public boolean isConcurrent() { return true; }
-            public boolean permitsNulls() { return false; }
-        }
-        return newTestSuite(ConcurrentLinkedDequeTest.class,
-                            CollectionTest.testSuite(new Implementation()));
-    }
+    // public static Test suite() {
+    //     class Implementation implements CollectionImplementation {
+    //         public Class<?> klazz() { return ConcurrentLinkedDeque.class; }
+    //         public Collection emptyCollection() { return new ConcurrentLinkedDeque(); }
+    //         public Object makeElement(int i) { return i; }
+    //         public boolean isConcurrent() { return true; }
+    //         public boolean permitsNulls() { return false; }
+    //     }
+    //     return newTestSuite(ConcurrentLinkedDequeTest.class,
+    //                         CollectionTest.testSuite(new Implementation()));
+    // }
 
     /**
      * Returns a new deque of given size containing consecutive
@@ -83,6 +96,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * new deque is empty
      */
+    @Test
     public void testConstructor1() {
         assertTrue(new ConcurrentLinkedDeque().isEmpty());
         assertEquals(0, new ConcurrentLinkedDeque().size());
@@ -91,6 +105,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Initializing from null Collection throws NPE
      */
+    @Test
     public void testConstructor3() {
         try {
             new ConcurrentLinkedDeque((Collection)null);
@@ -101,6 +116,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Initializing from Collection of null elements throws NPE
      */
+    @Test
     public void testConstructor4() {
         try {
             new ConcurrentLinkedDeque(Arrays.asList(new Integer[SIZE]));
@@ -111,6 +127,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Initializing from Collection with some null elements throws NPE
      */
+    @Test
     public void testConstructor5() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
@@ -124,6 +141,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Deque contains all elements of collection used to initialize
      */
+    @Test
     public void testConstructor6() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
@@ -136,6 +154,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         assertTrue(q.isEmpty());
@@ -150,6 +169,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * size() changes when elements added and removed
      */
+    @Test
     public void testSize() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -165,6 +185,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * push(null) throws NPE
      */
+    @Test
     public void testPushNull() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -176,6 +197,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * peekFirst() returns element inserted with push
      */
+    @Test
     public void testPush() {
         ConcurrentLinkedDeque q = populatedDeque(3);
         q.pollLast();
@@ -186,6 +208,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * pop() removes first element, or throws NSEE if empty
      */
+    @Test
     public void testPop() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -200,6 +223,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * offer(null) throws NPE
      */
+    @Test
     public void testOfferNull() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -211,6 +235,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * offerFirst(null) throws NPE
      */
+    @Test
     public void testOfferFirstNull() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -222,6 +247,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * offerLast(null) throws NPE
      */
+    @Test
     public void testOfferLastNull() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -233,6 +259,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * offer(x) succeeds
      */
+    @Test
     public void testOffer() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         assertTrue(q.offer(zero));
@@ -244,6 +271,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * offerFirst(x) succeeds
      */
+    @Test
     public void testOfferFirst() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         assertTrue(q.offerFirst(zero));
@@ -255,6 +283,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * offerLast(x) succeeds
      */
+    @Test
     public void testOfferLast() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         assertTrue(q.offerLast(zero));
@@ -266,6 +295,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * add(null) throws NPE
      */
+    @Test
     public void testAddNull() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -277,6 +307,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * addFirst(null) throws NPE
      */
+    @Test
     public void testAddFirstNull() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -288,6 +319,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * addLast(null) throws NPE
      */
+    @Test
     public void testAddLastNull() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -299,6 +331,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * add(x) succeeds
      */
+    @Test
     public void testAdd() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         assertTrue(q.add(zero));
@@ -310,6 +343,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * addFirst(x) succeeds
      */
+    @Test
     public void testAddFirst() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         q.addFirst(zero);
@@ -321,6 +355,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * addLast(x) succeeds
      */
+    @Test
     public void testAddLast() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         q.addLast(zero);
@@ -332,6 +367,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * addAll(null) throws NPE
      */
+    @Test
     public void testAddAll1() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -343,6 +379,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * addAll(this) throws IAE
      */
+    @Test
     public void testAddAllSelf() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         try {
@@ -354,6 +391,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * addAll of a collection with null elements throws NPE
      */
+    @Test
     public void testAddAll2() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         try {
@@ -366,6 +404,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         Integer[] ints = new Integer[SIZE];
@@ -380,6 +419,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Deque contains all elements, in traversal order, of successful addAll
      */
+    @Test
     public void testAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -395,6 +435,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * pollFirst() succeeds unless empty
      */
+    @Test
     public void testPollFirst() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -406,6 +447,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * pollLast() succeeds unless empty
      */
+    @Test
     public void testPollLast() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -417,6 +459,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * poll() succeeds unless empty
      */
+    @Test
     public void testPoll() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -428,6 +471,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * peek() returns next element, or null if empty
      */
+    @Test
     public void testPeek() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -442,6 +486,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * element() returns first element, or throws NSEE if empty
      */
+    @Test
     public void testElement() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -457,6 +502,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * remove() removes next element, or throws NSEE if empty
      */
+    @Test
     public void testRemove() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -471,6 +517,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * remove(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveElement() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -492,6 +539,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * peekFirst() returns next element, or null if empty
      */
+    @Test
     public void testPeekFirst() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -506,6 +554,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * peekLast() returns next element, or null if empty
      */
+    @Test
     public void testPeekLast() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -520,6 +569,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * getFirst() returns first element, or throws NSEE if empty
      */
+    @Test
     public void testFirstElement() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -535,6 +585,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * getLast() returns last element, or throws NSEE if empty
      */
+    @Test
     public void testLastElement() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -551,6 +602,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * removeFirst() removes first element, or throws NSEE if empty
      */
+    @Test
     public void testRemoveFirst() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -566,6 +618,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * removeLast() removes last element, or throws NSEE if empty
      */
+    @Test
     public void testRemoveLast() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -581,6 +634,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * removeFirstOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveFirstOccurrence() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -596,6 +650,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * removeLastOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveLastOccurrence() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -611,6 +666,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -623,6 +679,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * clear() removes all elements
      */
+    @Test
     public void testClear() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         q.clear();
@@ -637,6 +694,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         ConcurrentLinkedDeque p = new ConcurrentLinkedDeque();
@@ -651,6 +709,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if change
      */
+    @Test
     public void testRetainAll() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         ConcurrentLinkedDeque p = populatedDeque(SIZE);
@@ -670,6 +729,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             ConcurrentLinkedDeque q = populatedDeque(SIZE);
@@ -686,6 +746,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * toArray() contains all elements in FIFO order
      */
+    @Test
     public void testToArray() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         Object[] o = q.toArray();
@@ -696,6 +757,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements in FIFO order
      */
+    @Test
     public void testToArray2() {
         ConcurrentLinkedDeque<Integer> q = populatedDeque(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -708,6 +770,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * toArray(null) throws NullPointerException
      */
+    @Test
     public void testToArray_NullArg() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         try {
@@ -719,6 +782,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * toArray(incompatible array type) throws ArrayStoreException
      */
+    @Test
     public void testToArray1_BadArg() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         try {
@@ -730,6 +794,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Iterator iterates through all elements
      */
+    @Test
     public void testIterator() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         Iterator it = q.iterator();
@@ -743,6 +808,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * iterator of empty collection has no elements
      */
+    @Test
     public void testEmptyIterator() {
         Deque c = new ConcurrentLinkedDeque();
         assertIteratorExhausted(c.iterator());
@@ -752,6 +818,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Iterator ordering is FIFO
      */
+    @Test
     public void testIteratorOrdering() {
         final ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         q.add(one);
@@ -769,6 +836,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Modifications do not cause iterators to fail
      */
+    @Test
     public void testWeaklyConsistentIteration() {
         final ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         q.add(one);
@@ -786,6 +854,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * iterator.remove() removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         final Random rng = new Random();
@@ -814,6 +883,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Descending iterator iterates through all elements
      */
+    @Test
     public void testDescendingIterator() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         int i = 0;
@@ -833,6 +903,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * Descending iterator ordering is reverse FIFO
      */
+    @Test
     public void testDescendingIteratorOrdering() {
         final ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         for (int iters = 0; iters < 100; ++iters) {
@@ -854,6 +925,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * descendingIterator.remove() removes current element
      */
+    @Test
     public void testDescendingIteratorRemove() {
         final ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         final Random rng = new Random();
@@ -882,6 +954,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * toString() contains toStrings of elements
      */
+    @Test
     public void testToString() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         String s = q.toString();
@@ -893,6 +966,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     /**
      * A deserialized serialized deque has same elements in same order
      */
+    @Test
     public void testSerialization() throws Exception {
         Queue x = populatedDeque(SIZE);
         Queue y = serialClone(x);
@@ -912,6 +986,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
      * contains(null) always return false.
      * remove(null) always throws NullPointerException.
      */
+    @Test
     public void testNeverContainsNull() {
         Deque<?>[] qs = {
             new ConcurrentLinkedDeque<Object>(),

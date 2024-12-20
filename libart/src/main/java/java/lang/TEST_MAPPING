@@ -1,26 +1,10 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "tests.java.lang"
-        },
-        {
-          "include-filter": "org.apache.harmony.tests.java.lang"
-        },
-        {
-          "include-filter": "libcore.java.lang"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_lang"
     },
     {
-      "name": "CtsLibcoreOjTestCases",
-      "options": [
-        {
-          "include-filter": "test.java.lang"
-        }
-      ]
+      "name": "CtsLibcoreOjTestCases_java_lang"
     }
   ]
 }

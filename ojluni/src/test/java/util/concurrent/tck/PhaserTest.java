@@ -34,6 +34,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,18 +50,23 @@ import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class PhaserTest extends JSR166TestCase {
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.PhaserTest");
     }
 
-    public static Test suite() {
-        return new TestSuite(PhaserTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(PhaserTest.class);
+    // }
 
     private static final int maxParties = 65535;
 
@@ -86,6 +99,7 @@ public class PhaserTest extends JSR166TestCase {
      * Empty constructor builds a new Phaser with no parent, no registered
      * parties and initial phase number of 0
      */
+    @Test
     public void testConstructorDefaultValues() {
         Phaser phaser = new Phaser();
         assertNull(phaser.getParent());
@@ -99,6 +113,7 @@ public class PhaserTest extends JSR166TestCase {
      * Constructing with a negative number of parties throws
      * IllegalArgumentException
      */
+    @Test
     public void testConstructorNegativeParties() {
         try {
             new Phaser(-1);
@@ -110,6 +125,7 @@ public class PhaserTest extends JSR166TestCase {
      * Constructing with a negative number of parties throws
      * IllegalArgumentException
      */
+    @Test
     public void testConstructorNegativeParties2() {
         try {
             new Phaser(new Phaser(), -1);
@@ -121,6 +137,7 @@ public class PhaserTest extends JSR166TestCase {
      * Constructing with a number of parties > 65535 throws
      * IllegalArgumentException
      */
+    @Test
     public void testConstructorPartiesExceedsLimit() {
         new Phaser(maxParties);
         try {
@@ -139,6 +156,7 @@ public class PhaserTest extends JSR166TestCase {
      * The parent provided to the constructor should be returned from
      * a later call to getParent
      */
+    @Test
     public void testConstructor3() {
         Phaser parent = new Phaser();
         assertSame(parent, new Phaser(parent).getParent());
@@ -149,6 +167,7 @@ public class PhaserTest extends JSR166TestCase {
      * The parent being input into the parameter should equal the original
      * parent when being returned
      */
+    @Test
     public void testConstructor5() {
         Phaser parent = new Phaser();
         assertSame(parent, new Phaser(parent, 0).getParent());
@@ -159,6 +178,7 @@ public class PhaserTest extends JSR166TestCase {
      * register() will increment the number of unarrived parties by
      * one and not affect its arrived parties
      */
+    @Test
     public void testRegister1() {
         Phaser phaser = new Phaser();
         assertState(phaser, 0, 0, 0);
@@ -169,6 +189,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * Registering more than 65536 parties causes IllegalStateException
      */
+    @Test
     public void testRegister2() {
         Phaser phaser = new Phaser(0);
         assertState(phaser, 0, 0, 0);
@@ -197,6 +218,7 @@ public class PhaserTest extends JSR166TestCase {
      * register() correctly returns the current barrier phase number
      * when invoked
      */
+    @Test
     public void testRegister3() {
         Phaser phaser = new Phaser();
         assertEquals(0, phaser.register());
@@ -209,6 +231,7 @@ public class PhaserTest extends JSR166TestCase {
      * register causes the next arrive to not increment the phase
      * rather retain the phase number
      */
+    @Test
     public void testRegister4() {
         Phaser phaser = new Phaser(1);
         assertEquals(0, phaser.arrive());
@@ -221,6 +244,7 @@ public class PhaserTest extends JSR166TestCase {
      * register on a subphaser that is currently empty succeeds, even
      * in the presence of another non-empty subphaser
      */
+    @Test
     public void testRegisterEmptySubPhaser() {
         Phaser root = new Phaser();
         Phaser child1 = new Phaser(root, 1);
@@ -248,6 +272,7 @@ public class PhaserTest extends JSR166TestCase {
      * Invoking bulkRegister with a negative parameter throws an
      * IllegalArgumentException
      */
+    @Test
     public void testBulkRegister1() {
         try {
             new Phaser().bulkRegister(-1);
@@ -259,6 +284,7 @@ public class PhaserTest extends JSR166TestCase {
      * bulkRegister should correctly record the number of unarrived
      * parties with the number of parties being registered
      */
+    @Test
     public void testBulkRegister2() {
         Phaser phaser = new Phaser();
         assertEquals(0, phaser.bulkRegister(0));
@@ -271,6 +297,7 @@ public class PhaserTest extends JSR166TestCase {
      * Registering with a number of parties greater than or equal to 1<<16
      * throws IllegalStateException.
      */
+    @Test
     public void testBulkRegister3() {
         assertEquals(0, new Phaser().bulkRegister((1 << 16) - 1));
 
@@ -288,6 +315,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * the phase number increments correctly when tripping the barrier
      */
+    @Test
     public void testPhaseIncrement1() {
         for (int size = 1; size < nine; size++) {
             final Phaser phaser = new Phaser(size);
@@ -301,6 +329,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * arrive() on a registered phaser increments phase.
      */
+    @Test
     public void testArrive1() {
         Phaser phaser = new Phaser(1);
         assertState(phaser, 0, 1, 1);
@@ -311,6 +340,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * arriveAndDeregister does not wait for others to arrive at barrier
      */
+    @Test
     public void testArriveAndDeregister() {
         final Phaser phaser = new Phaser(1);
         for (int i = 0; i < 10; i++) {
@@ -327,6 +357,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * arriveAndDeregister does not wait for others to arrive at barrier
      */
+    @Test
     public void testArrive2() {
         final Phaser phaser = new Phaser();
         assertEquals(0, phaser.register());
@@ -349,6 +380,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * arrive() returns a negative number if the Phaser is terminated
      */
+    @Test
     public void testArrive3() {
         Phaser phaser = new Phaser(1);
         phaser.forceTermination();
@@ -365,6 +397,7 @@ public class PhaserTest extends JSR166TestCase {
      * arriveAndDeregister() throws IllegalStateException if number of
      * registered or unarrived parties would become negative
      */
+    @Test
     public void testArriveAndDeregister1() {
         Phaser phaser = new Phaser();
         try {
@@ -376,6 +409,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * arriveAndDeregister reduces the number of arrived parties
      */
+    @Test
     public void testArriveAndDeregister2() {
         final Phaser phaser = new Phaser(1);
         assertEquals(0, phaser.register());
@@ -390,6 +424,7 @@ public class PhaserTest extends JSR166TestCase {
      * when a deregistration occurs and causes the phaser to have zero parties
      * its parent will be deregistered as well
      */
+    @Test
     public void testArriveAndDeregister3() {
         Phaser parent = new Phaser();
         Phaser child = new Phaser(parent);
@@ -407,6 +442,7 @@ public class PhaserTest extends JSR166TestCase {
      * arriveAndDeregister deregisters one party from its parent when
      * the number of parties of child is zero after deregistration
      */
+    @Test
     public void testArriveAndDeregister4() {
         Phaser parent = new Phaser();
         Phaser child = new Phaser(parent);
@@ -423,6 +459,7 @@ public class PhaserTest extends JSR166TestCase {
      * arriveAndDeregister deregisters one party from its parent when
      * the number of parties of root is nonzero after deregistration.
      */
+    @Test
     public void testArriveAndDeregister5() {
         Phaser root = new Phaser();
         Phaser parent = new Phaser(root);
@@ -444,6 +481,7 @@ public class PhaserTest extends JSR166TestCase {
      * arriveAndDeregister returns the phase in which it leaves the
      * phaser in after deregistration
      */
+    @Test
     public void testArriveAndDeregister6() {
         final Phaser phaser = new Phaser(2);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -462,6 +500,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * awaitAdvance succeeds upon advance
      */
+    @Test
     public void testAwaitAdvance1() {
         final Phaser phaser = new Phaser(1);
         assertEquals(0, phaser.arrive());
@@ -472,6 +511,7 @@ public class PhaserTest extends JSR166TestCase {
      * awaitAdvance with a negative parameter will return without affecting the
      * phaser
      */
+    @Test
     public void testAwaitAdvance2() {
         Phaser phaser = new Phaser();
         assertTrue(phaser.awaitAdvance(-1) < 0);
@@ -481,6 +521,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * awaitAdvanceInterruptibly blocks interruptibly
      */
+    @Test
     public void testAwaitAdvanceInterruptibly_interruptible() throws InterruptedException {
         final Phaser phaser = new Phaser(1);
         final CountDownLatch pleaseInterrupt = new CountDownLatch(2);
@@ -534,6 +575,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * awaitAdvance continues waiting if interrupted before waiting
      */
+    @Test
     public void testAwaitAdvanceAfterInterrupt() {
         final Phaser phaser = new Phaser();
         assertEquals(0, phaser.register());
@@ -563,6 +605,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      *  awaitAdvance continues waiting if interrupted while waiting
      */
+    @Test
     public void testAwaitAdvanceBeforeInterrupt() {
         final Phaser phaser = new Phaser();
         assertEquals(0, phaser.register());
@@ -592,6 +635,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * arriveAndAwaitAdvance continues waiting if interrupted before waiting
      */
+    @Test
     public void testArriveAndAwaitAdvanceAfterInterrupt() {
         final Phaser phaser = new Phaser();
         assertEquals(0, phaser.register());
@@ -618,6 +662,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * arriveAndAwaitAdvance continues waiting if interrupted while waiting
      */
+    @Test
     public void testArriveAndAwaitAdvanceBeforeInterrupt() {
         final Phaser phaser = new Phaser();
         assertEquals(0, phaser.register());
@@ -645,6 +690,7 @@ public class PhaserTest extends JSR166TestCase {
      * awaitAdvance atomically waits for all parties within the same phase to
      * complete before continuing
      */
+    @Test
     public void testAwaitAdvance4() {
         final Phaser phaser = new Phaser(4);
         final AtomicInteger count = new AtomicInteger(0);
@@ -667,6 +713,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * awaitAdvance returns the current phase
      */
+    @Test
     public void testAwaitAdvance5() {
         final Phaser phaser = new Phaser(1);
         assertEquals(1, phaser.awaitAdvance(phaser.arrive()));
@@ -698,6 +745,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * awaitAdvance returns the current phase in child phasers
      */
+    @Test
     public void testAwaitAdvanceTieredPhaser() throws Exception {
         final Phaser parent = new Phaser();
         final List<Phaser> zeroPartyChildren = new ArrayList<>(3);
@@ -745,6 +793,7 @@ public class PhaserTest extends JSR166TestCase {
     /**
      * awaitAdvance returns when the phaser is externally terminated
      */
+    @Test
     public void testAwaitAdvance6() {
         final Phaser phaser = new Phaser(3);
         final CountDownLatch pleaseForceTermination = new CountDownLatch(2);
@@ -775,6 +824,7 @@ public class PhaserTest extends JSR166TestCase {
      * arriveAndAwaitAdvance throws IllegalStateException with no
      * unarrived parties
      */
+    @Test
     public void testArriveAndAwaitAdvance1() {
         Phaser phaser = new Phaser();
         try {
@@ -788,6 +838,7 @@ public class PhaserTest extends JSR166TestCase {
      * number of arrived parties is the same number that is accounted
      * for when the main thread awaitsAdvance
      */
+    @Test
     public void testArriveAndAwaitAdvance3() {
         final Phaser phaser = new Phaser(1);
         final int THREADS = 3;

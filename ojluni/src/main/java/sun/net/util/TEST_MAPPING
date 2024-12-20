@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.sun.net.util"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_net_util"
     }
   ]
 }

@@ -44,7 +44,7 @@ NativeZipStream::~NativeZipStream() {
 
 void NativeZipStream::setDictionary(JNIEnv* env, jbyteArray javaDictionary, int off, int len,
     bool inflate) {
-  std::unique_ptr<jbyte[]> dictionaryBytes(new jbyte[len]);
+  std::unique_ptr<jbyte[]> dictionaryBytes(new(std::nothrow) jbyte[len]);
   if (dictionaryBytes.get() == NULL) {
     jniThrowOutOfMemoryError(env, NULL);
     return;
@@ -65,7 +65,7 @@ void NativeZipStream::setDictionary(JNIEnv* env, jbyteArray javaDictionary, int 
 }
 
 void NativeZipStream::setInput(JNIEnv* env, jbyteArray buf, jint off, jint len) {
-  input.reset(new jbyte[len]);
+  input.reset(new(std::nothrow) jbyte[len]);
   if (input.get() == NULL) {
     inCap = 0;
     jniThrowOutOfMemoryError(env, NULL);

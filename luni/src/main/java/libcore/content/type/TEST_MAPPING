@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.libcore.content.type"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_content_type"
     },
     {
       "name": "CtsMimeMapTestCases"

@@ -34,38 +34,52 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class LinkedListTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.LinkedListTest");
     }
 
-    public static Test suite() {
-        class Implementation implements CollectionImplementation {
-            public Class<?> klazz() { return LinkedList.class; }
-            public Collection emptyCollection() { return new LinkedList(); }
-            public Object makeElement(int i) { return i; }
-            public boolean isConcurrent() { return false; }
-            public boolean permitsNulls() { return true; }
-        }
-        class SubListImplementation extends Implementation {
-            public Collection emptyCollection() {
-                return new LinkedList().subList(0, 0);
-            }
-        }
-        return newTestSuite(
-                LinkedListTest.class,
-                CollectionTest.testSuite(new Implementation()),
-                CollectionTest.testSuite(new SubListImplementation()));
-    }
+    // public static Test suite() {
+    //     class Implementation implements CollectionImplementation {
+    //         public Class<?> klazz() { return LinkedList.class; }
+    //         public Collection emptyCollection() { return new LinkedList(); }
+    //         public Object makeElement(int i) { return i; }
+    //         public boolean isConcurrent() { return false; }
+    //         public boolean permitsNulls() { return true; }
+    //     }
+    //     class SubListImplementation extends Implementation {
+    //         public Collection emptyCollection() {
+    //             return new LinkedList().subList(0, 0);
+    //         }
+    //     }
+    //     return newTestSuite(
+    //             LinkedListTest.class,
+    //             CollectionTest.testSuite(new Implementation()),
+    //             CollectionTest.testSuite(new SubListImplementation()));
+    // }
 
     /**
      * Returns a new queue of given size containing consecutive
@@ -86,6 +100,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * new queue is empty
      */
+    @Test
     public void testConstructor1() {
         assertEquals(0, new LinkedList().size());
     }
@@ -93,6 +108,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * Initializing from null Collection throws NPE
      */
+    @Test
     public void testConstructor3() {
         try {
             new LinkedList((Collection)null);
@@ -103,6 +119,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * Queue contains all elements of collection used to initialize
      */
+    @Test
     public void testConstructor6() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
@@ -115,6 +132,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         LinkedList q = new LinkedList();
         assertTrue(q.isEmpty());
@@ -129,6 +147,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * size changes when elements added and removed
      */
+    @Test
     public void testSize() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -144,6 +163,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * offer(null) succeeds
      */
+    @Test
     public void testOfferNull() {
         LinkedList q = new LinkedList();
         q.offer(null);
@@ -154,6 +174,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * Offer succeeds
      */
+    @Test
     public void testOffer() {
         LinkedList q = new LinkedList();
         assertTrue(q.offer(new Integer(0)));
@@ -163,6 +184,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * add succeeds
      */
+    @Test
     public void testAdd() {
         LinkedList q = new LinkedList();
         for (int i = 0; i < SIZE; ++i) {
@@ -174,6 +196,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * addAll(null) throws NPE
      */
+    @Test
     public void testAddAll1() {
         LinkedList q = new LinkedList();
         try {
@@ -185,6 +208,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * Queue contains all elements, in traversal order, of successful addAll
      */
+    @Test
     public void testAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -200,6 +224,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * addAll with too large an index throws IOOBE
      */
+    @Test
     public void testAddAll2_IndexOutOfBoundsException() {
         LinkedList l = new LinkedList();
         l.add(new Object());
@@ -214,6 +239,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * addAll with negative index throws IOOBE
      */
+    @Test
     public void testAddAll4_BadIndex() {
         LinkedList l = new LinkedList();
         l.add(new Object());
@@ -228,6 +254,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * poll succeeds unless empty
      */
+    @Test
     public void testPoll() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -239,6 +266,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * peek returns next element, or null if empty
      */
+    @Test
     public void testPeek() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -253,6 +281,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * element returns next element, or throws NSEE if empty
      */
+    @Test
     public void testElement() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -268,6 +297,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * remove removes next element, or throws NSEE if empty
      */
+    @Test
     public void testRemove() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -282,6 +312,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * remove(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveElement() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -303,6 +334,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -315,6 +347,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testClear() {
         LinkedList q = populatedQueue(SIZE);
         q.clear();
@@ -329,6 +362,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         LinkedList q = populatedQueue(SIZE);
         LinkedList p = new LinkedList();
@@ -343,6 +377,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testRetainAll() {
         LinkedList q = populatedQueue(SIZE);
         LinkedList p = populatedQueue(SIZE);
@@ -362,6 +397,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             LinkedList q = populatedQueue(SIZE);
@@ -378,6 +414,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * toArray contains all elements in FIFO order
      */
+    @Test
     public void testToArray() {
         LinkedList q = populatedQueue(SIZE);
         Object[] o = q.toArray();
@@ -388,6 +425,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements in FIFO order
      */
+    @Test
     public void testToArray2() {
         LinkedList<Integer> q = populatedQueue(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -400,6 +438,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * toArray(null) throws NullPointerException
      */
+    @Test
     public void testToArray_NullArg() {
         LinkedList l = new LinkedList();
         l.add(new Object());
@@ -412,6 +451,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * toArray(incompatible array type) throws ArrayStoreException
      */
+    @Test
     public void testToArray1_BadArg() {
         LinkedList l = new LinkedList();
         l.add(new Integer(5));
@@ -424,6 +464,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * iterator iterates through all elements
      */
+    @Test
     public void testIterator() {
         LinkedList q = populatedQueue(SIZE);
         Iterator it = q.iterator();
@@ -437,6 +478,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * iterator of empty collection has no elements
      */
+    @Test
     public void testEmptyIterator() {
         assertIteratorExhausted(new LinkedList().iterator());
     }
@@ -444,6 +486,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * iterator ordering is FIFO
      */
+    @Test
     public void testIteratorOrdering() {
         final LinkedList q = new LinkedList();
         q.add(new Integer(1));
@@ -460,6 +503,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * iterator.remove removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final LinkedList q = new LinkedList();
         q.add(new Integer(1));
@@ -477,6 +521,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * Descending iterator iterates through all elements
      */
+    @Test
     public void testDescendingIterator() {
         LinkedList q = populatedQueue(SIZE);
         int i = 0;
@@ -496,6 +541,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * Descending iterator ordering is reverse FIFO
      */
+    @Test
     public void testDescendingIteratorOrdering() {
         final LinkedList q = new LinkedList();
         q.add(new Integer(3));
@@ -512,6 +558,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * descendingIterator.remove removes current element
      */
+    @Test
     public void testDescendingIteratorRemove() {
         final LinkedList q = new LinkedList();
         q.add(three);
@@ -529,6 +576,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * toString contains toStrings of elements
      */
+    @Test
     public void testToString() {
         LinkedList q = populatedQueue(SIZE);
         String s = q.toString();
@@ -540,6 +588,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * peek returns element inserted with addFirst
      */
+    @Test
     public void testAddFirst() {
         LinkedList q = populatedQueue(3);
         q.addFirst(four);
@@ -549,6 +598,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * peekFirst returns element inserted with push
      */
+    @Test
     public void testPush() {
         LinkedList q = populatedQueue(3);
         q.push(four);
@@ -558,6 +608,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * pop removes next element, or throws NSEE if empty
      */
+    @Test
     public void testPop() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -572,6 +623,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * OfferFirst succeeds
      */
+    @Test
     public void testOfferFirst() {
         LinkedList q = new LinkedList();
         assertTrue(q.offerFirst(new Integer(0)));
@@ -581,6 +633,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * OfferLast succeeds
      */
+    @Test
     public void testOfferLast() {
         LinkedList q = new LinkedList();
         assertTrue(q.offerLast(new Integer(0)));
@@ -590,6 +643,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * pollLast succeeds unless empty
      */
+    @Test
     public void testPollLast() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -601,6 +655,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * peekFirst returns next element, or null if empty
      */
+    @Test
     public void testPeekFirst() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -615,6 +670,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * peekLast returns next element, or null if empty
      */
+    @Test
     public void testPeekLast() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -626,6 +682,7 @@ public class LinkedListTest extends JSR166TestCase {
         assertNull(q.peekLast());
     }
 
+    @Test
     public void testFirstElement() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -641,6 +698,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * getLast returns next element, or throws NSEE if empty
      */
+    @Test
     public void testLastElement() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -657,6 +715,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * removeFirstOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveFirstOccurrence() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -672,6 +731,7 @@ public class LinkedListTest extends JSR166TestCase {
     /**
      * removeLastOccurrence(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveLastOccurrence() {
         LinkedList q = populatedQueue(SIZE);
         for (int i = 1; i < SIZE; i += 2) {

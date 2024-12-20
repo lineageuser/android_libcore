@@ -35,6 +35,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -54,16 +62,22 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AbstractExecutorServiceTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AbstractExecutorServiceTest");
     }
-    public static Test suite() {
-        return new TestSuite(AbstractExecutorServiceTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AbstractExecutorServiceTest.class);
+    // }
 
     /**
      * A no-frills implementation of AbstractExecutorService, designed
@@ -87,6 +101,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * execute(runnable) runs it to completion
      */
+    @Test
     public void testExecuteRunnable() throws Exception {
         ExecutorService e = new DirectExecutorService();
         final AtomicBoolean done = new AtomicBoolean(false);
@@ -104,6 +119,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * Completed submit(callable) returns result
      */
+    @Test
     public void testSubmitCallable() throws Exception {
         ExecutorService e = new DirectExecutorService();
         Future<String> future = e.submit(new StringTask());
@@ -114,6 +130,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * Completed submit(runnable) returns successfully
      */
+    @Test
     public void testSubmitRunnable() throws Exception {
         ExecutorService e = new DirectExecutorService();
         Future<?> future = e.submit(new NoOpRunnable());
@@ -124,6 +141,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * Completed submit(runnable, result) returns result
      */
+    @Test
     public void testSubmitRunnable2() throws Exception {
         ExecutorService e = new DirectExecutorService();
         Future<String> future = e.submit(new NoOpRunnable(), TEST_STRING);
@@ -134,6 +152,8 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * A submitted privileged action runs to completion
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testSubmitPrivilegedAction() throws Exception {
         Runnable r = new CheckedRunnable() {
             public void realRun() throws Exception {
@@ -155,6 +175,8 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * A submitted privileged exception action runs to completion
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testSubmitPrivilegedExceptionAction() throws Exception {
         Runnable r = new CheckedRunnable() {
             public void realRun() throws Exception {
@@ -173,6 +195,8 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * A submitted failed privileged exception action reports exception
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testSubmitFailedPrivilegedExceptionAction() throws Exception {
         Runnable r = new CheckedRunnable() {
             public void realRun() throws Exception {
@@ -195,6 +219,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * execute(null runnable) throws NPE
      */
+    @Test
     public void testExecuteNullRunnable() {
         ExecutorService e = new DirectExecutorService();
         try {
@@ -206,6 +231,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * submit(null callable) throws NPE
      */
+    @Test
     public void testSubmitNullCallable() {
         ExecutorService e = new DirectExecutorService();
         try {
@@ -217,6 +243,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * submit(callable).get() throws InterruptedException if interrupted
      */
+    @Test
     public void testInterruptedSubmit() throws InterruptedException {
         final CountDownLatch submitted    = new CountDownLatch(1);
         final CountDownLatch quittingTime = new CountDownLatch(1);
@@ -246,6 +273,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
      * get of submit(callable) throws ExecutionException if callable
      * throws exception
      */
+    @Test
     public void testSubmitEE() throws InterruptedException {
         final ThreadPoolExecutor p =
             new ThreadPoolExecutor(1, 1,
@@ -266,6 +294,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAny(null) throws NPE
      */
+    @Test
     public void testInvokeAny1() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -279,6 +308,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAny(empty collection) throws IAE
      */
+    @Test
     public void testInvokeAny2() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -292,6 +322,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws NPE if c has null elements
      */
+    @Test
     public void testInvokeAny3() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -309,6 +340,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws ExecutionException if no task in c completes
      */
+    @Test
     public void testInvokeAny4() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -326,6 +358,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAny(c) returns result of some task in c if at least one completes
      */
+    @Test
     public void testInvokeAny5() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -340,6 +373,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAll(null) throws NPE
      */
+    @Test
     public void testInvokeAll1() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -353,6 +387,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testInvokeAll2() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -364,6 +399,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAll(c) throws NPE if c has null elements
      */
+    @Test
     public void testInvokeAll3() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -380,6 +416,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * get of returned element of invokeAll(c) throws exception on failed task
      */
+    @Test
     public void testInvokeAll4() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -399,6 +436,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * invokeAll(c) returns results of all completed tasks in c
      */
+    @Test
     public void testInvokeAll5() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -415,6 +453,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAny(null) throws NPE
      */
+    @Test
     public void testTimedInvokeAny1() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -428,6 +467,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAny(null time unit) throws NPE
      */
+    @Test
     public void testTimedInvokeAnyNullTimeUnit() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -443,6 +483,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAny(empty collection) throws IAE
      */
+    @Test
     public void testTimedInvokeAny2() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -457,6 +498,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws NPE if c has null elements
      */
+    @Test
     public void testTimedInvokeAny3() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -474,6 +516,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws ExecutionException if no task completes
      */
+    @Test
     public void testTimedInvokeAny4() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -493,6 +536,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) returns result of some task in c
      */
+    @Test
     public void testTimedInvokeAny5() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -509,6 +553,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAll(null) throws NPE
      */
+    @Test
     public void testTimedInvokeAll1() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -522,6 +567,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAll(null time unit) throws NPE
      */
+    @Test
     public void testTimedInvokeAllNullTimeUnit() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -537,6 +583,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testTimedInvokeAll2() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -548,6 +595,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) throws NPE if c has null elements
      */
+    @Test
     public void testTimedInvokeAll3() throws InterruptedException {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -564,6 +612,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * get of returned element of invokeAll(c) throws exception on failed task
      */
+    @Test
     public void testTimedInvokeAll4() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -584,6 +633,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) returns results of all completed tasks in c
      */
+    @Test
     public void testTimedInvokeAll5() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -601,6 +651,7 @@ public class AbstractExecutorServiceTest extends JSR166TestCase {
     /**
      * timed invokeAll cancels tasks not completed by timeout
      */
+    @Test
     public void testTimedInvokeAll6() throws Exception {
         final ExecutorService e = new DirectExecutorService();
         try (PoolCleaner cleaner = cleaner(e)) {

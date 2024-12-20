@@ -19,19 +19,26 @@ package dalvik.system;
 import static android.annotation.SystemApi.Client.MODULE_LIBRARIES;
 
 import android.annotation.SystemApi;
+import android.annotation.FlaggedApi;
 import android.compat.annotation.ChangeId;
 import android.compat.annotation.EnabledSince;
 import android.compat.annotation.Disabled;
 import android.compat.annotation.UnsupportedAppUsage;
 
+import com.android.libcore.Flags;
+
 import dalvik.annotation.compat.VersionCodes;
 import dalvik.annotation.optimization.FastNative;
 
 import java.lang.ref.FinalizerReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+
+import libcore.util.NonNull;
 
 /**
  * Provides an interface to VM-global, Dalvik-specific features.
@@ -215,6 +222,8 @@ public final class VMRuntime {
     private final AtomicInteger allocationCount = new AtomicInteger(0);
 
     private long[] disabledCompatChanges = new long[0];
+
+    private static final List<Runnable> postCleanupCallbacks = new ArrayList<>();
 
     /**
      * Prevents this class from being instantiated.
@@ -1010,6 +1019,44 @@ public final class VMRuntime {
     }
 
     /**
+     * Adds a callback that the runtime will call post-cleanup, i.e. when all the references
+     * marked by previous GC are cleaned up, and so ReferenceQueue is empty.
+     *
+     * @hide
+     */
+    @FlaggedApi(com.android.libcore.Flags.FLAG_POST_CLEANUP_APIS)
+    @SystemApi(client = MODULE_LIBRARIES)
+    public static void addPostCleanupCallback(@NonNull Runnable runnable) {
+        synchronized(postCleanupCallbacks) {
+            postCleanupCallbacks.add(runnable);
+        }
+    }
+
+    /**
+     * Removes a callback that the runtime will call post-cleanup
+     *
+     * @hide
+     */
+    @FlaggedApi(com.android.libcore.Flags.FLAG_POST_CLEANUP_APIS)
+    @SystemApi(client = MODULE_LIBRARIES)
+    public static void removePostCleanupCallback(@NonNull Runnable runnable) {
+        synchronized(postCleanupCallbacks) {
+            postCleanupCallbacks.remove(runnable);
+        }
+    }
+
+    /**
+     * @hide
+     */
+    public static void onPostCleanup() {
+        synchronized(postCleanupCallbacks) {
+            for (Runnable runnable : postCleanupCallbacks) {
+                runnable.run();
+            }
+        }
+    }
+
+    /**
      * Sets whether or not the runtime should dedupe detection and warnings for hidden API usage.
      *
      * @param dedupe if set, only the first usage of each API will be detected. The default
@@ -1062,4 +1109,24 @@ public final class VMRuntime {
      * @hide
      */
     public static native DexFile.OptimizationInfo getBaseApkOptimizationInfo();
+
+    /**
+     * @hide for internal testing.
+     */
+    public static boolean isVTrunkStableFlagEnabled() {
+        return Flags.vApis();
+    }
+
+    /**
+     * @hide for internal testing.
+     */
+    public static boolean isArtTestFlagEnabled() {
+        return com.android.art.flags.Flags.test();
+    }
+
+    /**
+     * Returns the full GC count - how many times did full GC happen
+     * @hide
+     */
+    public static native long getFullGcCount();
 }

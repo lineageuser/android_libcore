@@ -32,6 +32,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
@@ -44,16 +53,21 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class TreeMapTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.TreeMapTest");
     }
-    public static Test suite() {
-        return new TestSuite(TreeMapTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(TreeMapTest.class);
+    // }
 
     /**
      * Returns a new map from Integers 1-5 to Strings "A"-"E".
@@ -74,6 +88,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * clear removes all pairs
      */
+    @Test
     public void testClear() {
         TreeMap map = map5();
         map.clear();
@@ -83,6 +98,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * copy constructor creates map equal to source map
      */
+    @Test
     public void testConstructFromSorted() {
         TreeMap map = map5();
         TreeMap map2 = new TreeMap(map);
@@ -92,6 +108,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * Maps with same contents are equal
      */
+    @Test
     public void testEquals() {
         TreeMap map1 = map5();
         TreeMap map2 = map5();
@@ -105,6 +122,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * containsKey returns true for contained key
      */
+    @Test
     public void testContainsKey() {
         TreeMap map = map5();
         assertTrue(map.containsKey(one));
@@ -114,6 +132,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * containsValue returns true for held values
      */
+    @Test
     public void testContainsValue() {
         TreeMap map = map5();
         assertTrue(map.containsValue("A"));
@@ -124,6 +143,7 @@ public class TreeMapTest extends JSR166TestCase {
      * get returns the correct element at the given key,
      * or null if not present
      */
+    @Test
     public void testGet() {
         TreeMap map = map5();
         assertEquals("A", (String)map.get(one));
@@ -134,6 +154,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * isEmpty is true of empty map and false for non-empty
      */
+    @Test
     public void testIsEmpty() {
         TreeMap empty = new TreeMap();
         TreeMap map = map5();
@@ -144,6 +165,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * firstKey returns first key
      */
+    @Test
     public void testFirstKey() {
         TreeMap map = map5();
         assertEquals(one, map.firstKey());
@@ -152,6 +174,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * lastKey returns last key
      */
+    @Test
     public void testLastKey() {
         TreeMap map = map5();
         assertEquals(five, map.lastKey());
@@ -160,6 +183,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * keySet.toArray returns contains all keys
      */
+    @Test
     public void testKeySetToArray() {
         TreeMap map = map5();
         Set s = map.keySet();
@@ -173,6 +197,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * descendingkeySet.toArray returns contains all keys
      */
+    @Test
     public void testDescendingKeySetToArray() {
         TreeMap map = map5();
         Set s = map.descendingKeySet();
@@ -186,6 +211,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * keySet returns a Set containing all the keys
      */
+    @Test
     public void testKeySet() {
         TreeMap map = map5();
         Set s = map.keySet();
@@ -200,6 +226,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * keySet is ordered
      */
+    @Test
     public void testKeySetOrder() {
         TreeMap map = map5();
         Set s = map.keySet();
@@ -219,6 +246,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * descending iterator of key set is inverse ordered
      */
+    @Test
     public void testKeySetDescendingIteratorOrder() {
         TreeMap map = map5();
         NavigableSet s = map.navigableKeySet();
@@ -238,6 +266,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * descendingKeySet is ordered
      */
+    @Test
     public void testDescendingKeySetOrder() {
         TreeMap map = map5();
         Set s = map.descendingKeySet();
@@ -257,6 +286,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * descending iterator of descendingKeySet is ordered
      */
+    @Test
     public void testDescendingKeySetDescendingIteratorOrder() {
         TreeMap map = map5();
         NavigableSet s = map.descendingKeySet();
@@ -276,6 +306,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * values collection contains all values
      */
+    @Test
     public void testValues() {
         TreeMap map = map5();
         Collection s = map.values();
@@ -290,6 +321,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * entrySet contains all pairs
      */
+    @Test
     public void testEntrySet() {
         TreeMap map = map5();
         Set s = map.entrySet();
@@ -309,6 +341,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * descendingEntrySet contains all pairs
      */
+    @Test
     public void testDescendingEntrySet() {
         TreeMap map = map5();
         Set s = map.descendingMap().entrySet();
@@ -328,6 +361,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * entrySet.toArray contains all entries
      */
+    @Test
     public void testEntrySetToArray() {
         TreeMap map = map5();
         Set s = map.entrySet();
@@ -342,6 +376,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * descendingEntrySet.toArray contains all entries
      */
+    @Test
     public void testDescendingEntrySetToArray() {
         TreeMap map = map5();
         Set s = map.descendingMap().entrySet();
@@ -356,6 +391,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * putAll adds all key-value pairs from the given map
      */
+    @Test
     public void testPutAll() {
         TreeMap empty = new TreeMap();
         TreeMap map = map5();
@@ -371,6 +407,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * remove removes the correct key-value pair from the map
      */
+    @Test
     public void testRemove() {
         TreeMap map = map5();
         map.remove(five);
@@ -381,6 +418,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * lowerEntry returns preceding entry.
      */
+    @Test
     public void testLowerEntry() {
         TreeMap map = map5();
         Map.Entry e1 = map.lowerEntry(three);
@@ -399,6 +437,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * higherEntry returns next entry.
      */
+    @Test
     public void testHigherEntry() {
         TreeMap map = map5();
         Map.Entry e1 = map.higherEntry(three);
@@ -417,6 +456,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * floorEntry returns preceding entry.
      */
+    @Test
     public void testFloorEntry() {
         TreeMap map = map5();
         Map.Entry e1 = map.floorEntry(three);
@@ -435,6 +475,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * ceilingEntry returns next entry.
      */
+    @Test
     public void testCeilingEntry() {
         TreeMap map = map5();
         Map.Entry e1 = map.ceilingEntry(three);
@@ -453,6 +494,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * lowerKey returns preceding element
      */
+    @Test
     public void testLowerKey() {
         TreeMap q = map5();
         Object e1 = q.lowerKey(three);
@@ -471,6 +513,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * higherKey returns next element
      */
+    @Test
     public void testHigherKey() {
         TreeMap q = map5();
         Object e1 = q.higherKey(three);
@@ -489,6 +532,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * floorKey returns preceding element
      */
+    @Test
     public void testFloorKey() {
         TreeMap q = map5();
         Object e1 = q.floorKey(three);
@@ -507,6 +551,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * ceilingKey returns next element
      */
+    @Test
     public void testCeilingKey() {
         TreeMap q = map5();
         Object e1 = q.ceilingKey(three);
@@ -525,6 +570,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * pollFirstEntry returns entries in order
      */
+    @Test
     public void testPollFirstEntry() {
         TreeMap map = map5();
         Map.Entry e = map.pollFirstEntry();
@@ -552,6 +598,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * pollLastEntry returns entries in order
      */
+    @Test
     public void testPollLastEntry() {
         TreeMap map = map5();
         Map.Entry e = map.pollLastEntry();
@@ -579,6 +626,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * size returns the correct values
      */
+    @Test
     public void testSize() {
         TreeMap map = map5();
         TreeMap empty = new TreeMap();
@@ -589,6 +637,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * toString contains toString of elements
      */
+    @Test
     public void testToString() {
         TreeMap map = map5();
         String s = map.toString();
@@ -602,6 +651,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * get(null) of nonempty map throws NPE
      */
+    @Test
     public void testGet_NullPointerException() {
         TreeMap c = map5();
         try {
@@ -613,6 +663,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * containsKey(null) of nonempty map throws NPE
      */
+    @Test
     public void testContainsKey_NullPointerException() {
         TreeMap c = map5();
         try {
@@ -624,6 +675,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * remove(null) throws NPE for nonempty map
      */
+    @Test
     public void testRemove1_NullPointerException() {
         TreeMap c = new TreeMap();
         c.put("sadsdf", "asdads");
@@ -636,6 +688,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * A deserialized map equals original
      */
+    @Test
     public void testSerialization() throws Exception {
         NavigableMap x = map5();
         NavigableMap y = serialClone(x);
@@ -650,6 +703,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * subMap returns map with keys in requested range
      */
+    @Test
     public void testSubMapContents() {
         TreeMap map = map5();
         NavigableMap sm = map.subMap(two, true, four, false);
@@ -688,6 +742,7 @@ public class TreeMapTest extends JSR166TestCase {
         assertEquals(3, map.size());
     }
 
+    @Test
     public void testSubMapContents2() {
         TreeMap map = map5();
         NavigableMap sm = map.subMap(two, true, three, false);
@@ -723,6 +778,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * headMap returns map with keys in requested range
      */
+    @Test
     public void testHeadMapContents() {
         TreeMap map = map5();
         NavigableMap sm = map.headMap(four, false);
@@ -749,6 +805,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * headMap returns map with keys in requested range
      */
+    @Test
     public void testTailMapContents() {
         TreeMap map = map5();
         NavigableMap sm = map.tailMap(two, true);
@@ -810,6 +867,7 @@ public class TreeMapTest extends JSR166TestCase {
     /**
      * Submaps of submaps subdivide correctly
      */
+    @Test
     public void testRecursiveSubMaps() throws Exception {
         int mapSize = expensiveTests ? 1000 : 100;
         Class cl = TreeMap.class;

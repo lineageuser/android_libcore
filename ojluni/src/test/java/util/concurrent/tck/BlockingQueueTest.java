@@ -36,6 +36,14 @@
 
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,8 +52,7 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
 
 /**
  * Contains "contract" tests applicable to all BlockingQueue implementations.
@@ -62,11 +69,12 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
      */
 
     /** Like suite(), but non-static */
-    public Test testSuite() {
-        // TODO: filter the returned tests using the configuration
-        // information provided by the subclass via protected methods.
-        return new TestSuite(this.getClass());
-    }
+    // Android-removed: No usage of suite().
+    // public Test testSuite() {
+    //     // TODO: filter the returned tests using the configuration
+    //     // information provided by the subclass via protected methods.
+    //     return new TestSuite(this.getClass());
+    // }
 
     //----------------------------------------------------------------
     // Configuration methods
@@ -90,6 +98,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * offer(null) throws NullPointerException
      */
+    @Test
     public void testOfferNull() {
         final Queue q = emptyCollection();
         try {
@@ -101,6 +110,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * add(null) throws NullPointerException
      */
+    @Test
     public void testAddNull() {
         final Collection q = emptyCollection();
         try {
@@ -112,6 +122,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * timed offer(null) throws NullPointerException
      */
+    @Test
     public void testTimedOfferNull() throws InterruptedException {
         final BlockingQueue q = emptyCollection();
         long startTime = System.nanoTime();
@@ -125,6 +136,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * put(null) throws NullPointerException
      */
+    @Test
     public void testPutNull() throws InterruptedException {
         final BlockingQueue q = emptyCollection();
         try {
@@ -136,6 +148,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * put(null) throws NullPointerException
      */
+    @Test
     public void testAddAllNull() throws InterruptedException {
         final Collection q = emptyCollection();
         try {
@@ -147,6 +160,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * addAll of a collection with null elements throws NullPointerException
      */
+    @Test
     public void testAddAllNullElements() {
         final Collection q = emptyCollection();
         final Collection<Integer> elements = Arrays.asList(new Integer[SIZE]);
@@ -159,6 +173,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * toArray(null) throws NullPointerException
      */
+    @Test
     public void testToArray_NullArray() {
         final Collection q = emptyCollection();
         try {
@@ -170,6 +185,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo(null) throws NullPointerException
      */
+    @Test
     public void testDrainToNull() {
         final BlockingQueue q = emptyCollection();
         try {
@@ -181,6 +197,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo(this) throws IllegalArgumentException
      */
+    @Test
     public void testDrainToSelf() {
         final BlockingQueue q = emptyCollection();
         try {
@@ -192,6 +209,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo(null, n) throws NullPointerException
      */
+    @Test
     public void testDrainToNullN() {
         final BlockingQueue q = emptyCollection();
         try {
@@ -203,6 +221,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo(this, n) throws IllegalArgumentException
      */
+    @Test
     public void testDrainToSelfN() {
         final BlockingQueue q = emptyCollection();
         try {
@@ -214,6 +233,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * drainTo(c, n) returns 0 and does nothing when n <= 0
      */
+    @Test
     public void testDrainToNonPositiveMaxElements() {
         final BlockingQueue q = emptyCollection();
         final int[] ns = { 0, -1, -42, Integer.MIN_VALUE };
@@ -236,6 +256,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
      * timed poll before a delayed offer times out; after offer succeeds;
      * on interruption throws
      */
+    @Test
     public void testTimedPollWithOffer() throws InterruptedException {
         final BlockingQueue q = emptyCollection();
         final CheckedBarrier barrier = new CheckedBarrier(2);
@@ -281,6 +302,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * take() blocks interruptibly when empty
      */
+    @Test
     public void testTakeFromEmptyBlocksInterruptibly() {
         final BlockingQueue q = emptyCollection();
         final CountDownLatch threadStarted = new CountDownLatch(1);
@@ -304,6 +326,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
      * take() throws InterruptedException immediately if interrupted
      * before waiting
      */
+    @Test
     public void testTakeFromEmptyAfterInterrupt() {
         final BlockingQueue q = emptyCollection();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -322,6 +345,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
     /**
      * timed poll() blocks interruptibly when empty
      */
+    @Test
     public void testTimedPollFromEmptyBlocksInterruptibly() {
         final BlockingQueue q = emptyCollection();
         final CountDownLatch threadStarted = new CountDownLatch(1);
@@ -345,6 +369,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
      * timed poll() throws InterruptedException immediately if
      * interrupted before waiting
      */
+    @Test
     public void testTimedPollFromEmptyAfterInterrupt() {
         final BlockingQueue q = emptyCollection();
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -364,6 +389,7 @@ public abstract class BlockingQueueTest extends JSR166TestCase {
      * remove(x) removes x and returns true if present
      * TODO: move to superclass CollectionTest.java
      */
+    @Test
     public void testRemoveElement() {
         final BlockingQueue q = emptyCollection();
         final int size = Math.min(q.remainingCapacity(), SIZE);

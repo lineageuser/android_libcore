@@ -32,6 +32,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import static java.util.Spliterator.CONCURRENT;
 import static java.util.Spliterator.DISTINCT;
 import static java.util.Spliterator.NONNULL;
@@ -50,16 +59,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BiFunction;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ConcurrentHashMap8Test extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ConcurrentHashMap8Test");
     }
-    public static Test suite() {
-        return new TestSuite(ConcurrentHashMap8Test.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ConcurrentHashMap8Test.class);
+    // }
 
     /**
      * Returns a new map from Integers 1-5 to Strings "A"-"E".
@@ -80,6 +94,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * getOrDefault returns value if present, else default
      */
+    @Test
     public void testGetOrDefault() {
         ConcurrentHashMap map = map5();
         assertEquals(map.getOrDefault(one, "Z"), "A");
@@ -89,6 +104,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * computeIfAbsent adds when the given key is not present
      */
+    @Test
     public void testComputeIfAbsent() {
         ConcurrentHashMap map = map5();
         map.computeIfAbsent(six, x -> "Z");
@@ -98,6 +114,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * computeIfAbsent does not replace if the key is already present
      */
+    @Test
     public void testComputeIfAbsent2() {
         ConcurrentHashMap map = map5();
         assertEquals("A", map.computeIfAbsent(one, x -> "Z"));
@@ -106,6 +123,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * computeIfAbsent does not add if function returns null
      */
+    @Test
     public void testComputeIfAbsent3() {
         ConcurrentHashMap map = map5();
         map.computeIfAbsent(six, x -> null);
@@ -115,6 +133,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * computeIfPresent does not replace if the key is already present
      */
+    @Test
     public void testComputeIfPresent() {
         ConcurrentHashMap map = map5();
         map.computeIfPresent(six, (x, y) -> "Z");
@@ -124,6 +143,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * computeIfPresent adds when the given key is not present
      */
+    @Test
     public void testComputeIfPresent2() {
         ConcurrentHashMap map = map5();
         assertEquals("Z", map.computeIfPresent(one, (x, y) -> "Z"));
@@ -132,6 +152,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * compute does not replace if the function returns null
      */
+    @Test
     public void testCompute() {
         ConcurrentHashMap map = map5();
         map.compute(six, (x, y) -> null);
@@ -141,6 +162,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * compute adds when the given key is not present
      */
+    @Test
     public void testCompute2() {
         ConcurrentHashMap map = map5();
         assertEquals("Z", map.compute(six, (x, y) -> "Z"));
@@ -149,6 +171,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * compute replaces when the given key is present
      */
+    @Test
     public void testCompute3() {
         ConcurrentHashMap map = map5();
         assertEquals("Z", map.compute(one, (x, y) -> "Z"));
@@ -157,6 +180,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * compute removes when the given key is present and function returns null
      */
+    @Test
     public void testCompute4() {
         ConcurrentHashMap map = map5();
         map.compute(one, (x, y) -> null);
@@ -166,6 +190,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * merge adds when the given key is not present
      */
+    @Test
     public void testMerge1() {
         ConcurrentHashMap map = map5();
         assertEquals("Y", map.merge(six, "Y", (x, y) -> "Z"));
@@ -174,6 +199,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * merge replaces when the given key is present
      */
+    @Test
     public void testMerge2() {
         ConcurrentHashMap map = map5();
         assertEquals("Z", map.merge(one, "Y", (x, y) -> "Z"));
@@ -182,6 +208,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * merge removes when the given key is present and function returns null
      */
+    @Test
     public void testMerge3() {
         ConcurrentHashMap map = map5();
         map.merge(one, "Y", (x, y) -> null);
@@ -211,6 +238,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * replaceAll replaces all matching values.
      */
+    @Test
     public void testReplaceAll() {
         ConcurrentHashMap<Integer, String> map = map5();
         map.replaceAll((x, y) -> { return x > 3 ? "Z" : y; });
@@ -224,6 +252,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * Default-constructed set is empty
      */
+    @Test
     public void testNewKeySet() {
         Set a = ConcurrentHashMap.newKeySet();
         assertTrue(a.isEmpty());
@@ -233,6 +262,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * keySet.add adds the key with the established value to the map;
      * remove removes it.
      */
+    @Test
     public void testKeySetAddRemove() {
         ConcurrentHashMap map = map5();
         Set set1 = map.keySet();
@@ -254,6 +284,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * keySet.addAll adds each element from the given collection
      */
+    @Test
     public void testAddAll() {
         Set full = populatedSet(3);
         assertTrue(full.addAll(Arrays.asList(three, four, five)));
@@ -266,6 +297,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * keySet.addAll adds each element from the given collection that did not
      * already exist in the set
      */
+    @Test
     public void testAddAll2() {
         Set full = populatedSet(3);
         // "one" is duplicate and will not be added
@@ -278,6 +310,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * keySet.add will not add the element if it already exists in the set
      */
+    @Test
     public void testAdd2() {
         Set full = populatedSet(3);
         assertFalse(full.add(one));
@@ -287,6 +320,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * keySet.add adds the element when it does not exist in the set
      */
+    @Test
     public void testAdd3() {
         Set full = populatedSet(3);
         assertTrue(full.add(three));
@@ -299,6 +333,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * keySet.add throws UnsupportedOperationException if no default
      * mapped value
      */
+    @Test
     public void testAdd4() {
         Set full = map5().keySet();
         try {
@@ -311,6 +346,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * keySet.add throws NullPointerException if the specified key is
      * null
      */
+    @Test
     public void testAdd5() {
         Set full = populatedSet(3);
         try {
@@ -322,6 +358,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySetView.getMappedValue returns the map's mapped value
      */
+    @Test
     public void testGetMappedValue() {
         ConcurrentHashMap map = map5();
         // Android-changed: ConcurrentHashMap.keySet() has 2 return type variants on Android.
@@ -349,6 +386,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySetView.spliterator returns spliterator over the elements in this set
      */
+    @Test
     public void testKeySetSpliterator() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap map = map5();
@@ -367,6 +405,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * keyset.clear removes all elements from the set
      */
+    @Test
     public void testClear() {
         Set full = populatedSet(3);
         full.clear();
@@ -376,6 +415,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * keyset.contains returns true for added elements
      */
+    @Test
     public void testContains() {
         Set full = populatedSet(3);
         assertTrue(full.contains(one));
@@ -385,6 +425,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySets with equal elements are equal
      */
+    @Test
     public void testEquals() {
         Set a = populatedSet(3);
         Set b = populatedSet(3);
@@ -403,6 +444,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySet.containsAll returns true for collections with subset of elements
      */
+    @Test
     public void testContainsAll() {
         Collection full = populatedSet(3);
         assertTrue(full.containsAll(Arrays.asList()));
@@ -415,6 +457,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySet.isEmpty is true when empty, else false
      */
+    @Test
     public void testIsEmpty() {
         assertTrue(populatedSet(0).isEmpty());
         assertFalse(populatedSet(3).isEmpty());
@@ -424,6 +467,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * KeySet.iterator() returns an iterator containing the elements of the
      * set
      */
+    @Test
     public void testIterator() {
         Collection empty = ConcurrentHashMap.newKeySet();
         int size = 20;
@@ -450,6 +494,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * iterator of empty collections has no elements
      */
+    @Test
     public void testEmptyIterator() {
         assertIteratorExhausted(ConcurrentHashMap.newKeySet().iterator());
         assertIteratorExhausted(new ConcurrentHashMap().entrySet().iterator());
@@ -460,6 +505,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySet.iterator.remove removes current element
      */
+    @Test
     public void testIteratorRemove() {
         Set q = populatedSet(3);
         Iterator it = q.iterator();
@@ -475,6 +521,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySet.toString holds toString of elements
      */
+    @Test
     public void testToString() {
         assertEquals("[]", ConcurrentHashMap.newKeySet().toString());
         Set full = populatedSet(3);
@@ -486,6 +533,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySet.removeAll removes all elements from the given collection
      */
+    @Test
     public void testRemoveAll() {
         Set full = populatedSet(3);
         assertTrue(full.removeAll(Arrays.asList(one, two)));
@@ -497,6 +545,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * KeySet.remove removes an element
      */
+    @Test
     public void testRemove() {
         Set full = populatedSet(3);
         full.remove(one);
@@ -507,6 +556,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * keySet.size returns the number of elements
      */
+    @Test
     public void testSize() {
         Set empty = ConcurrentHashMap.newKeySet();
         Set full = populatedSet(3);
@@ -518,6 +568,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * KeySet.toArray() returns an Object array containing all elements from
      * the set
      */
+    @Test
     public void testToArray() {
         Object[] a = ConcurrentHashMap.newKeySet().toArray();
         assertTrue(Arrays.equals(new Object[0], a));
@@ -538,6 +589,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * toArray(Integer array) returns an Integer array containing all
      * elements from the set
      */
+    @Test
     public void testToArray2() {
         Collection empty = ConcurrentHashMap.newKeySet();
         Integer[] a;
@@ -574,6 +626,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * A deserialized serialized set is equal
      */
+    @Test
     public void testSerialization() throws Exception {
         int size = 20;
         Set x = populatedSet(size);
@@ -609,6 +662,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachKeySequentially traverses all keys
      */
+    @Test
     public void testForEachKeySequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -619,6 +673,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachValueSequentially traverses all values
      */
+    @Test
     public void testForEachValueSequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -629,6 +684,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachSequentially traverses all mappings
      */
+    @Test
     public void testForEachSequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -639,6 +695,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachEntrySequentially traverses all entries
      */
+    @Test
     public void testForEachEntrySequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -649,6 +706,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachKeyInParallel traverses all keys
      */
+    @Test
     public void testForEachKeyInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -659,6 +717,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachValueInParallel traverses all values
      */
+    @Test
     public void testForEachValueInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -669,6 +728,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachInParallel traverses all mappings
      */
+    @Test
     public void testForEachInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -679,6 +739,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * forEachEntryInParallel traverses all entries
      */
+    @Test
     public void testForEachEntryInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -690,6 +751,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachKeySequentially traverses the given
      * transformations of all keys
      */
+    @Test
     public void testMappedForEachKeySequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -702,6 +764,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachValueSequentially traverses the given
      * transformations of all values
      */
+    @Test
     public void testMappedForEachValueSequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -714,6 +777,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachSequentially traverses the given
      * transformations of all mappings
      */
+    @Test
     public void testMappedForEachSequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -726,6 +790,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachEntrySequentially traverses the given
      * transformations of all entries
      */
+    @Test
     public void testMappedForEachEntrySequentially() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -738,6 +803,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachKeyInParallel traverses the given
      * transformations of all keys
      */
+    @Test
     public void testMappedForEachKeyInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -750,6 +816,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachValueInParallel traverses the given
      * transformations of all values
      */
+    @Test
     public void testMappedForEachValueInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -762,6 +829,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachInParallel traverses the given
      * transformations of all mappings
      */
+    @Test
     public void testMappedForEachInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -774,6 +842,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * Mapped forEachEntryInParallel traverses the given
      * transformations of all entries
      */
+    @Test
     public void testMappedForEachEntryInParallel() {
         LongAdder adder = new LongAdder();
         ConcurrentHashMap<Long, Long> m = longMap();
@@ -785,6 +854,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceKeysSequentially accumulates across all keys,
      */
+    @Test
     public void testReduceKeysSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -795,6 +865,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceValuesSequentially accumulates across all values
      */
+    @Test
     public void testReduceValuesSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -805,6 +876,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceEntriesSequentially accumulates across all entries
      */
+    @Test
     public void testReduceEntriesSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Map.Entry<Long,Long> r;
@@ -815,6 +887,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceKeysInParallel accumulates across all keys
      */
+    @Test
     public void testReduceKeysInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -825,6 +898,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceValuesInParallel accumulates across all values
      */
+    @Test
     public void testReduceValuesInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -835,6 +909,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceEntriesInParallel accumulate across all entries
      */
+    @Test
     public void testReduceEntriesInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Map.Entry<Long,Long> r;
@@ -845,6 +920,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * Mapped reduceKeysSequentially accumulates mapped keys
      */
+    @Test
     public void testMapReduceKeysSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r = m.reduceKeys(Long.MAX_VALUE, (Long x) -> Long.valueOf(4 * x.longValue()),
@@ -855,6 +931,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * Mapped reduceValuesSequentially accumulates mapped values
      */
+    @Test
     public void testMapReduceValuesSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r = m.reduceValues(Long.MAX_VALUE, (Long x) -> Long.valueOf(4 * x.longValue()),
@@ -865,6 +942,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceSequentially accumulates across all transformed mappings
      */
+    @Test
     public void testMappedReduceSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r = m.reduce(Long.MAX_VALUE, (Long x, Long y) -> Long.valueOf(x.longValue() + y.longValue()),
@@ -876,6 +954,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * Mapped reduceKeysInParallel, accumulates mapped keys
      */
+    @Test
     public void testMapReduceKeysInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r = m.reduceKeys(1L, (Long x) -> Long.valueOf(4 * x.longValue()),
@@ -886,6 +965,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * Mapped reduceValuesInParallel accumulates mapped values
      */
+    @Test
     public void testMapReduceValuesInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r = m.reduceValues(1L, (Long x) -> Long.valueOf(4 * x.longValue()),
@@ -896,6 +976,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceInParallel accumulate across all transformed mappings
      */
+    @Test
     public void testMappedReduceInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -907,6 +988,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceKeysToLongSequentially accumulates mapped keys
      */
+    @Test
     public void testReduceKeysToLongSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         long lr = m.reduceKeysToLong(Long.MAX_VALUE, (Long x) -> x.longValue(), 0L, Long::sum);
@@ -916,6 +998,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceKeysToIntSequentially accumulates mapped keys
      */
+    @Test
     public void testReduceKeysToIntSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         int ir = m.reduceKeysToInt(Long.MAX_VALUE, (Long x) -> x.intValue(), 0, Integer::sum);
@@ -925,15 +1008,17 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceKeysToDoubleSequentially accumulates mapped keys
      */
+    @Test
     public void testReduceKeysToDoubleSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         double dr = m.reduceKeysToDouble(Long.MAX_VALUE, (Long x) -> x.doubleValue(), 0.0, Double::sum);
-        assertEquals(dr, (double)SIZE * (SIZE - 1) / 2);
+        assertEquals(dr, (double)SIZE * (SIZE - 1) / 2, 0.0d);
     }
 
     /**
      * reduceValuesToLongSequentially accumulates mapped values
      */
+    @Test
     public void testReduceValuesToLongSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         long lr = m.reduceValuesToLong(Long.MAX_VALUE, (Long x) -> x.longValue(), 0L, Long::sum);
@@ -943,6 +1028,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceValuesToIntSequentially accumulates mapped values
      */
+    @Test
     public void testReduceValuesToIntSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         int ir = m.reduceValuesToInt(Long.MAX_VALUE, (Long x) -> x.intValue(), 0, Integer::sum);
@@ -952,15 +1038,17 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceValuesToDoubleSequentially accumulates mapped values
      */
+    @Test
     public void testReduceValuesToDoubleSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         double dr = m.reduceValuesToDouble(Long.MAX_VALUE, (Long x) -> x.doubleValue(), 0.0, Double::sum);
-        assertEquals(dr, (double)SIZE * (SIZE - 1));
+        assertEquals(dr, (double)SIZE * (SIZE - 1), 0.0d);
     }
 
     /**
      * reduceKeysToLongInParallel accumulates mapped keys
      */
+    @Test
     public void testReduceKeysToLongInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         long lr = m.reduceKeysToLong(1L, (Long x) -> x.longValue(), 0L, Long::sum);
@@ -970,6 +1058,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceKeysToIntInParallel accumulates mapped keys
      */
+    @Test
     public void testReduceKeysToIntInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         int ir = m.reduceKeysToInt(1L, (Long x) -> x.intValue(), 0, Integer::sum);
@@ -979,15 +1068,17 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceKeysToDoubleInParallel accumulates mapped values
      */
+    @Test
     public void testReduceKeysToDoubleInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         double dr = m.reduceKeysToDouble(1L, (Long x) -> x.doubleValue(), 0.0, Double::sum);
-        assertEquals(dr, (double)SIZE * (SIZE - 1) / 2);
+        assertEquals(dr, (double)SIZE * (SIZE - 1) / 2, 0.0d);
     }
 
     /**
      * reduceValuesToLongInParallel accumulates mapped values
      */
+    @Test
     public void testReduceValuesToLongInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         long lr = m.reduceValuesToLong(1L, (Long x) -> x.longValue(), 0L, Long::sum);
@@ -997,6 +1088,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceValuesToIntInParallel accumulates mapped values
      */
+    @Test
     public void testReduceValuesToIntInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         int ir = m.reduceValuesToInt(1L, (Long x) -> x.intValue(), 0, Integer::sum);
@@ -1006,16 +1098,18 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
     /**
      * reduceValuesToDoubleInParallel accumulates mapped values
      */
+    @Test
     public void testReduceValuesToDoubleInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         double dr = m.reduceValuesToDouble(1L, (Long x) -> x.doubleValue(), 0.0, Double::sum);
-        assertEquals(dr, (double)SIZE * (SIZE - 1));
+        assertEquals(dr, (double)SIZE * (SIZE - 1), 0.0d);
     }
 
     /**
      * searchKeysSequentially returns a non-null result of search
      * function, or null if none
      */
+    @Test
     public void testSearchKeysSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1029,6 +1123,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * searchValuesSequentially returns a non-null result of search
      * function, or null if none
      */
+    @Test
     public void testSearchValuesSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1044,6 +1139,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * searchSequentially returns a non-null result of search
      * function, or null if none
      */
+    @Test
     public void testSearchSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1057,6 +1153,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * searchEntriesSequentially returns a non-null result of search
      * function, or null if none
      */
+    @Test
     public void testSearchEntriesSequentially() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1070,6 +1167,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * searchKeysInParallel returns a non-null result of search
      * function, or null if none
      */
+    @Test
     public void testSearchKeysInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1083,6 +1181,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * searchValuesInParallel returns a non-null result of search
      * function, or null if none
      */
+    @Test
     public void testSearchValuesInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1096,6 +1195,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * searchInParallel returns a non-null result of search function,
      * or null if none
      */
+    @Test
     public void testSearchInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1109,6 +1209,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * searchEntriesInParallel returns a non-null result of search
      * function, or null if none
      */
+    @Test
     public void testSearchEntriesInParallel() {
         ConcurrentHashMap<Long, Long> m = longMap();
         Long r;
@@ -1123,6 +1224,7 @@ public class ConcurrentHashMap8Test extends JSR166TestCase {
      * See JDK-8161372
      * ant -Djsr166.tckTestClass=ConcurrentHashMapTest -Djsr166.methodFilter=testcomputeIfAbsent_performance -Djsr166.expensiveTests=true tck
      */
+    @Test
     public void testcomputeIfAbsent_performance() {
         final int mapSize = 20;
         final int iterations = expensiveTests ? (1 << 23) : mapSize * 2;

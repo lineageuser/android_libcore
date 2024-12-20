@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.LockSupport;
+import jdk.internal.misc.Unsafe;
 import sun.nio.ch.Interruptible;
 import sun.reflect.CallerSensitive;
 import dalvik.system.VMStack;
@@ -296,7 +297,7 @@ class Thread implements Runnable {
      */
     public static final int MIN_PRIORITY = 1;
 
-   /**
+    /**
      * The default priority that is assigned to a thread.
      */
     public static final int NORM_PRIORITY = 5;
@@ -582,6 +583,95 @@ class Thread implements Runnable {
 
         /* Set thread ID */
         this.tid = nextThreadID();
+    }
+
+    /**
+     * Characteristic value signifying that initial values for {@link
+     * InheritableThreadLocal inheritable-thread-locals} are not inherited from
+     * the constructing thread.
+     * See Thread initialization.
+     */
+    static final int NO_INHERIT_THREAD_LOCALS = 1 << 2;
+
+    /**
+     * Helper class to generate thread identifiers. The identifiers start at
+     * 2 as this class cannot be used during early startup to generate the
+     * identifier for the primordial thread. The counter is off-heap and
+     * shared with the VM to allow it assign thread identifiers to non-Java
+     * threads.
+     * See Thread initialization.
+     */
+    private static class ThreadIdentifiers {
+        private static final Unsafe U;
+        private static final long NEXT_TID_OFFSET;
+        static {
+            U = Unsafe.getUnsafe();
+            // Android-changed: TODO(b/346542404): Implement Thread.getNextThreadIdOffset()
+            // NEXT_TID_OFFSET = Thread.getNextThreadIdOffset();
+            NEXT_TID_OFFSET = 61234L;
+        }
+        static long next() {
+            return U.getAndAddLong(null, NEXT_TID_OFFSET, 1);
+        }
+    }
+
+    /**
+     * Returns the context class loader to inherit from the parent thread.
+     * See Thread initialization.
+     */
+    private static ClassLoader contextClassLoader(Thread parent) {
+        @SuppressWarnings("removal")
+        SecurityManager sm = System.getSecurityManager();
+        if (sm == null || isCCLOverridden(parent.getClass())) {
+            return parent.getContextClassLoader();
+        } else {
+            // skip call to getContextClassLoader
+            return parent.contextClassLoader;
+        }
+    }
+
+    /**
+     * Initializes a virtual Thread.
+     *
+     * @param name thread name, can be null
+     * @param characteristics thread characteristics
+     * @param bound true when bound to an OS thread
+     */
+    Thread(String name, int characteristics, boolean bound) {
+        this.tid = ThreadIdentifiers.next();
+        this.name = (name != null) ? name : "";
+        // Android-changed: Android has no SecurityManager.
+        // this.inheritedAccessControlContext = Constants.NO_PERMISSIONS_ACC;
+        this.inheritedAccessControlContext = AccessController.getContext();
+
+        // thread locals
+        if ((characteristics & NO_INHERIT_THREAD_LOCALS) == 0) {
+            Thread parent = currentThread();
+            ThreadLocal.ThreadLocalMap parentMap = parent.inheritableThreadLocals;
+            if (parentMap != null && parentMap.size() > 0) {
+                this.inheritableThreadLocals = ThreadLocal.createInheritedMap(parentMap);
+            }
+            this.contextClassLoader = contextClassLoader(parent);
+        } else {
+            // default CCL to the system class loader when not inheriting
+            this.contextClassLoader = ClassLoader.getSystemClassLoader();
+        }
+
+        // Android-changed: TODO(b/346542404): bound to an OS thread.
+        /*
+        // special value to indicate this is a newly-created Thread
+        this.scopedValueBindings = NEW_THREAD_BINDINGS;
+
+        // create a FieldHolder object, needed when bound to an OS thread
+        if (bound) {
+            ThreadGroup g = Constants.VTHREAD_GROUP;
+            int pri = NORM_PRIORITY;
+            this.holder = new FieldHolder(g, null, -1, pri, true);
+        } else {
+            this.holder = null;
+        }
+        */
+        this.stackSize = -1;
     }
 
     /**
@@ -926,6 +1016,21 @@ class Thread implements Runnable {
     public Thread(ThreadGroup group, Runnable target, String name,
                   long stackSize, boolean inheritThreadLocals) {
         this(group, target, name, stackSize, null, inheritThreadLocals);
+    }
+
+    /**
+     * Returns {@code true} if this thread is a virtual thread. A virtual thread
+     * is scheduled by the Java virtual machine rather than the operating system.
+     *
+     * @return {@code true} if this thread is a virtual thread
+     *
+     * @since 21
+     * @hide
+     */
+    public final boolean isVirtual() {
+        // Android-changed: Virtual threads are not supported in Android.
+        // return (this instanceof BaseVirtualThread);
+        return false;
     }
 
     /**
@@ -1997,6 +2102,19 @@ class Thread implements Runnable {
      * @since 1.5
      */
     public long getId() {
+        return tid;
+    }
+
+    /**
+     * Returns the identifier of this Thread.  The thread ID is a positive
+     * {@code long} number generated when this thread was created.
+     * The thread ID is unique and remains unchanged during its lifetime.
+     *
+     * @return this thread's ID
+     * @since 19
+     * @hide
+     */
+    public final long threadId() {
         return tid;
     }
 

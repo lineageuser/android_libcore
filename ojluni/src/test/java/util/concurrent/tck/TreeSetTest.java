@@ -32,6 +32,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
@@ -44,16 +53,21 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class TreeSetTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.TreeSetTest");
     }
-    public static Test suite() {
-        return new TestSuite(TreeSetTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(TreeSetTest.class);
+    // }
 
     static class MyReverseComparator implements Comparator {
         public int compare(Object x, Object y) {
@@ -100,6 +114,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * A new set has unbounded capacity
      */
+    @Test
     public void testConstructor1() {
         assertEquals(0, new TreeSet().size());
     }
@@ -107,6 +122,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Initializing from null Collection throws NPE
      */
+    @Test
     public void testConstructor3() {
         try {
             new TreeSet((Collection)null);
@@ -117,6 +133,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Initializing from Collection of null elements throws NPE
      */
+    @Test
     public void testConstructor4() {
         try {
             new TreeSet(Arrays.asList(new Integer[SIZE]));
@@ -127,6 +144,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Initializing from Collection with some null elements throws NPE
      */
+    @Test
     public void testConstructor5() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
@@ -140,6 +158,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Set contains all elements of collection used to initialize
      */
+    @Test
     public void testConstructor6() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
@@ -152,6 +171,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * The comparator used in constructor is used
      */
+    @Test
     public void testConstructor7() {
         MyReverseComparator cmp = new MyReverseComparator();
         TreeSet q = new TreeSet(cmp);
@@ -167,6 +187,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * isEmpty is true before add, false after
      */
+    @Test
     public void testEmpty() {
         TreeSet q = new TreeSet();
         assertTrue(q.isEmpty());
@@ -181,6 +202,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * size changes when elements added and removed
      */
+    @Test
     public void testSize() {
         TreeSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -196,6 +218,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * add(null) throws NPE if nonempty
      */
+    @Test
     public void testAddNull() {
         TreeSet q = populatedSet(SIZE);
         try {
@@ -207,6 +230,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Add of comparable element succeeds
      */
+    @Test
     public void testAdd() {
         TreeSet q = new TreeSet();
         assertTrue(q.add(zero));
@@ -216,6 +240,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Add of duplicate element fails
      */
+    @Test
     public void testAddDup() {
         TreeSet q = new TreeSet();
         assertTrue(q.add(zero));
@@ -225,6 +250,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Add of non-Comparable throws CCE
      */
+    @Test
     public void testAddNonComparable() {
         TreeSet q = new TreeSet();
         try {
@@ -237,6 +263,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * addAll(null) throws NPE
      */
+    @Test
     public void testAddAll1() {
         TreeSet q = new TreeSet();
         try {
@@ -248,6 +275,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * addAll of a collection with null elements throws NPE
      */
+    @Test
     public void testAddAll2() {
         TreeSet q = new TreeSet();
         Integer[] ints = new Integer[SIZE];
@@ -261,6 +289,7 @@ public class TreeSetTest extends JSR166TestCase {
      * addAll of a collection with any null elements throws NPE after
      * possibly adding some elements
      */
+    @Test
     public void testAddAll3() {
         TreeSet q = new TreeSet();
         Integer[] ints = new Integer[SIZE];
@@ -275,6 +304,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Set contains all elements of successful addAll
      */
+    @Test
     public void testAddAll5() {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
@@ -290,6 +320,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * pollFirst succeeds unless empty
      */
+    @Test
     public void testPollFirst() {
         TreeSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -301,6 +332,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * pollLast succeeds unless empty
      */
+    @Test
     public void testPollLast() {
         TreeSet q = populatedSet(SIZE);
         for (int i = SIZE - 1; i >= 0; --i) {
@@ -312,6 +344,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * remove(x) removes x and returns true if present
      */
+    @Test
     public void testRemoveElement() {
         TreeSet q = populatedSet(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
@@ -333,6 +366,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * contains(x) reports true when elements added but not yet removed
      */
+    @Test
     public void testContains() {
         TreeSet q = populatedSet(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -345,6 +379,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * clear removes all elements
      */
+    @Test
     public void testClear() {
         TreeSet q = populatedSet(SIZE);
         q.clear();
@@ -359,6 +394,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * containsAll(c) is true when c contains a subset of elements
      */
+    @Test
     public void testContainsAll() {
         TreeSet q = populatedSet(SIZE);
         TreeSet p = new TreeSet();
@@ -373,6 +409,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * retainAll(c) retains only those elements of c and reports true if changed
      */
+    @Test
     public void testRetainAll() {
         TreeSet q = populatedSet(SIZE);
         TreeSet p = populatedSet(SIZE);
@@ -392,6 +429,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * removeAll(c) removes only those elements of c and reports true if changed
      */
+    @Test
     public void testRemoveAll() {
         for (int i = 1; i < SIZE; ++i) {
             TreeSet q = populatedSet(SIZE);
@@ -408,6 +446,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * lower returns preceding element
      */
+    @Test
     public void testLower() {
         TreeSet q = set5();
         Object e1 = q.lower(three);
@@ -426,6 +465,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * higher returns next element
      */
+    @Test
     public void testHigher() {
         TreeSet q = set5();
         Object e1 = q.higher(three);
@@ -444,6 +484,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * floor returns preceding element
      */
+    @Test
     public void testFloor() {
         TreeSet q = set5();
         Object e1 = q.floor(three);
@@ -462,6 +503,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * ceiling returns next element
      */
+    @Test
     public void testCeiling() {
         TreeSet q = set5();
         Object e1 = q.ceiling(three);
@@ -480,6 +522,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * toArray contains all elements in sorted order
      */
+    @Test
     public void testToArray() {
         TreeSet q = populatedSet(SIZE);
         Object[] o = q.toArray();
@@ -490,6 +533,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * toArray(a) contains all elements in sorted order
      */
+    @Test
     public void testToArray2() {
         TreeSet<Integer> q = populatedSet(SIZE);
         Integer[] ints = new Integer[SIZE];
@@ -502,6 +546,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * iterator iterates through all elements
      */
+    @Test
     public void testIterator() {
         TreeSet q = populatedSet(SIZE);
         Iterator it = q.iterator();
@@ -515,6 +560,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * iterator of empty set has no elements
      */
+    @Test
     public void testEmptyIterator() {
         assertIteratorExhausted(new TreeSet().iterator());
     }
@@ -522,6 +568,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * iterator.remove removes current element
      */
+    @Test
     public void testIteratorRemove() {
         final TreeSet q = new TreeSet();
         q.add(new Integer(2));
@@ -541,6 +588,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * toString contains toStrings of elements
      */
+    @Test
     public void testToString() {
         TreeSet q = populatedSet(SIZE);
         String s = q.toString();
@@ -552,6 +600,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * A deserialized serialized set has same elements
      */
+    @Test
     public void testSerialization() throws Exception {
         NavigableSet x = populatedSet(SIZE);
         NavigableSet y = serialClone(x);
@@ -570,6 +619,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * subSet returns set with keys in requested range
      */
+    @Test
     public void testSubSetContents() {
         TreeSet set = set5();
         SortedSet sm = set.subSet(two, four);
@@ -601,6 +651,7 @@ public class TreeSetTest extends JSR166TestCase {
         assertEquals(3, set.size());
     }
 
+    @Test
     public void testSubSetContents2() {
         TreeSet set = set5();
         SortedSet sm = set.subSet(two, three);
@@ -631,6 +682,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * headSet returns set with keys in requested range
      */
+    @Test
     public void testHeadSetContents() {
         TreeSet set = set5();
         SortedSet sm = set.headSet(four);
@@ -657,6 +709,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * tailSet returns set with keys in requested range
      */
+    @Test
     public void testTailSetContents() {
         TreeSet set = set5();
         SortedSet sm = set.tailSet(two);
@@ -692,6 +745,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * Subsets of subsets subdivide correctly
      */
+    @Test
     public void testRecursiveSubSets() throws Exception {
         int setSize = expensiveTests ? 1000 : 100;
         Class cl = TreeSet.class;
@@ -714,6 +768,7 @@ public class TreeSetTest extends JSR166TestCase {
     /**
      * addAll is idempotent
      */
+    @Test
     public void testAddAll_idempotent() throws Exception {
         Set x = populatedSet(SIZE);
         Set y = new TreeSet(x);

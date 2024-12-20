@@ -69,6 +69,15 @@ package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -123,11 +132,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Base class for JSR166 Junit TCK tests.  Defines some constants,
@@ -201,7 +211,118 @@ import junit.framework.TestSuite;
  *
  * </ul>
  */
-public class JSR166TestCase extends TestCase {
+// Android-changed: Use JUnit4.
+@RunWith(Suite.class)
+@SuiteClasses({
+    ForkJoinPoolTest.class,
+    ForkJoinTaskTest.class,
+    RecursiveActionTest.class,
+    RecursiveTaskTest.class,
+    LinkedTransferQueueTest.class,
+    LinkedTransferQueueTest.Generic.class,
+    PhaserTest.class,
+    ThreadLocalRandomTest.class,
+    AbstractExecutorServiceTest.class,
+    AbstractQueueTest.class,
+    AbstractQueuedSynchronizerTest.class,
+    AbstractQueuedLongSynchronizerTest.class,
+    ArrayBlockingQueueTest.class,
+    ArrayBlockingQueueTest.Fair.class,
+    ArrayBlockingQueueTest.NonFair.class,
+    ArrayDequeTest.class,
+    // ArrayListTest.class,
+    AtomicBooleanTest.class,
+    AtomicIntegerArrayTest.class,
+    AtomicIntegerFieldUpdaterTest.class,
+    AtomicIntegerTest.class,
+    AtomicLongArrayTest.class,
+    AtomicLongFieldUpdaterTest.class,
+    AtomicLongTest.class,
+    AtomicMarkableReferenceTest.class,
+    AtomicReferenceArrayTest.class,
+    AtomicReferenceFieldUpdaterTest.class,
+    AtomicReferenceTest.class,
+    AtomicStampedReferenceTest.class,
+    ConcurrentHashMapTest.class,
+    ConcurrentLinkedDequeTest.class,
+    ConcurrentLinkedQueueTest.class,
+    ConcurrentSkipListMapTest.class,
+    ConcurrentSkipListSubMapTest.class,
+    ConcurrentSkipListSetTest.class,
+    ConcurrentSkipListSubSetTest.class,
+    CopyOnWriteArrayListTest.class,
+    CopyOnWriteArraySetTest.class,
+    CountDownLatchTest.class,
+    CountedCompleterTest.class,
+    CyclicBarrierTest.class,
+    DelayQueueTest.class,
+    DelayQueueTest.Generic.class,
+    EntryTest.class,
+    ExchangerTest.class,
+    ExecutorsTest.class,
+    ExecutorCompletionServiceTest.class,
+    FutureTaskTest.class,
+    LinkedBlockingDequeTest.class,
+    LinkedBlockingDequeTest.Unbounded.class,
+    LinkedBlockingDequeTest.Bounded.class,
+    LinkedBlockingQueueTest.class,
+    LinkedBlockingQueueTest.Unbounded.class,
+    LinkedBlockingQueueTest.Bounded.class,
+    LinkedListTest.class,
+    LockSupportTest.class,
+    PriorityBlockingQueueTest.class,
+    PriorityBlockingQueueTest.Generic.class,
+    PriorityBlockingQueueTest.InitialCapacity.class,
+    PriorityQueueTest.class,
+    ReentrantLockTest.class,
+    ReentrantReadWriteLockTest.class,
+    ScheduledExecutorTest.class,
+    ScheduledExecutorSubclassTest.class,
+    SemaphoreTest.class,
+    SynchronousQueueTest.class,
+    SynchronousQueueTest.Fair.class,
+    SynchronousQueueTest.NonFair.class,
+    SystemTest.class,
+    ThreadLocalTest.class,
+    ThreadPoolExecutorTest.class,
+    ThreadPoolExecutorSubclassTest.class,
+    ThreadTest.class,
+    TimeUnitTest.class,
+    TreeMapTest.class,
+    TreeSetTest.class,
+    TreeSubMapTest.class,
+    TreeSubSetTest.class,
+    VectorTest.class,
+    ArrayDeque8Test.class,
+    Atomic8Test.class,
+    CompletableFutureTest.class,
+    ConcurrentHashMap8Test.class,
+    CountedCompleter8Test.class,
+    DoubleAccumulatorTest.class,
+    DoubleAdderTest.class,
+    ForkJoinPool8Test.class,
+    ForkJoinTask8Test.class,
+    LinkedBlockingDeque8Test.class,
+    LinkedBlockingQueue8Test.class,
+    LongAccumulatorTest.class,
+    LongAdderTest.class,
+    SplittableRandomTest.class,
+    StampedLockTest.class,
+    SubmissionPublisherTest.class,
+    ThreadLocalRandom8Test.class,
+    TimeUnit8Test.class,
+    // AtomicBoolean9Test.class,
+    // AtomicInteger9Test.class,
+    // AtomicIntegerArray9Test.class,
+    // AtomicLong9Test.class,
+    // AtomicLongArray9Test.class,
+    // AtomicReference9Test.class,
+    // AtomicReferenceArray9Test.class,
+    // ExecutorCompletionService9Test.class,
+    // ForkJoinPool9Test.class,
+    SubmissionPublisherTest.class,
+})
+public class JSR166TestCase {
     private static final boolean useSecurityManager =
         Boolean.getBoolean("jsr166.useSecurityManager");
 
@@ -279,9 +400,6 @@ public class JSR166TestCase extends TestCase {
         return 1.0f;
     }
 
-    public JSR166TestCase() { super(); }
-    public JSR166TestCase(String name) { super(name); }
-
     /**
      * A filter for tests to run, matching strings of the form
      * methodName(className), e.g. "testInvokeAll5(ForkJoinPoolTest)"
@@ -294,6 +412,8 @@ public class JSR166TestCase extends TestCase {
         return (regex == null) ? null : Pattern.compile(regex);
     }
 
+    // BEGIN Android-removed: Usage of TestCase.
+    /*
     // Instrumentation to debug very rare, but very annoying hung test runs.
     static volatile TestCase currentTestCase;
     // static volatile int currentRun = 0;
@@ -327,6 +447,8 @@ public class JSR166TestCase extends TestCase {
         thread.setDaemon(true);
         thread.start();
     }
+     */
+    // END Android-removed: Usage of TestCase.
 
 //     public static String cpuModel() {
 //         try {
@@ -338,6 +460,8 @@ public class JSR166TestCase extends TestCase {
 //         } catch (Exception ex) { return null; }
 //     }
 
+    // BEGIN Android-removed: Not used for JUnit4.
+    /*
     public void runBare() throws Throwable {
         currentTestCase = this;
         if (methodFilter == null
@@ -368,14 +492,20 @@ public class JSR166TestCase extends TestCase {
                 System.out.printf("%n%s: %d%n", toString(), elapsedMillis);
         }
     }
+    */
+    // END Android-removed: Not used for JUnit4.
 
     /**
      * Runs all JSR166 unit tests using junit.textui.TestRunner.
      */
     public static void main(String[] args) {
-        main(suite(), args);
+        // Android-changed: Use JUnitCore.main.
+        // main(suite(), args);
+        // org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.JSR166TestCase");
     }
 
+    // BEGIN Android-removed: Not needed for JUnit4.
+    /*
     static class PithyResultPrinter extends junit.textui.ResultPrinter {
         PithyResultPrinter(java.io.PrintStream writer) { super(writer); }
         long runTime;
@@ -397,7 +527,7 @@ public class JSR166TestCase extends TestCase {
     /**
      * Returns a TestRunner that doesn't bother with unnecessary
      * fluff, like printing a "." for each test case.
-     */
+     * /
     static junit.textui.TestRunner newPithyTestRunner() {
         junit.textui.TestRunner runner = new junit.textui.TestRunner();
         runner.setPrinter(new PithyResultPrinter(System.out));
@@ -407,7 +537,7 @@ public class JSR166TestCase extends TestCase {
     /**
      * Runs all unit tests in the given test suite.
      * Actual behavior influenced by jsr166.* system properties.
-     */
+     * /
     static void main(Test suite, String[] args) {
         if (useSecurityManager) {
             System.err.println("Setting a permissive security manager");
@@ -454,6 +584,8 @@ public class JSR166TestCase extends TestCase {
             }
         }
     }
+    */
+    // END Android-removed: Not needed for JUnit4.
 
     public static final double JAVA_CLASS_VERSION;
     public static final String JAVA_SPECIFICATION_VERSION;
@@ -485,9 +617,11 @@ public class JSR166TestCase extends TestCase {
             || JAVA_SPECIFICATION_VERSION.matches("^(1\\.)?[0-9][0-9]$");
     }
 
+    // BEGIN Android-removed: Use JUnit4's SuiteClasses annotation.
+    /*
     /**
      * Collects all JSR166 unit tests as one suite.
-     */
+     * /
     public static Test suite() {
         // Java7+ test classes
         TestSuite suite = newTestSuite(
@@ -604,7 +738,7 @@ public class JSR166TestCase extends TestCase {
         return suite;
     }
 
-    /** Returns list of junit-style test method names in given class. */
+    /** Returns list of junit-style test method names in given class. * /
     public static ArrayList<String> testMethodNames(Class<?> testClass) {
         Method[] methods = testClass.getDeclaredMethods();
         ArrayList<String> names = new ArrayList<>(methods.length);
@@ -622,7 +756,7 @@ public class JSR166TestCase extends TestCase {
     /**
      * Returns junit-style testSuite for the given test class, but
      * parameterized by passing extra data to each test.
-     */
+     * /
     public static <ExtraData> Test parameterizedTestSuite
         (Class<? extends JSR166TestCase> testClass,
          Class<ExtraData> dataClass,
@@ -643,7 +777,7 @@ public class JSR166TestCase extends TestCase {
      * Returns junit-style testSuite for the jdk8 extension of the
      * given test class, but parameterized by passing extra data to
      * each test.  Uses reflection to allow compilation in jdk7.
-     */
+     * /
     public static <ExtraData> Test jdk8ParameterizedTestSuite
         (Class<? extends JSR166TestCase> testClass,
          Class<ExtraData> dataClass,
@@ -664,6 +798,8 @@ public class JSR166TestCase extends TestCase {
             return new TestSuite();
         }
     }
+    */
+    // END Android-removed: Use JUnit4's SuiteClasses annotation.
 
     // Delays for timing-dependent tests, in milliseconds.
 
@@ -760,6 +896,7 @@ public class JSR166TestCase extends TestCase {
         threadFailure.compareAndSet(null, t);
     }
 
+    @Before
     public void setUp() {
         setDelays();
     }
@@ -768,7 +905,7 @@ public class JSR166TestCase extends TestCase {
         String msg = toString() + ": " + String.format(format, args);
         System.err.println(msg);
         dumpTestThreads();
-        throw new AssertionFailedError(msg);
+        fail(msg);
     }
 
     /**
@@ -780,6 +917,7 @@ public class JSR166TestCase extends TestCase {
      *
      * Triggers test case failure if interrupt status is set in the main thread.
      */
+    @After
     public void tearDown() throws Exception {
         Throwable t = threadFailure.getAndSet(null);
         if (t != null) {
@@ -790,10 +928,7 @@ public class JSR166TestCase extends TestCase {
             else if (t instanceof Exception)
                 throw (Exception) t;
             else {
-                AssertionFailedError afe =
-                    new AssertionFailedError(t.toString());
-                afe.initCause(t);
-                throw afe;
+                failWithCause(t);
             }
         }
 
@@ -801,6 +936,20 @@ public class JSR166TestCase extends TestCase {
             tearDownFail("interrupt status set in main thread");
 
         checkForkJoinPoolThreadLeaks();
+    }
+
+    // Android-added: Mechanism for throwing a failure with a specified cause
+    // This is needed since AssertionFailedError has been removed in JUnit 4.
+    public static void failWithCause(Throwable cause, String msg) {
+        try {
+            fail(msg);
+        } catch (Throwable afe) {
+            afe.initCause(cause);
+            throw afe;
+        }
+    }
+    public static void failWithCause(Throwable cause) {
+        failWithCause(cause, cause.toString());
     }
 
     /**
@@ -828,13 +977,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Just like fail(reason), but additionally recording (using
-     * threadRecordFailure) any AssertionFailedError thrown, so that
+     * threadRecordFailure) any AssertionError thrown, so that
      * the current testcase will fail.
      */
     public void threadFail(String reason) {
         try {
             fail(reason);
-        } catch (AssertionFailedError t) {
+        } catch (AssertionError t) {
             threadRecordFailure(t);
             throw t;
         }
@@ -842,13 +991,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Just like assertTrue(b), but additionally recording (using
-     * threadRecordFailure) any AssertionFailedError thrown, so that
+     * threadRecordFailure) any AssertionError thrown, so that
      * the current testcase will fail.
      */
     public void threadAssertTrue(boolean b) {
         try {
             assertTrue(b);
-        } catch (AssertionFailedError t) {
+        } catch (AssertionError t) {
             threadRecordFailure(t);
             throw t;
         }
@@ -856,13 +1005,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Just like assertFalse(b), but additionally recording (using
-     * threadRecordFailure) any AssertionFailedError thrown, so that
+     * threadRecordFailure) any AssertionError thrown, so that
      * the current testcase will fail.
      */
     public void threadAssertFalse(boolean b) {
         try {
             assertFalse(b);
-        } catch (AssertionFailedError t) {
+        } catch (AssertionError t) {
             threadRecordFailure(t);
             throw t;
         }
@@ -870,13 +1019,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Just like assertNull(x), but additionally recording (using
-     * threadRecordFailure) any AssertionFailedError thrown, so that
+     * threadRecordFailure) any AssertionError thrown, so that
      * the current testcase will fail.
      */
     public void threadAssertNull(Object x) {
         try {
             assertNull(x);
-        } catch (AssertionFailedError t) {
+        } catch (AssertionError t) {
             threadRecordFailure(t);
             throw t;
         }
@@ -884,13 +1033,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Just like assertEquals(x, y), but additionally recording (using
-     * threadRecordFailure) any AssertionFailedError thrown, so that
+     * threadRecordFailure) any AssertionError thrown, so that
      * the current testcase will fail.
      */
     public void threadAssertEquals(long x, long y) {
         try {
             assertEquals(x, y);
-        } catch (AssertionFailedError t) {
+        } catch (AssertionError t) {
             threadRecordFailure(t);
             throw t;
         }
@@ -898,13 +1047,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Just like assertEquals(x, y), but additionally recording (using
-     * threadRecordFailure) any AssertionFailedError thrown, so that
+     * threadRecordFailure) any AssertionError thrown, so that
      * the current testcase will fail.
      */
     public void threadAssertEquals(Object x, Object y) {
         try {
             assertEquals(x, y);
-        } catch (AssertionFailedError fail) {
+        } catch (AssertionError fail) {
             threadRecordFailure(fail);
             throw fail;
         } catch (Throwable fail) {
@@ -914,13 +1063,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Just like assertSame(x, y), but additionally recording (using
-     * threadRecordFailure) any AssertionFailedError thrown, so that
+     * threadRecordFailure) any AssertionError thrown, so that
      * the current testcase will fail.
      */
     public void threadAssertSame(Object x, Object y) {
         try {
             assertSame(x, y);
-        } catch (AssertionFailedError fail) {
+        } catch (AssertionError fail) {
             threadRecordFailure(fail);
             throw fail;
         }
@@ -943,7 +1092,7 @@ public class JSR166TestCase extends TestCase {
     /**
      * Records the given exception using {@link #threadRecordFailure},
      * then rethrows the exception, wrapping it in an
-     * AssertionFailedError if necessary.
+     * AssertionError if necessary.
      */
     public void threadUnexpectedException(Throwable t) {
         threadRecordFailure(t);
@@ -953,10 +1102,7 @@ public class JSR166TestCase extends TestCase {
         else if (t instanceof Error)
             throw (Error) t;
         else {
-            AssertionFailedError afe =
-                new AssertionFailedError("unexpected exception: " + t);
-            afe.initCause(t);
-            throw afe;
+            failWithCause(t, "unexpected exception: " + t);
         }
     }
 
@@ -1068,7 +1214,7 @@ public class JSR166TestCase extends TestCase {
      * Useful for running multiple variants of tests that are
      * necessarily individually slow because they must block.
      */
-    void testInParallel(Action ... actions) {
+    protected void testInParallel(Action ... actions) {
         ExecutorService pool = Executors.newCachedThreadPool();
         try (PoolCleaner cleaner = cleaner(pool)) {
             ArrayList<Future<?>> futures = new ArrayList<>(actions.length);
@@ -1462,16 +1608,13 @@ public class JSR166TestCase extends TestCase {
 
     /**
      * Sleeps until the given time has elapsed.
-     * Throws AssertionFailedError if interrupted.
+     * Throws AssertionError if interrupted.
      */
     static void sleep(long millis) {
         try {
             delay(millis);
         } catch (InterruptedException fail) {
-            AssertionFailedError afe =
-                new AssertionFailedError("Unexpected InterruptedException");
-            afe.initCause(fail);
-            throw afe;
+            failWithCause(fail, "Unexpected InterruptedException");
         }
     }
 
@@ -1579,7 +1722,7 @@ public class JSR166TestCase extends TestCase {
             assertEquals(expectedValue, f.get(timeoutMillis, MILLISECONDS));
         } catch (Throwable fail) { threadUnexpectedException(fail); }
         if (millisElapsedSince(startTime) > timeoutMillis/2)
-            throw new AssertionFailedError("timed get did not return promptly");
+            fail("timed get did not return promptly");
     }
 
     <T> void checkTimedGet(Future<T> f, T expectedValue) {
@@ -2030,13 +2173,11 @@ public class JSR166TestCase extends TestCase {
             try {
                 return super.await(2 * LONG_DELAY_MS, MILLISECONDS);
             } catch (TimeoutException timedOut) {
-                throw new AssertionFailedError("timed out");
+                fail("timed out");
             } catch (Exception fail) {
-                AssertionFailedError afe =
-                    new AssertionFailedError("Unexpected exception: " + fail);
-                afe.initCause(fail);
-                throw afe;
+                failWithCause(fail, "Unexpected exception: " + fail);
             }
+            return -1;
         }
     }
 
@@ -2159,12 +2300,8 @@ public class JSR166TestCase extends TestCase {
             catch (Throwable t) {
                 threw = true;
                 if (!expectedExceptionClass.isInstance(t)) {
-                    AssertionFailedError afe =
-                        new AssertionFailedError
-                        ("Expected " + expectedExceptionClass.getName() +
-                         ", got " + t.getClass().getName());
-                    afe.initCause(t);
-                    threadUnexpectedException(afe);
+                    failWithCause(t, "Expected " + expectedExceptionClass.getName() +
+                            ", got " + t.getClass().getName());
                 }
             }
             if (!threw)

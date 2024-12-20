@@ -1,12 +1,7 @@
 {
   "presubmit": [
     {
-      "name": "CtsLibcoreTestCases",
-      "options": [
-        {
-          "include-filter": "libcore.org.json"
-        }
-      ]
+      "name": "CtsLibcoreTestCases_json"
     }
   ]
 }

@@ -98,8 +98,14 @@ public class CompensatedSums {
         }
 
         Assert.assertTrue(jdkParallelStreamError <= goodParallelStreamError);
-        // Android-removed: due to limited number of iterations this check might
+        // Android-added: due to limited number of iterations this check might
         // occasionally fail (b/284693092).
+        /*
+         * Due to floating-point addition being inherently non-associative,
+         * and due to the unpredictable scheduling of the threads used
+         * in parallel streams, this assertion can fail intermittently,
+         * hence is suppressed for now.
+         */
         // Assert.assertTrue(badParallelStreamError >= jdkParallelStreamError);
 
         Assert.assertTrue(goodSequentialStreamError >= jdkSequentialStreamError);

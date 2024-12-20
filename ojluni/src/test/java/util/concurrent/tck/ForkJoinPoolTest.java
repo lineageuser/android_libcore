@@ -34,6 +34,14 @@
 package test.java.util.concurrent.tck;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
@@ -55,18 +63,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class ForkJoinPoolTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.ForkJoinPoolTest");
     }
-
-    public static Test suite() {
-        return new TestSuite(ForkJoinPoolTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(ForkJoinPoolTest.class);
+    // }
 
     /*
      * Testing coverage notes:
@@ -184,6 +196,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
      * parallelism and async mode policies, no active threads or
      * tasks, and quiescent running state.
      */
+    @Test
     public void testDefaultInitialState() {
         ForkJoinPool p = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -204,6 +217,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * Constructor throws if size argument is less than zero
      */
+    @Test
     public void testConstructor1() {
         try {
             new ForkJoinPool(-1);
@@ -214,6 +228,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * Constructor throws if factory argument is null
      */
+    @Test
     public void testConstructor2() {
         try {
             new ForkJoinPool(1, null, null, false);
@@ -224,6 +239,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * getParallelism returns size set in constructor
      */
+    @Test
     public void testGetParallelism() {
         ForkJoinPool p = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -234,6 +250,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * getPoolSize returns number of started workers.
      */
+    @Test
     public void testGetPoolSize() {
         final CountDownLatch taskStarted = new CountDownLatch(1);
         final CountDownLatch done = new CountDownLatch(1);
@@ -260,6 +277,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * awaitTermination on a non-shutdown pool times out
      */
+    @Test
     public void testAwaitTermination_timesOut() throws InterruptedException {
         ForkJoinPool p = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -292,6 +310,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
      * Additionally tests: Overriding ForkJoinWorkerThread.onStart
      * performs its defined action
      */
+    @Test
     public void testSetUncaughtExceptionHandler() throws InterruptedException {
         final CountDownLatch uehInvoked = new CountDownLatch(1);
         final Thread.UncaughtExceptionHandler ueh =
@@ -320,6 +339,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
      * the task has completed successfully, and construction
      * parameters continue to hold
      */
+    @Test
     public void testIsQuiescent() throws Exception {
         ForkJoinPool p = new ForkJoinPool(2);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -331,7 +351,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
                        p.getFactory());
             while (! p.isQuiescent()) {
                 if (millisElapsedSince(startTime) > LONG_DELAY_MS)
-                    throw new AssertionFailedError("timed out");
+                    fail("timed out");
                 assertFalse(p.getAsyncMode());
                 assertFalse(p.isShutdown());
                 assertFalse(p.isTerminating());
@@ -359,6 +379,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * Completed submit(ForkJoinTask) returns result
      */
+    @Test
     public void testSubmitForkJoinTask() throws Throwable {
         ForkJoinPool p = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -370,6 +391,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * A task submitted after shutdown is rejected
      */
+    @Test
     public void testSubmitAfterShutdown() {
         ForkJoinPool p = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -385,6 +407,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * Pool maintains parallelism when using ManagedBlocker
      */
+    @Test
     public void testBlockingForkJoinTask() throws Throwable {
         ForkJoinPool p = new ForkJoinPool(4);
         try {
@@ -401,6 +424,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * pollSubmission returns unexecuted submitted task, if present
      */
+    @Test
     public void testPollSubmission() {
         final CountDownLatch done = new CountDownLatch(1);
         SubFJP p = new SubFJP();
@@ -418,6 +442,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * drainTasksTo transfers unexecuted submitted tasks, if present
      */
+    @Test
     public void testDrainTasksTo() {
         final CountDownLatch done = new CountDownLatch(1);
         SubFJP p = new SubFJP();
@@ -441,6 +466,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * execute(runnable) runs it to completion
      */
+    @Test
     public void testExecuteRunnable() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -460,6 +486,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * Completed submit(callable) returns result
      */
+    @Test
     public void testSubmitCallable() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -473,6 +500,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * Completed submit(runnable) returns successfully
      */
+    @Test
     public void testSubmitRunnable() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -486,6 +514,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * Completed submit(runnable, result) returns result
      */
+    @Test
     public void testSubmitRunnable2() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -499,6 +528,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * A submitted privileged action runs to completion
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testSubmitPrivilegedAction() throws Exception {
         final Callable callable = Executors.callable(new PrivilegedAction() {
                 public Object run() { return TEST_STRING; }});
@@ -517,6 +548,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * A submitted privileged exception action runs to completion
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testSubmitPrivilegedExceptionAction() throws Exception {
         final Callable callable =
             Executors.callable(new PrivilegedExceptionAction() {
@@ -536,6 +569,8 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * A submitted failed privileged exception action reports exception
      */
+    @Test
+    @Ignore("Not run in Android")
     public void testSubmitFailedPrivilegedExceptionAction() throws Exception {
         final Callable callable =
             Executors.callable(new PrivilegedExceptionAction() {
@@ -560,6 +595,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * execute(null runnable) throws NullPointerException
      */
+    @Test
     public void testExecuteNullRunnable() {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -573,6 +609,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * submit(null callable) throws NullPointerException
      */
+    @Test
     public void testSubmitNullCallable() {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -586,6 +623,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * submit(callable).get() throws InterruptedException if interrupted
      */
+    @Test
     public void testInterruptedSubmit() throws InterruptedException {
         final CountDownLatch submitted    = new CountDownLatch(1);
         final CountDownLatch quittingTime = new CountDownLatch(1);
@@ -613,6 +651,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
      * get of submit(callable) throws ExecutionException if callable
      * throws exception
      */
+    @Test
     public void testSubmitEE() throws Throwable {
         ForkJoinPool p = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(p)) {
@@ -630,6 +669,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAny(null) throws NullPointerException
      */
+    @Test
     public void testInvokeAny1() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -643,6 +683,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAny(empty collection) throws IllegalArgumentException
      */
+    @Test
     public void testInvokeAny2() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -656,6 +697,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws NullPointerException if c has a single null element
      */
+    @Test
     public void testInvokeAny3() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -671,6 +713,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws NullPointerException if c has null elements
      */
+    @Test
     public void testInvokeAny4() throws Throwable {
         CountDownLatch latch = new CountDownLatch(1);
         ExecutorService e = new ForkJoinPool(1);
@@ -689,6 +732,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAny(c) throws ExecutionException if no task in c completes
      */
+    @Test
     public void testInvokeAny5() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -706,6 +750,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAny(c) returns result of some task in c if at least one completes
      */
+    @Test
     public void testInvokeAny6() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -720,6 +765,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAll(null) throws NullPointerException
      */
+    @Test
     public void testInvokeAll1() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -733,6 +779,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testInvokeAll2() throws InterruptedException {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -745,6 +792,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAll(c) throws NullPointerException if c has null elements
      */
+    @Test
     public void testInvokeAll3() throws InterruptedException {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -762,6 +810,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
      * get of returned element of invokeAll(c) throws
      * ExecutionException on failed task
      */
+    @Test
     public void testInvokeAll4() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -781,6 +830,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * invokeAll(c) returns results of all completed tasks in c
      */
+    @Test
     public void testInvokeAll5() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -797,6 +847,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAny(null) throws NullPointerException
      */
+    @Test
     public void testTimedInvokeAny1() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -810,6 +861,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAny(null time unit) throws NullPointerException
      */
+    @Test
     public void testTimedInvokeAnyNullTimeUnit() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -825,6 +877,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAny(empty collection) throws IllegalArgumentException
      */
+    @Test
     public void testTimedInvokeAny2() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -839,6 +892,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws NullPointerException if c has null elements
      */
+    @Test
     public void testTimedInvokeAny3() throws Throwable {
         CountDownLatch latch = new CountDownLatch(1);
         ExecutorService e = new ForkJoinPool(1);
@@ -857,6 +911,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) throws ExecutionException if no task completes
      */
+    @Test
     public void testTimedInvokeAny4() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -876,6 +931,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAny(c) returns result of some task in c
      */
+    @Test
     public void testTimedInvokeAny5() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -892,6 +948,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAll(null) throws NullPointerException
      */
+    @Test
     public void testTimedInvokeAll1() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -905,6 +962,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAll(null time unit) throws NullPointerException
      */
+    @Test
     public void testTimedInvokeAllNullTimeUnit() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -920,6 +978,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAll(empty collection) returns empty collection
      */
+    @Test
     public void testTimedInvokeAll2() throws InterruptedException {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -933,6 +992,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) throws NullPointerException if c has null elements
      */
+    @Test
     public void testTimedInvokeAll3() throws InterruptedException {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -949,6 +1009,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * get of returned element of invokeAll(c) throws exception on failed task
      */
+    @Test
     public void testTimedInvokeAll4() throws Throwable {
         ExecutorService e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {
@@ -969,6 +1030,7 @@ public class ForkJoinPoolTest extends JSR166TestCase {
     /**
      * timed invokeAll(c) returns results of all completed tasks in c
      */
+    @Test
     public void testTimedInvokeAll5() throws Throwable {
         ForkJoinPool e = new ForkJoinPool(1);
         try (PoolCleaner cleaner = cleaner(e)) {

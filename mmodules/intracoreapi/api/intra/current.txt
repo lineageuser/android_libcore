@@ -137,7 +137,7 @@ package libcore.net {
 package libcore.util {
 
   @libcore.api.IntraCoreApi public class NativeAllocationRegistry {
-    method @libcore.api.IntraCoreApi public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull ClassLoader, long);
+    method @NonNull @libcore.api.IntraCoreApi public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull ClassLoader, long);
     method @NonNull @libcore.api.IntraCoreApi public Runnable registerNativeAllocation(@NonNull Object, long);
   }
 

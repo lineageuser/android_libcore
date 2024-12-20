@@ -33,111 +33,109 @@
 
 
 JNIEXPORT jdouble JNICALL
-StrictMath_cos(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_cos(jdouble d)
 {
     return (jdouble) ieee_cos((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_sin(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_sin(jdouble d)
 {
     return (jdouble) ieee_sin((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_tan(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_tan(jdouble d)
 {
     return (jdouble) ieee_tan((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_asin(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_asin(jdouble d)
 {
     return (jdouble) ieee_asin((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_acos(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_acos(jdouble d)
 {
     return (jdouble) ieee_acos((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_atan(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_atan(jdouble d)
 {
     return (jdouble) ieee_atan((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_exp(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_exp(jdouble d)
 {
     return (jdouble) ieee_exp((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_log(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_log(jdouble d)
 {
     return (jdouble) ieee_log((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_log10(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_log10(jdouble d)
 {
     return (jdouble) ieee_log10((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_sqrt(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_sqrt(jdouble d)
 {
     return (jdouble) ieee_sqrt((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_cbrt(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_cbrt(jdouble d)
 {
     return (jdouble) ieee_cbrt((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_atan2(JNIEnv *env, jclass unused, jdouble d1, jdouble d2)
+StrictMath_atan2(jdouble d1, jdouble d2)
 {
     return (jdouble) ieee_atan2((double)d1, (double)d2);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_pow(JNIEnv *env, jclass unused, jdouble d1, jdouble d2)
+StrictMath_pow(jdouble d1, jdouble d2)
 {
     return (jdouble) ieee_pow((double)d1, (double)d2);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_IEEEremainder(JNIEnv *env, jclass unused,
-                                  jdouble dividend,
-                                  jdouble divisor)
+StrictMath_IEEEremainder(jdouble dividend, jdouble divisor)
 {
     return (jdouble) ieee_remainder(dividend, divisor);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_cosh(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_cosh(jdouble d)
 {
     return (jdouble) ieee_cosh((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_sinh(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_sinh(jdouble d)
 {
     return (jdouble) ieee_sinh((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_tanh(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_tanh(jdouble d)
 {
     return (jdouble) ieee_tanh((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_hypot(JNIEnv *env, jclass unused, jdouble x, jdouble y)
+StrictMath_hypot(jdouble x, jdouble y)
 {
     return (jdouble) ieee_hypot((double)x, (double)y);
 }
@@ -145,13 +143,13 @@ StrictMath_hypot(JNIEnv *env, jclass unused, jdouble x, jdouble y)
 
 
 JNIEXPORT jdouble JNICALL
-StrictMath_log1p(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_log1p(jdouble d)
 {
     return (jdouble) ieee_log1p((double)d);
 }
 
 JNIEXPORT jdouble JNICALL
-StrictMath_expm1(JNIEnv *env, jclass unused, jdouble d)
+StrictMath_expm1(jdouble d)
 {
     return (jdouble) ieee_expm1((double)d);
 }

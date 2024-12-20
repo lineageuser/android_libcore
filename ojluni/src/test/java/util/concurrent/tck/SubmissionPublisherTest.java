@@ -33,6 +33,15 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -41,21 +50,26 @@ import java.util.concurrent.Flow;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.atomic.AtomicInteger;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import static java.util.concurrent.Flow.Subscriber;
 import static java.util.concurrent.Flow.Subscription;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class SubmissionPublisherTest extends JSR166TestCase {
 
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.SubmissionPublisherTest");
     }
-    public static Test suite() {
-        return new TestSuite(SubmissionPublisherTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(SubmissionPublisherTest.class);
+    // }
 
     final Executor basicExecutor = basicPublisher().getExecutor();
 
@@ -174,6 +188,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * is not closed, has default buffer size, and uses the
      * defaultExecutor
      */
+    @Test
     public void testConstructor1() {
         SubmissionPublisher<Integer> p = new SubmissionPublisher<>();
         checkInitialState(p);
@@ -189,6 +204,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * A new SubmissionPublisher has no subscribers, is not closed,
      * has the given buffer size, and uses the given executor
      */
+    @Test
     public void testConstructor2() {
         Executor e = Executors.newFixedThreadPool(1);
         SubmissionPublisher<Integer> p = new SubmissionPublisher<>(e, 8);
@@ -201,6 +217,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * A null Executor argument to SubmissionPublisher constructor
      * throws NullPointerException
      */
+    @Test
     public void testConstructor3() {
         try {
             new SubmissionPublisher<Integer>(null, 8);
@@ -212,6 +229,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * A negative capacity argument to SubmissionPublisher constructor
      * throws IllegalArgumentException
      */
+    @Test
     public void testConstructor4() {
         Executor e = Executors.newFixedThreadPool(1);
         try {
@@ -226,6 +244,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * subsequent close or closeExceptionally has no additional
      * effect.
      */
+    @Test
     public void testClose() {
         SubmissionPublisher<Integer> p = basicPublisher();
         checkInitialState(p);
@@ -248,6 +267,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * submission; a subsequent close or closeExceptionally has no
      * additional effect.
      */
+    @Test
     public void testCloseExceptionally() {
         SubmissionPublisher<Integer> p = basicPublisher();
         checkInitialState(p);
@@ -270,6 +290,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * hasSubscribers, isSubscribed is true, and existing
      * subscriptions are unaffected.
      */
+    @Test
     public void testSubscribe1() {
         TestSubscriber s = new TestSubscriber();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -303,6 +324,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * If closed, upon subscription, the subscriber's onComplete
      * method is invoked
      */
+    @Test
     public void testSubscribe2() {
         TestSubscriber s = new TestSubscriber();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -318,6 +340,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * If closedExceptionally, upon subscription, the subscriber's
      * onError method is invoked
      */
+    @Test
     public void testSubscribe3() {
         TestSubscriber s = new TestSubscriber();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -335,6 +358,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * Upon attempted resubscription, the subscriber's onError is
      * called and the subscription is cancelled.
      */
+    @Test
     public void testSubscribe4() {
         TestSubscriber s = new TestSubscriber();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -358,6 +382,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * An exception thrown in onSubscribe causes onError
      */
+    @Test
     public void testSubscribe5() {
         TestSubscriber s = new TestSubscriber();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -372,6 +397,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * subscribe(null) throws NPE
      */
+    @Test
     public void testSubscribe6() {
         SubmissionPublisher<Integer> p = basicPublisher();
         try {
@@ -384,6 +410,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Closing a publisher causes onComplete to subscribers
      */
+    @Test
     public void testCloseCompletes() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -406,6 +433,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * Closing a publisher exceptionally causes onError to subscribers
      * after they are subscribed
      */
+    @Test
     public void testCloseExceptionallyError() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -428,6 +456,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Cancelling a subscription eventually causes no more onNexts to be issued
      */
+    @Test
     public void testCancel() {
         SubmissionPublisher<Integer> p =
             new SubmissionPublisher<>(basicExecutor, 4); // must be < 20
@@ -451,6 +480,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Throwing an exception in onNext causes onError
      */
+    @Test
     public void testThrowOnNext() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -472,6 +502,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * If a handler is supplied in constructor, it is invoked when
      * subscriber throws an exception in onNext
      */
+    @Test
     public void testThrowOnNextHandler() {
         AtomicInteger calls = new AtomicInteger();
         SubmissionPublisher<Integer> p = new SubmissionPublisher<>(
@@ -496,6 +527,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * onNext items are issued in the same order to each subscriber
      */
+    @Test
     public void testOrder() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -516,6 +548,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * onNext is issued only if requested
      */
+    @Test
     public void testRequest1() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -543,6 +576,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * onNext is not issued when requests become zero
      */
+    @Test
     public void testRequest2() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -565,6 +599,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Non-positive request causes error
      */
+    @Test
     public void testRequest3() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -596,6 +631,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * estimateMinimumDemand reports 0 until request, nonzero after
      * request
      */
+    @Test
     public void testEstimateMinimumDemand() {
         TestSubscriber s = new TestSubscriber();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -610,6 +646,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * submit to a publisher with no subscribers returns lag 0
      */
+    @Test
     public void testEmptySubmit() {
         SubmissionPublisher<Integer> p = basicPublisher();
         assertEquals(0, p.submit(1));
@@ -618,6 +655,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * submit(null) throws NPE
      */
+    @Test
     public void testNullSubmit() {
         SubmissionPublisher<Integer> p = basicPublisher();
         try {
@@ -630,6 +668,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * submit returns number of lagged items, compatible with result
      * of estimateMaximumLag.
      */
+    @Test
     public void testLaggedSubmit() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -659,6 +698,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * submit eventually issues requested items when buffer capacity is 1
      */
+    @Test
     public void testCap1Submit() {
         SubmissionPublisher<Integer> p
             = new SubmissionPublisher<>(basicExecutor, 1);
@@ -692,6 +732,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * offer to a publisher with no subscribers returns lag 0
      */
+    @Test
     public void testEmptyOffer() {
         SubmissionPublisher<Integer> p = basicPublisher();
         assertEquals(0, p.offer(1, null));
@@ -700,6 +741,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * offer(null) throws NPE
      */
+    @Test
     public void testNullOffer() {
         SubmissionPublisher<Integer> p = basicPublisher();
         try {
@@ -711,6 +753,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * offer returns number of lagged items if not saturated
      */
+    @Test
     public void testLaggedOffer() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -737,6 +780,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * offer reports drops if saturated
      */
+    @Test
     public void testDroppedOffer() {
         SubmissionPublisher<Integer> p
             = new SubmissionPublisher<>(basicExecutor, 4);
@@ -765,6 +809,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * offer invokes drop handler if saturated
      */
+    @Test
     public void testHandledDroppedOffer() {
         AtomicInteger calls = new AtomicInteger();
         SubmissionPublisher<Integer> p
@@ -793,6 +838,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * offer succeeds if drop handler forces request
      */
+    @Test
     public void testRecoveredHandledDroppedOffer() {
         AtomicInteger calls = new AtomicInteger();
         SubmissionPublisher<Integer> p
@@ -820,6 +866,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Timed offer to a publisher with no subscribers returns lag 0
      */
+    @Test
     public void testEmptyTimedOffer() {
         SubmissionPublisher<Integer> p = basicPublisher();
         long startTime = System.nanoTime();
@@ -830,6 +877,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Timed offer with null item or TimeUnit throws NPE
      */
+    @Test
     public void testNullTimedOffer() {
         SubmissionPublisher<Integer> p = basicPublisher();
         long startTime = System.nanoTime();
@@ -847,6 +895,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Timed offer returns number of lagged items if not saturated
      */
+    @Test
     public void testLaggedTimedOffer() {
         SubmissionPublisher<Integer> p = basicPublisher();
         TestSubscriber s1 = new TestSubscriber();
@@ -875,6 +924,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Timed offer reports drops if saturated
      */
+    @Test
     public void testDroppedTimedOffer() {
         SubmissionPublisher<Integer> p
             = new SubmissionPublisher<>(basicExecutor, 4);
@@ -906,6 +956,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Timed offer invokes drop handler if saturated
      */
+    @Test
     public void testHandledDroppedTimedOffer() {
         AtomicInteger calls = new AtomicInteger();
         SubmissionPublisher<Integer> p
@@ -936,6 +987,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * Timed offer succeeds if drop handler forces request
      */
+    @Test
     public void testRecoveredHandledDroppedTimedOffer() {
         AtomicInteger calls = new AtomicInteger();
         SubmissionPublisher<Integer> p
@@ -967,6 +1019,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * consume returns a CompletableFuture that is done when
      * publisher completes
      */
+    @Test
     public void testConsume() {
         AtomicInteger sum = new AtomicInteger();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -983,6 +1036,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * consume(null) throws NPE
      */
+    @Test
     public void testConsumeNPE() {
         SubmissionPublisher<Integer> p = basicPublisher();
         try {
@@ -994,6 +1048,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
     /**
      * consume eventually stops processing published items if cancelled
      */
+    @Test
     public void testCancelledConsume() {
         AtomicInteger count = new AtomicInteger();
         SubmissionPublisher<Integer> p = basicPublisher();
@@ -1010,6 +1065,7 @@ public class SubmissionPublisherTest extends JSR166TestCase {
      * JDK-8187947: A race condition in SubmissionPublisher
      * cvs update -D '2017-11-25' src/main/java/util/concurrent/SubmissionPublisher.java && ant -Djsr166.expensiveTests=true -Djsr166.tckTestClass=SubmissionPublisherTest -Djsr166.methodFilter=testMissedSignal tck; cvs update -A src/main/java/util/concurrent/SubmissionPublisher.java
      */
+    @Test
     public void testMissedSignal_8187947() throws Exception {
         if (!atLeastJava9()) return; // backport to jdk8 too hard
         final int N = expensiveTests ? (1 << 20) : (1 << 10);

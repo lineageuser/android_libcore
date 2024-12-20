@@ -13176,7 +13176,7 @@ package java.util {
     method public void trimToSize();
   }
 
-  public class Arrays {
+  public final class Arrays {
     method @NonNull @java.lang.SafeVarargs public static <T> java.util.List<T> asList(@NonNull T...);
     method public static int binarySearch(@NonNull long[], long);
     method public static int binarySearch(@NonNull long[], int, int, long);
@@ -14053,6 +14053,8 @@ package java.util {
     method public Object clone();
     method public java.util.Set<java.util.Map.Entry<K,V>> entrySet();
     method public void forEach(java.util.function.BiConsumer<? super K,? super V>);
+    method @FlaggedApi("com.android.libcore.openjdk_21_v1_apis") public boolean remove(Object, Object);
+    method @FlaggedApi("com.android.libcore.openjdk_21_v1_apis") public boolean replace(K, V, V);
     method public void replaceAll(java.util.function.BiFunction<? super K,? super V,? extends V>);
   }
 
@@ -15298,6 +15300,7 @@ package java.util {
     ctor public WeakHashMap(@NonNull java.util.Map<? extends K,? extends V>);
     method @NonNull public java.util.Set<java.util.Map.Entry<K,V>> entrySet();
     method public void forEach(@NonNull java.util.function.BiConsumer<? super K,? super V>);
+    method @FlaggedApi("com.android.libcore.openjdk_21_v1_apis") @NonNull public static <K, V> java.util.WeakHashMap<K,V> newWeakHashMap(int);
     method public void replaceAll(@NonNull java.util.function.BiFunction<? super K,? super V,? extends V>);
   }
 

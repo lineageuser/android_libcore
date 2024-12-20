@@ -34,22 +34,37 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.atomic.AtomicMarkableReference;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicMarkableReferenceTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicMarkableReferenceTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicMarkableReferenceTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicMarkableReferenceTest.class);
+    // }
 
     /**
      * constructor initializes to given reference and mark
      */
+    @Test
     public void testConstructor() {
         AtomicMarkableReference ai = new AtomicMarkableReference(one, false);
         assertSame(one, ai.getReference());
@@ -62,6 +77,7 @@ public class AtomicMarkableReferenceTest extends JSR166TestCase {
     /**
      * get returns the last values of reference and mark set
      */
+    @Test
     public void testGetSet() {
         boolean[] mark = new boolean[1];
         AtomicMarkableReference ai = new AtomicMarkableReference(one, false);
@@ -84,6 +100,7 @@ public class AtomicMarkableReferenceTest extends JSR166TestCase {
     /**
      * attemptMark succeeds in single thread
      */
+    @Test
     public void testAttemptMark() {
         boolean[] mark = new boolean[1];
         AtomicMarkableReference ai = new AtomicMarkableReference(one, false);
@@ -98,6 +115,7 @@ public class AtomicMarkableReferenceTest extends JSR166TestCase {
      * compareAndSet succeeds in changing values if equal to expected reference
      * and mark else fails
      */
+    @Test
     public void testCompareAndSet() {
         boolean[] mark = new boolean[1];
         AtomicMarkableReference ai = new AtomicMarkableReference(one, false);
@@ -122,6 +140,7 @@ public class AtomicMarkableReferenceTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for reference value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws Exception {
         final AtomicMarkableReference ai = new AtomicMarkableReference(one, false);
         Thread t = new Thread(new CheckedRunnable() {
@@ -142,6 +161,7 @@ public class AtomicMarkableReferenceTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for mark value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads2() throws Exception {
         final AtomicMarkableReference ai = new AtomicMarkableReference(one, false);
         Thread t = new Thread(new CheckedRunnable() {
@@ -162,6 +182,7 @@ public class AtomicMarkableReferenceTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing values when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         boolean[] mark = new boolean[1];
         AtomicMarkableReference ai = new AtomicMarkableReference(one, false);

@@ -34,23 +34,38 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLongArray;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class AtomicLongArrayTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.AtomicLongArrayTest");
     }
-    public static Test suite() {
-        return new TestSuite(AtomicLongArrayTest.class);
-    }
+    // public static Test suite() {
+    //     return new TestSuite(AtomicLongArrayTest.class);
+    // }
 
     /**
      * constructor creates array of given size with all elements zero
      */
+    @Test
     public void testConstructor() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++)
@@ -60,6 +75,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * constructor with null array throws NPE
      */
+    @Test
     public void testConstructor2NPE() {
         try {
             long[] a = null;
@@ -71,6 +87,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * constructor with array is of same size and has all elements
      */
+    @Test
     public void testConstructor2() {
         long[] a = { 17L, 3L, -42L, 99L, -7L };
         AtomicLongArray aa = new AtomicLongArray(a);
@@ -82,6 +99,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * get and set for out of bound indices throw IndexOutOfBoundsException
      */
+    @Test
     public void testIndexing() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int index : new int[] { -1, SIZE }) {
@@ -119,6 +137,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * get returns the last value set at index
      */
+    @Test
     public void testGetSet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -134,6 +153,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * get returns the last value lazySet at index by same thread
      */
+    @Test
     public void testGetLazySet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -149,6 +169,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * compareAndSet succeeds in changing value if equal to expected else fails
      */
+    @Test
     public void testCompareAndSet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -167,6 +188,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
      * compareAndSet in one thread enables another waiting for value
      * to succeed
      */
+    @Test
     public void testCompareAndSetInMultipleThreads() throws InterruptedException {
         final AtomicLongArray a = new AtomicLongArray(1);
         a.set(0, 1);
@@ -187,6 +209,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
      * repeated weakCompareAndSet succeeds in changing value when equal
      * to expected
      */
+    @Test
     public void testWeakCompareAndSet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -202,6 +225,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * getAndSet returns previous value and sets to given value at given index
      */
+    @Test
     public void testGetAndSet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -215,6 +239,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * getAndAdd returns previous value and adds given value
      */
+    @Test
     public void testGetAndAdd() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -229,6 +254,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * getAndDecrement returns previous value and decrements
      */
+    @Test
     public void testGetAndDecrement() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -242,6 +268,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * getAndIncrement returns previous value and increments
      */
+    @Test
     public void testGetAndIncrement() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -259,6 +286,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * addAndGet adds given value to current, and returns current value
      */
+    @Test
     public void testAddAndGet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -273,6 +301,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * decrementAndGet decrements and returns current value
      */
+    @Test
     public void testDecrementAndGet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -287,6 +316,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * incrementAndGet increments and returns current value
      */
+    @Test
     public void testIncrementAndGet() {
         AtomicLongArray aa = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++) {
@@ -327,6 +357,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
      * Multiple threads using same array of counters successfully
      * update a number of times equal to total count
      */
+    @Test
     public void testCountingInMultipleThreads() throws InterruptedException {
         final AtomicLongArray aa = new AtomicLongArray(SIZE);
         long countdown = 10000;
@@ -344,6 +375,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * a deserialized serialized array holds same values
      */
+    @Test
     public void testSerialization() throws Exception {
         AtomicLongArray x = new AtomicLongArray(SIZE);
         for (int i = 0; i < SIZE; i++)
@@ -359,6 +391,7 @@ public class AtomicLongArrayTest extends JSR166TestCase {
     /**
      * toString returns current value.
      */
+    @Test
     public void testToString() {
         long[] a = { 17, 3, -42, 99, -7 };
         AtomicLongArray aa = new AtomicLongArray(a);

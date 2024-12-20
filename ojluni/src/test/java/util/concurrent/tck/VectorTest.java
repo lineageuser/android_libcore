@@ -33,40 +33,55 @@
  */
 
 package test.java.util.concurrent.tck;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Vector;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class VectorTest extends JSR166TestCase {
+    // Android-changed: Use JUnitCore.main.
     public static void main(String[] args) {
-        main(suite(), args);
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.VectorTest");
     }
 
-    public static Test suite() {
-        class Implementation implements CollectionImplementation {
-            public Class<?> klazz() { return Vector.class; }
-            public List emptyCollection() { return new Vector(); }
-            public Object makeElement(int i) { return i; }
-            public boolean isConcurrent() { return false; }
-            public boolean permitsNulls() { return true; }
-        }
-        class SubListImplementation extends Implementation {
-            public List emptyCollection() {
-                return super.emptyCollection().subList(0, 0);
-            }
-        }
-        return newTestSuite(
-                VectorTest.class,
-                CollectionTest.testSuite(new Implementation()),
-                CollectionTest.testSuite(new SubListImplementation()));
-    }
+    // public static Test suite() {
+    //     class Implementation implements CollectionImplementation {
+    //         public Class<?> klazz() { return Vector.class; }
+    //         public List emptyCollection() { return new Vector(); }
+    //         public Object makeElement(int i) { return i; }
+    //         public boolean isConcurrent() { return false; }
+    //         public boolean permitsNulls() { return true; }
+    //     }
+    //     class SubListImplementation extends Implementation {
+    //         public List emptyCollection() {
+    //             return super.emptyCollection().subList(0, 0);
+    //         }
+    //     }
+    //     return newTestSuite(
+    //             VectorTest.class,
+    //             CollectionTest.testSuite(new Implementation()),
+    //             CollectionTest.testSuite(new SubListImplementation()));
+    // }
 
     /**
      * tests for setSize()
      */
+    @Test
     public void testSetSize() {
         final Vector v = new Vector();
         for (int n : new int[] { 100, 5, 50 }) {

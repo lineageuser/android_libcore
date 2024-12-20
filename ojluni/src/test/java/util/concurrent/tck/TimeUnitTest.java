@@ -41,27 +41,41 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
+// Android-changed: Use JUnit4.
+@RunWith(JUnit4.class)
 public class TimeUnitTest extends JSR166TestCase {
-    public static void main(String[] args) {
-        main(suite(), args);
-    }
 
-    public static Test suite() {
-        return new TestSuite(TimeUnitTest.class);
+    // Android-changed: Use JUnitCore.main.
+    public static void main(String[] args) {
+        // main(suite(), args);
+        org.junit.runner.JUnitCore.main("test.java.util.concurrent.tck.TimeUnitTest");
     }
+    // public static Test suite() {
+    //     return new TestSuite(TimeUnitTest.class);
+    // }
 
     // (loops to 88888 check increments at all time divisions.)
 
     /**
      * convert correctly converts sample values across the units
      */
+    @Test
     public void testConvert() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t*60*60*24,
@@ -139,6 +153,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toNanos correctly converts sample values in different units to
      * nanoseconds
      */
+    @Test
     public void testToNanos() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t*1000000000L*60*60*24,
@@ -162,6 +177,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toMicros correctly converts sample values in different units to
      * microseconds
      */
+    @Test
     public void testToMicros() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t*1000000L*60*60*24,
@@ -185,6 +201,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toMillis correctly converts sample values in different units to
      * milliseconds
      */
+    @Test
     public void testToMillis() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t*1000L*60*60*24,
@@ -208,6 +225,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toSeconds correctly converts sample values in different units to
      * seconds
      */
+    @Test
     public void testToSeconds() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t*60*60*24,
@@ -231,6 +249,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toMinutes correctly converts sample values in different units to
      * minutes
      */
+    @Test
     public void testToMinutes() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t*60*24,
@@ -254,6 +273,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toHours correctly converts sample values in different units to
      * hours
      */
+    @Test
     public void testToHours() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t*24,
@@ -277,6 +297,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toDays correctly converts sample values in different units to
      * days
      */
+    @Test
     public void testToDays() {
         for (long t = 0; t < 88888; ++t) {
             assertEquals(t,
@@ -300,6 +321,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * convert saturates positive too-large values to Long.MAX_VALUE
      * and negative to LONG.MIN_VALUE
      */
+    @Test
     public void testConvertSaturate() {
         assertEquals(Long.MAX_VALUE,
                      NANOSECONDS.convert(Long.MAX_VALUE / 2, SECONDS));
@@ -344,6 +366,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toNanos saturates positive too-large values to Long.MAX_VALUE
      * and negative to LONG.MIN_VALUE
      */
+    @Test
     public void testToNanosSaturate() {
         assertEquals(Long.MAX_VALUE,
                      MILLISECONDS.toNanos(Long.MAX_VALUE / 2));
@@ -375,6 +398,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toMicros saturates positive too-large values to Long.MAX_VALUE
      * and negative to LONG.MIN_VALUE
      */
+    @Test
     public void testToMicrosSaturate() {
         for (TimeUnit x : TimeUnit.values()) {
             long ratio = x.toNanos(1) / MICROSECONDS.toNanos(1);
@@ -401,6 +425,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toMillis saturates positive too-large values to Long.MAX_VALUE
      * and negative to LONG.MIN_VALUE
      */
+    @Test
     public void testToMillisSaturate() {
         for (TimeUnit x : TimeUnit.values()) {
             long ratio = x.toNanos(1) / MILLISECONDS.toNanos(1);
@@ -427,6 +452,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toSeconds saturates positive too-large values to Long.MAX_VALUE
      * and negative to LONG.MIN_VALUE
      */
+    @Test
     public void testToSecondsSaturate() {
         for (TimeUnit x : TimeUnit.values()) {
             long ratio = x.toNanos(1) / SECONDS.toNanos(1);
@@ -453,6 +479,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toMinutes saturates positive too-large values to Long.MAX_VALUE
      * and negative to LONG.MIN_VALUE
      */
+    @Test
     public void testToMinutesSaturate() {
         for (TimeUnit x : TimeUnit.values()) {
             long ratio = x.toNanos(1) / MINUTES.toNanos(1);
@@ -473,6 +500,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * toHours saturates positive too-large values to Long.MAX_VALUE
      * and negative to LONG.MIN_VALUE
      */
+    @Test
     public void testToHoursSaturate() {
         for (TimeUnit x : TimeUnit.values()) {
             long ratio = x.toNanos(1) / HOURS.toNanos(1);
@@ -494,6 +522,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      * toString returns name of unit
      */
+    @Test
     public void testToString() {
         assertEquals("SECONDS", SECONDS.toString());
     }
@@ -501,6 +530,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      * name returns name of unit
      */
+    @Test
     public void testName() {
         assertEquals("SECONDS", SECONDS.name());
     }
@@ -509,6 +539,7 @@ public class TimeUnitTest extends JSR166TestCase {
      * Timed wait without holding lock throws
      * IllegalMonitorStateException
      */
+    @Test
     public void testTimedWait_IllegalMonitorException() {
         Thread t = newStartedThread(new CheckedRunnable() {
             public void realRun() throws InterruptedException {
@@ -527,6 +558,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      * timedWait throws InterruptedException when interrupted
      */
+    @Test
     public void testTimedWait_Interruptible() {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -562,6 +594,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      * timedJoin throws InterruptedException when interrupted
      */
+    @Test
     public void testTimedJoin_Interruptible() {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         final Thread s = newStartedThread(new CheckedInterruptedRunnable() {
@@ -597,6 +630,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      * timedSleep throws InterruptedException when interrupted
      */
+    @Test
     public void testTimedSleep_Interruptible() {
         final CountDownLatch pleaseInterrupt = new CountDownLatch(1);
         Thread t = newStartedThread(new CheckedRunnable() {
@@ -626,6 +660,7 @@ public class TimeUnitTest extends JSR166TestCase {
     /**
      * a deserialized serialized unit is the same instance
      */
+    @Test
     public void testSerialization() throws Exception {
         for (TimeUnit x : TimeUnit.values())
             assertSame(x, serialClone(x));

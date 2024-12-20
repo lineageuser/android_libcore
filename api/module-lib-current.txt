@@ -271,6 +271,7 @@ package dalvik.system {
     method public static void dumpHprofData(String) throws java.io.IOException;
     method public static void dumpHprofData(String, java.io.FileDescriptor) throws java.io.IOException;
     method public static void dumpHprofDataDdms();
+    method @FlaggedApi("com.android.art.flags.always_enable_profile_code") public static void dumpLowOverheadTrace(@NonNull dalvik.system.VMDebug.TraceDestination);
     method public static void dumpReferenceTables();
     method public static int getAllocCount(int);
     method public static int getLoadedClassCount();
@@ -289,10 +290,12 @@ package dalvik.system {
     method @FlaggedApi("com.android.libcore.appinfo") public static void setUserId(int);
     method @FlaggedApi("com.android.libcore.appinfo") public static void setWaitingForDebugger(boolean);
     method public static void startAllocCounting();
+    method @FlaggedApi("com.android.art.flags.always_enable_profile_code") public static void startLowOverheadTrace();
     method public static void startMethodTracing(String, int, int, boolean, int);
     method public static void startMethodTracing(String, java.io.FileDescriptor, int, int, boolean, int, boolean);
     method public static void startMethodTracingDdms(int, int, boolean, int);
     method public static void stopAllocCounting();
+    method @FlaggedApi("com.android.art.flags.always_enable_profile_code") public static void stopLowOverheadTrace();
     method public static void stopMethodTracing();
     method public static void suspendAllAndSendVmStart();
     method public static long threadCpuTimeNanos();
@@ -310,7 +313,13 @@ package dalvik.system {
     field public static final int TRACE_COUNT_ALLOCS = 1; // 0x1
   }
 
+  @FlaggedApi("com.android.art.flags.always_enable_profile_code") public static class VMDebug.TraceDestination {
+    method @FlaggedApi("com.android.art.flags.always_enable_profile_code") @NonNull public static dalvik.system.VMDebug.TraceDestination fromFileDescriptor(@NonNull java.io.FileDescriptor);
+    method @FlaggedApi("com.android.art.flags.always_enable_profile_code") @NonNull public static dalvik.system.VMDebug.TraceDestination fromFileName(@NonNull String);
+  }
+
   public final class VMRuntime {
+    method @FlaggedApi("com.android.libcore.post_cleanup_apis") public static void addPostCleanupCallback(@NonNull Runnable);
     method public long addressOf(Object);
     method public static void bootCompleted();
     method public void clampGrowthLimit();
@@ -335,6 +344,7 @@ package dalvik.system {
     method public void registerNativeFree(long);
     method @Deprecated public void registerNativeFree(int);
     method public static void registerSensitiveThread();
+    method @FlaggedApi("com.android.libcore.post_cleanup_apis") public static void removePostCleanupCallback(@NonNull Runnable);
     method public void requestConcurrentGC();
     method public static void resetJitCounters();
     method public static void setDedupeHiddenApiWarnings(boolean);
@@ -764,10 +774,22 @@ package libcore.util {
   public class NativeAllocationRegistry {
     ctor public NativeAllocationRegistry(@NonNull ClassLoader, long, long);
     method public static void applyFreeFunction(long, long);
-    method public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull ClassLoader, long, long);
-    method public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull ClassLoader, long);
-    method public static libcore.util.NativeAllocationRegistry createNonmalloced(@NonNull ClassLoader, long, long);
+    method @NonNull public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull ClassLoader, long, long);
+    method @NonNull public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull ClassLoader, long);
+    method @FlaggedApi("com.android.libcore.native_metrics") @NonNull public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull Class, long, long);
+    method @FlaggedApi("com.android.libcore.native_metrics") @NonNull public static libcore.util.NativeAllocationRegistry createMalloced(@NonNull Class, long);
+    method @NonNull public static libcore.util.NativeAllocationRegistry createNonmalloced(@NonNull ClassLoader, long, long);
+    method @FlaggedApi("com.android.libcore.native_metrics") @NonNull public static libcore.util.NativeAllocationRegistry createNonmalloced(@NonNull Class, long, long);
+    method @FlaggedApi("com.android.libcore.native_metrics") @NonNull public static java.util.Collection<libcore.util.NativeAllocationRegistry.Metrics> getMetrics();
     method @NonNull public Runnable registerNativeAllocation(@NonNull Object, long);
+  }
+
+  @FlaggedApi("com.android.libcore.native_metrics") public static final class NativeAllocationRegistry.Metrics {
+    method @NonNull public String getClassName();
+    method public long getMallocedBytes();
+    method public long getMallocedCount();
+    method public long getNonmallocedBytes();
+    method public long getNonmallocedCount();
   }
 
   public class SneakyThrow {
